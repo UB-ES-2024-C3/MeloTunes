@@ -33,7 +33,7 @@ A continuació veurem com podem desplegar el projecte i començar a implementar 
 Utilitzarem [Poetry](https://python-poetry.org/) com a configurador del nostre projecte. 
 Aquest configurador ens permet definir les propietats bàsiques del projecte i les seves dependències.
 
-La definició del projecte es troba en el fitxer [pyproject.toml](./backend/pyproject.toml). 
+La definició del projecte es troba en el fitxer [pyproject.toml](../backend/pyproject.toml). 
 Si el reviseu, veureu que inclou tant informació del projecte (nom, versió, etc.), 
 com la llista de dependències que necessita.
 
@@ -192,12 +192,12 @@ vue init webpack frontend
 ```
 Seleccioneu la configuració tal com es mostra a imatge següent:
 
-![image](docs/images/vue-init-conf.png)
+![image](../docs/images/vue-init-conf.png)
 
 Podeu interactuar amb les fletxes, les tecles d'entrada i l'espai.
 Un cop creat el projecte, parem atenció als fitxers principals. La carpeta ```/src``` té la següent estructura:
 
-![image](docs/images/vue-init-src.png)
+![image](../docs/images/vue-init-src.png)
 
 - **App.vue**: s'encarrega de representar els components
 - **assets**: on deseu tots els recursos, com ara imatges
@@ -284,11 +284,11 @@ que ens permet fer el desplegament d'aplicacions petites de forma gratuïta.
 
 El primer pas serà donar-nos d'alta a [render.com](https://render.com/). Podem crear el compte directament a partir del nostre compte de GitHub.
 
-![image](docs/images/render_register.png)
+![image](../docs/images/render_register.png)
 
 Un cop tinguem un compte, podem veure la llista de serveis que ens ofereix la plataforma:
 
-![image](docs/images/render_services.png)
+![image](../docs/images/render_services.png)
 
 Els que ens interessaran en el nostre cas seran:
 - **PostreSQL:** Ens permetrà crear una base de dades al núvol.
@@ -305,12 +305,12 @@ ens trigarà considerablement (aproximadament 1-2 minuts).
 Sel·leccionarem el servei PostgreSQL i demanarem crear una nova base de dades. Com a la base de dades hi haurà informació
 dels usuaris, és important sel·leccionar una regió dins d'europa, evitant així problemes amb la llei de protecció de dades. 
 
-![image](docs/images/render_db1.png)
+![image](../docs/images/render_db1.png)
 
 Un cop creada la base de dades, cal agafar la seva informació. Generalment, trobarem informació d'accés intern 
 (quan accedim des d'altres serveis de la mateixa estructura de núvol) i informació externa (fora del núvol):
 
-![image](docs/images/render_db2.png)
+![image](../docs/images/render_db2.png)
 
 
 ## 3.3 Crear un servei web
@@ -321,11 +321,11 @@ Això ens facilitarà el seu desplegament en serveis al núvol, ja que podem con
 
 Per desplegar-lo, anirem a crear un now servei web i li direm que el volem desplegar des d'un repositori Git:
 
-![image](docs/images/web_service1.png)
+![image](../docs/images/web_service1.png)
 
 Ens preguntarà la informació de repositori. Cal sel·leccionar el repositori corresponent al nostre grup:
 
-![image](docs/images/web_service2.png)
+![image](../docs/images/web_service2.png)
 
 Ara caldrà entrar la informació del web service, indicant:
 
@@ -335,13 +335,13 @@ Ara caldrà entrar la informació del web service, indicant:
 - **Root Directory:** carpeta que conté el codi a desplegar. En el nostre cas cal sel·leccionar **backend**.
 - **Runtime:** sistema sobre el qual funcionarà el nostre servei. Triarem **Docker**.
 
-![image](docs/images/web_service3.png)
+![image](../docs/images/web_service3.png)
 
 Finalment, necessitarem configurar el servei web. Cal proporcionar la informació de configuració, igual que hem fet al
 punt [1.1.2](#1.1.2.-Configuració-del-backend), però en comptes de posar-ho en un fitxer ```.env``` ho definirem directament
 com a variables d'entorn (idealment els passwords caldria passar-los com a secrets, però no entrarem per simplificar):
 
-![image](docs/images/web_service4.png)
+![image](../docs/images/web_service4.png)
 
 Aquest servei de desplegament espera que els serveis escoltin al port 10000, per tant, a les variables de configuració
 anteriors caldrà afegir-n'hi una d'addicional:
@@ -359,14 +359,14 @@ indicarem que volem desplegar des d'un repositori de codi. Caldrà proporcionar 
 - **Build Command:** quina comanda s'utilitzarà per generar els fitxers estàtics. Caldrà instal·lar les dependències i compilar, per tan escriurem ```npm install; npm run build```
 - **Publish directory:** carpeta d'on agafar els fitxers generats en la fase de construcció. Posarem **dist**.
 
-![image](docs/images/web_static1.png)
+![image](../docs/images/web_static1.png)
 
 
 ## 3.5 Accedir a la versió en producció
 
 Si tot ha anat com és d'esperar, haurieu de poder veure en el tauler de control els tres serveis amb una icona verda:
 
-![image](docs/images/render_dashboard.png)
+![image](../docs/images/render_dashboard.png)
 
 I es pot accedir mitjançant el nom del servei i el domini **onrender.com**. Per exemple, el grup **B07**, hauria de poder accedir a:
 

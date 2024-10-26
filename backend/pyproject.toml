@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "app"
 version = "0.1.0"
-description = "UB Software Distribuit P2 2024"
+description = "MeloTunes"
 authors = ["Xavier Baró <xbaro@ub.edu>"]
 
 [tool.poetry.dependencies]
