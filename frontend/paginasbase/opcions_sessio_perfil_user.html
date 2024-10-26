@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration Page</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            position: relative;
+            text-align: center;
+            background-color: #717d7e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 700px;
+            border: 2px solid black;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            width: 40%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: red;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-iniciar {
+            margin-bottom: 30px;
+        }
+        .container p {
+            margin: 5px 0 10px;
+        }
+        .btn-registrate {
+            margin-top: 5px;
+        }
+        .container a {
+            color: white;
+            text-decoration: none;
+        }
+        .container a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botón de cierre ('X') -->
+        <button class="close-btn" onclick="cerrarPopup()">X</button>
+
+        <!-- Logo -->
+        <img src="Im_logo.png" alt="Logo"><br>
+        <h1>MILLIONS OF FREE SONGS ON MELOTUNES</h1>
+        
+        <!-- Botón de Iniciar Sesión -->
+        <button class="btn btn-iniciar" onclick="iniciarSesion()">Log In</button>
+
+        <!-- Texto de registro y botón de "Regístrate gratis" -->
+        <p>Just arrived?</p>
+        <button class="btn btn-registrate" onclick="registrarse()">Register for Free</button>
+    </div>
+
+    <!-- JavaScript para cerrar el popup y redirigir -->
+    <script>
+        function cerrarPopup() {
+            window.location.href = 'seleccio_perfils.html'; // Redirige a la página principal
+        }
+
+        function registrarse() {
+            window.location.href = 'registrar_user.html'; // Redirige a la página de registro
+        }
+
+        function iniciarSesion() {
+            window.location.href = 'iniciar_sesion_user.html'; // Redirige a la página de inicio sesion
+        }
+
+    </script>
+
+</body>
+</html>
