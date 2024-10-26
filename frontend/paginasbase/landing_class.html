@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Melotunes</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(77, 63, 63);
+            font-family: Arial, sans-serif;
+        }
+
+        #logo-container {
+            opacity: 0;
+            animation: fadeInOut 3s forwards;
+        }
+
+        #logo {
+            width: 125px;
+            height: 125px;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="logo-container">
+        <img id="logo" src="Im_logo.png" alt="Melotunes Logo">
+    </div>
+
+    <script>
+        // Redirige a la página de selección de perfiles después de 3 segundos
+        setTimeout(function() {
+            window.location.href = "seleccio_perfils.html";
+        }, 3000);
+    </script>
+
+</body>
+</html>
