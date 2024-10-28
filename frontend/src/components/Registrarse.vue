@@ -2,22 +2,22 @@
     <div class="container">
         <h1>Complete Your Registration</h1>
 
-        <form action="#" method="post" onsubmit="validarFormulario(event)">
+        <form>
             <!-- Mostrar el correo del paso anterior que no se puede modificar -->
             <label for="email">Email</label><br>
-            <input type="text" id="email" name="email" placeholder="name@domain.com" required @blur="validateEmail"><br>
+            <input type="text" id="email" name="email" placeholder="name@domain.com"><br>
 
             <!-- Campo de contraseña -->
             <label for="password">Password</label><br>
             <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
                 <img id="togglePassword" src="Im_ojo2.png" alt="Show/Hide Password">
             </div>
 
             <!-- Campo de confirmar contraseña -->
             <label for="confirm_password">Confirm Password</label><br>
             <div class="password-container">
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password">
                 <img id="toggleConfirmPassword" src="Im_ojo2.png" alt="Show/Hide Password">
             </div>
 
@@ -26,39 +26,34 @@
 
             <!-- Campo de nombre -->
             <label for="nombre">First Name</label><br>
-            <input type="text" id="nombre" name="nombre" placeholder="Enter your first name" required><br>
-
-            <!-- Campo de apellido (opcional) -->
-            <label for="apellido">Last Name (Optional)</label><br>
-            <input type="text" id="apellido" name="apellido" placeholder="Enter your last name"><br>
+            <input type="text" id="nombre" name="nombre" placeholder="Enter your first name"><br>
 
             <!-- Campo de nombre de usuario -->
             <label for="usuario">Username</label><br>
-            <input type="text" id="usuario" name="usuario" placeholder="Username" required><br>
+            <input type="text" id="usuario" name="usuario" placeholder="Username"><br>
 
             <!-- Campo de fecha de nacimiento -->
             <label for="fecha_nacimiento">Date of Birth</label><br>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required><br>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"><br>
 
             <!-- Mostrar error si la persona es menor de 16 años -->
             <div id="error-edad" class="error"></div>
 
-            <!-- Campo de número de teléfono (opcional) -->
-            <label for="telefono">Phone Number (Optional)</label><br>
-            <input type="tel" id="telefono" name="telefono" placeholder="123-456-7890"><br>
-
             <!-- Botón de enviar -->
-            <input type="submit" value="Complete Registration">
+            <input type="button" value="Complete Registration" @click=registerUser()>
 
-            <button class="close-btn" onclick="cerrarPopup()">X</button>
+            <button class="close-btn" @click="cerrarPopup()">X</button>
         </form>
 
     </div>
 </template>
 
 <script>
+
+import RegisterService from '../services/RegisterService'
+
 export default {
-  name: 'HelloWorld',
+  name: 'Registrarse',
   data () {
   },
   methods: {
@@ -69,6 +64,12 @@ export default {
       } else {
         this.msg['email'] = ''
       }
+    },
+    registerUser () {
+      RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('password').value)
+    },
+    cerrarPopup () {
+      this.$router.replace({ path: '/home' })
     }
   }
 }

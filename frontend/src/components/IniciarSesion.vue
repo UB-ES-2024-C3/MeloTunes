@@ -21,7 +21,7 @@
         </form>
 
         <p><a href="#">Forgot your password?</a></p>
-        <p>Don't have an account? <a href="registrar_user.html">Register for free</a></p>
+        <p>Don't have an account? <a @click="register()">Register for free</a></p>
     </div>
 
 </template>
@@ -37,6 +37,10 @@ export default {
     },
     login () {
       this.$router.push('/login')
+      this.$router.go()
+    },
+    register () {
+      this.$router.push('/register')
       this.$router.go()
     }
   }
