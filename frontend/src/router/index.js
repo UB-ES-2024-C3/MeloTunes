@@ -4,6 +4,7 @@ import Welcome from '@/components/Welcome'
 import Principal from '@/components/Principal'
 import Registrarse from '@/components/Registrarse'
 import IniciarSesion from '@/components/IniciarSesion'
+import TeamSet from '@/components/TeamSet'
 
 Vue.use(Router)
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: IniciarSesion
+    },
+    {
+      path: '/teams',
+      name: 'Teams',
+      component: TeamSet
     }
   ]
 })

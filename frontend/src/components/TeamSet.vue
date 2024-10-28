@@ -6,6 +6,7 @@
 
 <script>
 import Team from './Team.vue'
+import TeamService from '../services/TeamService'
 
 export default {
   name: 'TeamSet',
@@ -17,21 +18,10 @@ export default {
     }
   },
   mounted () {
-    this.count = 2
-    this.data = [
-      {
-        id: 1,
-        name: 'test team 1',
-        country: 'test team 1 country',
-        description: 'an optional description for test team 1'
-      },
-      {
-        id: 2,
-        name: 'test team 2',
-        country: 'test team 2 country',
-        description: null
-      }
-    ]
+    TeamService.getAll().then(response => {
+      this.data = response.data
+      this.count = response.count
+    })
   }
 }
 </script>

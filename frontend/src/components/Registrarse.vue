@@ -5,7 +5,7 @@
         <form action="#" method="post" onsubmit="validarFormulario(event)">
             <!-- Mostrar el correo del paso anterior que no se puede modificar -->
             <label for="email">Email</label><br>
-            <input type="email" id="email" name="email" value="name@domain.com" readonly><br>
+            <input type="text" id="email" name="email" placeholder="name@domain.com" required @blur="validateEmail"><br>
 
             <!-- Campo de contraseña -->
             <label for="password">Password</label><br>
@@ -60,8 +60,15 @@
 export default {
   name: 'HelloWorld',
   data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+  },
+  methods: {
+    validateEmail () {
+      // eslint-disable-next-line
+      if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
+        this.msg['email'] = 'Please enter a valid email address'
+      } else {
+        this.msg['email'] = ''
+      }
     }
   }
 }

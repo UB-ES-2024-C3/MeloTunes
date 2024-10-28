@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <button class="close-btn" onclick="cerrarPopup()">X</button>
+        <button class="close-btn" @click="cerrarPopup">X</button>
 
         <img src="Im_logo.png" alt="Logo"><br>
         <h1>Log in to MeloTunes</h1>
@@ -27,6 +27,20 @@
 </template>
 
 <script>
+export default {
+  data () {
+  },
+  methods: {
+    cerrarPopup () {
+      this.$router.replace({ path: '/home' })
+      this.$router.go()
+    },
+    login () {
+      this.$router.push('/login')
+      this.$router.go()
+    }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

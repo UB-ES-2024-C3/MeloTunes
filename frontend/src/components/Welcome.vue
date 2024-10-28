@@ -15,7 +15,7 @@ export default {
   created () {
     this.timeout = setTimeout(
       function () {
-        this.$router.push('/home')
+        this.$router.replace({ path: '/login' })
       }.bind(this),
       5000
     )
