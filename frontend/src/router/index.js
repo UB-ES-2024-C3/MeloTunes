@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Welcome from '@/components/Welcome'
 import Principal from '@/components/Principal'
 import Registrarse from '@/components/Registrarse'
+import IniciarSesion from '@/components/IniciarSesion'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/register',
       name: 'Register',
       component: Registrarse
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: IniciarSesion
     }
   ]
 })

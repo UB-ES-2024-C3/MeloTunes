@@ -3,7 +3,7 @@
         <header>
             <div></div> <!-- Espacio para alinear botones a la derecha -->
             <div>
-                <a href="#">Iniciar sesión</a>
+                <a href="#" @click="login">Iniciar sesión</a>
                 <a href="#" @click="register">Registrarse</a>
             </div>
         </header>
@@ -112,6 +112,10 @@ export default {
   methods: {
     register () {
       this.$router.push('/register')
+      this.$router.go()
+    },
+    login () {
+      this.$router.push('/login')
       this.$router.go()
     }
   }
