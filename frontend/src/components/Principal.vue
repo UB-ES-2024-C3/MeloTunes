@@ -2,20 +2,16 @@
     <body>
         <header>
             <div></div> <!-- Espacio para alinear botones a la derecha -->
-            <div v-if="!isLogedIn">
+            <div class="auth-buttons" v-if="!isLogedIn">
                 <a href="#" @click="login">Iniciar sesión</a>
                 <a href="#" @click="register">Registrarse</a>
             </div>
-            <div v-if="isLogedIn">
-                <h4><strong>{{user_name}}</strong></h4>
-                <a href="#" @click="logOut">Cerrar sesión</a>
-            </div>
+
         </header>
 
-        <div class="logo">
+        <div class="hero">
             <h1>
-                <span class="color-izquierda">¡MELO</span>
-                <span class="color-derecha">TUNES!</span>
+                <span class="melo">¡MELO</span><span class="tunes">TUNES!</span>
             </h1>
         </div>
 
@@ -143,151 +139,286 @@ export default {
 </script>
 
 <style scoped>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: black;
-        }
+    /* Estilos básicos */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: white;
+      padding-top: 80px; /* Ajusta el valor según la altura de tu header */
+    }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background-color: rgb(225, 58, 58);
-            /* Degradado en el borde inferior del header */
-            box-shadow: 0px 10px 20px -10px rgba(225, 58, 58, 0.5);
-        }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to bottom, #e53935, #000);
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+      transition: top 0.3s;
+      z-index: 1000;
+    }
 
-        header a {
-            text-decoration: none;
-            color: #333;
-            border: 1px solid #333;
-            padding: 10px 20px;
-            margin-left: 10px;
-            border-radius: 5px;
-        }
+    header .auth-buttons a {
+      text-decoration: none;
+      color: white;
+      background-color: transparent;
+      padding: 10px 20px;
+      border: 1px solid white;
+      border-radius: 5px;
+      margin-left: 15px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
-        .logo {
-            text-align: center;
-            margin: 40px 0;
-        }
+    header .auth-buttons a:hover {
+      background-color: white;
+      color: #e53935;
+    }
 
-        .logo h1 {
-            font-size: 2.5em;
-            margin: 0;
-        }
+    .body{
 
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
+      margin: 0;
+      padding: 0;
+      padding-top: 80px; /* Ajusta el valor según la altura de tu header */
 
-        .search-bar input[type="text"] {
-            width: 50%;
-            padding: 10px;
-            font-size: 1.1em;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
+      width: 100%;
+      height: 75vh; /* Ocupa toda la altura de la ventana */
+      background-image: url('../assets/notas.png');
 
-        .search-bar button {
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+      background-size: 100% 100%; /* Doble tamaño para que ocupe solo la mitad */
+      background-position: left, right;
 
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin: 40px;
-        }
+    }
 
-        .album {
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: white;
-            border-radius: 10px;
-        }
+    .hero {
+      text-align: center;
+      margin: 60px 0;
+    }
 
-        .album img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
+    .hero h1 {
+      font-size: 4em;
+      color: white;
+      letter-spacing: 5px;
+    }
 
-        .artist-section {
-            margin: 40px;
-            text-align: center;
-        }
+    .hero h1 .melo {
+      color: #e53935;
+    }
 
-        .artist-section h2 {
-            margin-bottom: 20px;
-        }
+    .hero h1 .tunes {
+      color: white;
+    }
 
-        .artist-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
+    .hero p {
+      font-size: 1.5em;
+      color: #f5f5f5;
+      margin-top: 10px;
+    }
 
-        .artist {
-            text-align: center;
-        }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
+      margin-bottom: 15%;
 
-        .artist img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ddd;
-        }
+      background-image: url("../assets/notas.png") ;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      color: #000;
+    }
 
-        .artist p {
-            margin-top: 10px;
-        }
+    .search-bar input[type="text"] {
+      width: 40%;
+      padding: 15px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 30px;
+      margin-right: 10px;
+      outline: none;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    .search-bar button {
+      padding: 15px 25px;
+      font-size: 1em;
+      background-color: #e53935;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-        footer .legal {
-            text-align: left;
-        }
+    .search-bar button:hover {
+      background-color: #c62828;
+    }
 
-        footer .legal a {
-            color: white;
-            text-decoration: none;
-            margin-right: 15px;
-        }
+    /* Estilos del carrusel de álbumes */
+    .album-carousel {
+      position: relative;
+      overflow: hidden;
+      width: 90%;
+      margin: 70px ;
+    }
 
-        footer .social-icons img {
-            width: 30px;
-            margin-left: 10px;
-        }
+    .album-container {
+      display: flex;
+      transition: transform 0.5s ease;
+      width: 300%; /* Ajustamos el tamaño del contenedor para que se pueda deslizar */
+    }
 
-        /* Estilo para el logo con dos colores */
-        .color-izquierda {
-            color: red;
-        }
+    .mySlides {
+      display: flex;
+      justify-content: space-between;
+      width: 33.33%; /* Cada slide ocupa 1/3 del contenedor */
+    }
+    .album {
+      text-align: center;
+      padding: 20px;
+      background-color: #1f1f1f;
+      border-radius: 20px;
+      margin-right: 30px;
+      min-width: calc(25% - 30px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .color-derecha {
-            color: white;
-        }
+    .album-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 23%; /* Cada imagen ocupará el 23% del ancho de la slide */
+    }
+
+    .album-item img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 5px;
+    }
+
+    .album-item p {
+      margin: 0;
+      color: white;
+      text-align: center;
+    }
+
+    .prev,
+    .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      margin-top: -22px;
+      padding: 16px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+      border: solid #fff 2px;
+    }
+
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .prev:hover,
+    .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .elements {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .quadrate {
+      cursor: pointer;
+      height: 4px;
+      width: 50px;
+      margin: 0 2px;
+      background-color: #717171;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+      border-radius: 2px;
+    }
+
+    .active,
+    .quadrate:hover {
+      background-color: #fff;
+    }
+
+    @media screen and (max-width: 900px) {
+      .container {
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 500px) {
+      .prev,
+      .next {
+        padding: 5px;
+      }
+    }
+    .artist-section h2 {
+      font-size: 2.5em;
+      text-align: center;
+
+      color: #e53935;
+    }
+
+    .artist-grid {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .artist {
+      text-align: center;
+    }
+
+    .artist img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e53935;
+      transition: transform 0.3s ease;
+    }
+
+    .artist img:hover {
+      transform: scale(1.1);
+    }
+
+    footer {
+      background-color: #1f1f1f;
+      padding: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    footer .legal, footer .social-icons {
+      display: flex;
+      align-items: center;
+    }
+
+    footer .legal a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    footer .social-icons img {
+      width: 30px;
+      margin-left: 15px;
+    }
 </style>
