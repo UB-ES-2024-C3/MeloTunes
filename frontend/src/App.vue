@@ -8,4 +8,5 @@ export default {
     document.title = 'MeloTunes'
   }
 }
+
 </script>

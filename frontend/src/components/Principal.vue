@@ -2,9 +2,12 @@
     <body>
         <header>
             <div></div> <!-- Espacio para alinear botones a la derecha -->
-            <div>
+            <div v-if="!isLogedIn">
                 <a href="#" @click="login">Iniciar sesión</a>
                 <a href="#" @click="register">Registrarse</a>
+            </div>
+            <div v-if="isLogedIn">
+                <h4><strong>{{user_name}}</strong></h4>
             </div>
         </header>
 
@@ -107,7 +110,21 @@
 
 <script>
 export default {
+  computed: {
+    isLogedIn () {
+      return this.$route.query.logged === 'true'
+    }
+  },
+  mounted () {
+    console.log(this.$route.query.email)
+    if (this.isLogedIn) {
+      this.user_name = this.$route.query.email
+    }
+  },
   data () {
+    return {
+      user_name: null
+    }
   },
   methods: {
     register () {
