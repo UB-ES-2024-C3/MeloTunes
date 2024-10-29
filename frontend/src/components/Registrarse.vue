@@ -67,6 +67,7 @@ export default {
     },
     registerUser () {
       RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('password').value)
+      this.$router.push('/login')
     },
     cerrarPopup () {
       this.$router.replace({ path: '/home' })
