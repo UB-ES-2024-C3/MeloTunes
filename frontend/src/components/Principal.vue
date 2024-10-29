@@ -107,6 +107,7 @@
 
 <script>
 export default {
+  name: 'Home',
   computed: {
     isLogedIn () {
       return this.$route.query.logged === 'true'

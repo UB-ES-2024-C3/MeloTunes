@@ -29,7 +29,7 @@
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <input type="submit" value="Log In">
+        <b-button @click="login" variant="primary">Log In</b-button>
       </form>
 
       <p><a href="#">Forgot your password?</a></p>
@@ -39,12 +39,15 @@
 </template>
 
 <script>
+import AuthService from '../services/AuthService'
 export default {
   data () {
     return {
       email: '',
       password: '',
       showPassword: false,
+      token: null,
+      is_authenticated: false,
       error: null
     }
   },
@@ -52,16 +55,23 @@ export default {
     cerrarPopup () {
       this.$router.push('/seleccio_perfils') // Cambia la ruta de Vue Router
     },
+    login () {
+      AuthService.login(this.email, this.password)
+        .then(response => {
+          this.is_authenticated = true
+          this.token = response.data.access_token
+          this.$router.push({ path: '/home', query: { email: this.email, logged: this.is_authenticated, token: this.token } })
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          alert('Username or Password incorrect')
+        })
+    },
     togglePassword () {
       this.showPassword = !this.showPassword
     },
     handleSubmit () {
-      if (!this.email || !this.password) {
-        this.error = 'Please enter both email and password'
-      } else {
-        this.error = null
-        this.$router.push('/welcome_user') // Cambia la ruta de Vue Router
-      }
     }
   }
 }
