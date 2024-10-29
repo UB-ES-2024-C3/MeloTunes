@@ -3,7 +3,6 @@
       <div id="logo-container">
           <img id="logo" src="~@/assets/Im_logo.png" alt="Melotunes Logo">
       </div>
-      <h1>Welcome!</h1>
     </body>
 </template>
 
@@ -17,7 +16,7 @@ export default {
       function () {
         this.$router.replace({ path: '/login' })
       }.bind(this),
-      5000
+      3000
     )
   }
 }
