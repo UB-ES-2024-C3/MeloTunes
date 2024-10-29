@@ -7,17 +7,18 @@
 
         <form id="loginForm" action="#" method="post"> <!-- Añadido id="loginForm" -->
             <label for="email">Email Address</label><br>
-            <input type="email" id="email" name="email" placeholder="name@domain.com" required><br>
+            <input type="email" id="email" name="email" placeholder="name@domain.com" required v-model="email"><br>
 
             <label for="password">Password</label><br>
             <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input type="password" id="password" name="password" placeholder="Password" required v-model="password">
                 <img id="togglePassword" src="Im_ojo2.png" alt="Show/Hide Password">
             </div>
 
             <div class="error"></div>
 
-            <input type="submit" value="Log In">
+            <b-button @click="login" variant="primary">Log In</b-button>
+
         </form>
 
         <p><a href="#">Forgot your password?</a></p>
@@ -27,8 +28,16 @@
 </template>
 
 <script>
+import AuthService from '../services/AuthService'
 export default {
+  name: 'Login',
   data () {
+    return {
+      email: null,
+      password: null,
+      token: null,
+      is_authenticated: false
+    }
   },
   methods: {
     cerrarPopup () {
@@ -36,8 +45,17 @@ export default {
       this.$router.go()
     },
     login () {
-      this.$router.push('/login')
-      this.$router.go()
+      AuthService.login(this.email, this.password)
+        .then(response => {
+          this.is_authenticated = true
+          this.token = response.data.access_token
+          this.$router.push({ path: '/home', query: { email: this.email, logged: this.is_authenticated, token: this.token } })
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          alert('Username or Password incorrect')
+        })
     },
     register () {
       this.$router.push('/register')
