@@ -8,6 +8,7 @@
             </div>
             <div v-if="isLogedIn">
                 <h4><strong>{{user_name}}</strong></h4>
+                <a href="#" @click="logOut">Cerrar sesión</a>
             </div>
         </header>
 
@@ -116,7 +117,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.query.email)
     if (this.isLogedIn) {
       this.user_name = this.$route.query.email
     }
@@ -134,6 +134,9 @@ export default {
     login () {
       this.$router.push('/login')
       this.$router.go()
+    },
+    logOut () {
+      this.$router.push('/home')
     }
   }
 }
