@@ -77,13 +77,10 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> Any:
 
 
 @router.patch("/me", response_model=UserOut)
-def update_user_me(
-    *, session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser
-) -> Any:
+def update_user_me(*, session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser) -> Any:
     """
     Update own user.
     """
-
     if user_in.email:
         existing_user = crud.user.get_user_by_email(session=session, email=user_in.email)
         if existing_user and existing_user.id != current_user.id:
@@ -99,9 +96,7 @@ def update_user_me(
 
 
 @router.patch("/me/password", response_model=Message)
-def update_password_me(
-    *, session: SessionDep, body: UpdatePassword, current_user: CurrentUser
-) -> Any:
+def update_password_me(*, session: SessionDep, body: UpdatePassword, current_user: CurrentUser) -> Any:
     """
     Update own password.
     """
@@ -148,9 +143,7 @@ def create_user_open(session: SessionDep, user_in: UserCreateOpen) -> Any:
 
 
 @router.get("/{user_id}", response_model=UserOut)
-def read_user_by_id(
-    user_id: int, session: SessionDep, current_user: CurrentUser
-) -> Any:
+def read_user_by_id(user_id: int, session: SessionDep, current_user: CurrentUser) -> Any:
     """
     Get a specific user by id.
     """
@@ -170,12 +163,7 @@ def read_user_by_id(
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UserOut,
 )
-def update_user(
-    *,
-    session: SessionDep,
-    user_id: int,
-    user_in: UserUpdate,
-) -> Any:
+def update_user(*, session: SessionDep, user_id: int, user_in: UserUpdate,) -> Any:
     """
     Update a user.
     """
@@ -198,9 +186,7 @@ def update_user(
 
 
 @router.delete("/{user_id}")
-def delete_user(
-    session: SessionDep, current_user: CurrentUser, user_id: int
-) -> Message:
+def delete_user(session: SessionDep, current_user: CurrentUser, user_id: int) -> Message:
     """
     Delete a user.
     """

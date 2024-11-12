@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Profile</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, black, grey);
+            font-family: Arial, sans-serif;
+        }
+
+        .profile-container {
+            text-align: center;
+        }
+
+        .profile-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .profile {
+            width: 150px;
+            height: 150px;
+            background-color: #333;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 2px solid white;
+            text-decoration: none; /* Remove underline from links */
+        }
+
+        .profile:hover {
+            transform: scale(1.1);
+            background-color: #555;
+        }
+
+        .profile img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h1>Select Your Profile</h1>
+
+        <div class="profile-buttons">
+            <a class="profile" href="welcome_guest.html">
+                <img src="https://cdn-icons-png.flaticon.com/512/3237/3237472.png" alt="Guest Icon">
+                Guest
+            </a>
+            <a class="profile" href="opcions_sessio_perfil_user.html">
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User Icon">
+                User
+            </a>
+            <a class="profile" href="opcions_sessio_perfil_artist.html">
+                <img src="https://cdn-icons-png.flaticon.com/512/194/194935.png" alt="Artist Icon">
+                Artist
+            </a>
+            <a class="profile" href="opcions_sessio_perfil_admin.html">
+                <img src="Im_image.png" alt="Admin Icon">
+                Admin
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
