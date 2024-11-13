@@ -22,29 +22,33 @@
             <div class="album">
                 <img src="../assets/albumes/melendi2.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Curiosa la cara de tu padre</p>
+                <p>Melendi</p>
+                <p>2008</p>
               </div>
             </div>
             <div class="album">
                 <img src="../assets/albumes/melendi1.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Lágrimas desordenadas</p>
+                <p>Melendi</p>
+                <p>2012</p>
               </div>
             </div>
             <div class="album">
                 <img src="../assets/albumes/dani2.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Pequeño</p>
+                <p>Dani Martín</p>
+                <p>2010</p>
               </div>
             </div>
             <div class="album">
                 <img src="../assets/albumes/dani1.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Grandes éxitos y pequeños desastres</p>
+                <p>Dani Martín</p>
+                <p>2017</p>
               </div>
             </div>
         </div>
@@ -52,29 +56,33 @@
             <div class="album">
                 <img src="../assets/albumes/fito.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Antes de que cuente diez</p>
+                <p>Fito y Fitipaldis</p>
+                <p>2009</p>
               </div>
             </div>
             <div class="album">
                 <img src="../assets/albumes/fito2.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Fitografía</p>
+                <p>Fito y Fitipaldis</p>
+                <p>2017</p>
               </div>
             </div>
             <div class="album">
                 <img src="../assets/albumes/ex1.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>Agila</p>
+                <p>Extremoduro</p>
+                <p>1996</p>
               </div>
             </div>
             <div class="album">
                 <img src="../assets/albumes/sabina1.jpeg" alt="Portada del álbum">
               <div class="album-info">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+                <p>19 días y 500 noches</p>
+                <p>Sabina</p>
+                <p>1999</p>
               </div>
             </div>
         </div>
@@ -117,9 +125,9 @@
                 <a href="#">Configuración de cookies</a>
             </div>
             <div class="social-icons">
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Logo de Facebook"></a>
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Logo de Instagram"></a>
-                <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Logo de Twitter"></a>
+                <a href="#"><img src="../assets/facebook.png" alt="Logo de Facebook"></a>
+                <a href="#"><img src="../assets/instagram.png" alt="Logo de Instagram"></a>
+                <a href="#"><img src="../assets/twitter.png" alt="Logo de Twitter"></a>
             </div>
         </footer>
 
@@ -306,7 +314,7 @@ export default {
       margin: 0;
       color: white;
       text-align: left;
-      font-size: 200%;
+      font-size: 180%;
     }
     .album {
       display: flex;
@@ -375,28 +383,29 @@ export default {
     }
 
     footer {
+
       background-color: #1f1f1f;
-      padding: 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+
     }
 
     footer .legal, footer .social-icons {
       display: flex;
       align-items: center;
 
+
     }
 
     footer .legal a {
       color: white;
       text-decoration: none;
-      margin-right: 20px;
+      margin-right: 2%;
     }
 
     footer .social-icons img {
-      width: 30px;
-      margin-left: 15px;
+      width: 15%;
+      margin-right: 0%;
     }
 </style>
