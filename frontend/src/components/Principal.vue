@@ -391,10 +391,28 @@ export default {
 
     }
 
-    footer .legal, footer .social-icons {
+    footer .legal {
+      margin-left: 1%;
+      margin-top: 2%;
+      margin-bottom: 2%;
       display: flex;
+      flex-direction: column; /* Cambia la disposición a columna */
+      align-items: flex-start; /* Alinea los enlaces a la izquierda */
+      gap: 10px;
+      width: 50%;
+    }
+    footer .social-icons {
+      justify-content: flex-end;
       align-items: center;
+      height: 10%;
+    }
+    footer .social-icons a {
+      display: inline-block;
+    }
 
+    footer .social-icons img {
+      width: 60px;
+      margin-top: 1%;
 
     }
 
@@ -402,10 +420,8 @@ export default {
       color: white;
       text-decoration: none;
       margin-right: 2%;
+      font-size: 150%
     }
 
-    footer .social-icons img {
-      width: 15%;
-      margin-right: 0%;
-    }
+
 </style>
