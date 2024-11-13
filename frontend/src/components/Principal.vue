@@ -1,6 +1,9 @@
 <template>
     <body>
         <header>
+          <div class="logo">
+            <img src="../assets/logo2.png" alt="Logo">
+          </div>
             <div></div> <!-- Espacio para alinear botones a la derecha -->
             <div class="auth-buttons" v-if="!isLogedIn">
                 <a href="#" @click="login">Iniciar sesión</a>
@@ -170,6 +173,11 @@ export default {
 
 <style scoped>
     /* Estilos básicos */
+    .logo img {
+      width: 50%;
+      margin-top: -5%;
+      margin-left: 10%;
+    }
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
@@ -183,7 +191,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 2%;
+      padding: 1%;
       position: fixed;
       top: 0;
       left: 0;
