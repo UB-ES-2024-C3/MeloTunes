@@ -1,4 +1,4 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template>
     <body>
         <header>
             <div></div> <!-- Espacio para alinear botones a la derecha -->
@@ -6,9 +6,7 @@
                 <a href="#" @click="login">Iniciar sesión</a>
                 <a href="#" @click="register">Registrarse</a>
             </div>
-
         </header>
-
         <div class="hero">
             <h1>
                 <span class="melo">¡MELO</span><span class="tunes">TUNES!</span>
@@ -22,28 +20,28 @@
 
         <div class="album-grid">
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/melendi2.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
               </div>
             </div>
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/melendi1.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
               </div>
             </div>
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/dani2.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
               </div>
             </div>
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/dani1.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
@@ -52,28 +50,28 @@
         </div>
         <div class="album-grid">
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/fito.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
               </div>
             </div>
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/fito2.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
               </div>
             </div>
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/ex1.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
               </div>
             </div>
             <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+                <img src="../assets/albumes/sabina1.jpeg" alt="Portada del álbum">
               <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
@@ -85,28 +83,28 @@
             <h2>Artistas Populares</h2>
             <div class="artist-grid">
                 <div class="artist">
-                    <img src="../assets/artistas/melendi.jpeg" alt="Artista">
+                    <img src="../assets/artistas/melendi.jpeg" alt="Artista" style="width: 100%; height: 100%;">
                     <p>Melendi</p>
                 </div>
                 <div class="artist">
-                    <img src="../assets/artistas/danimartin.jpeg" alt="Artista">
-                    <p>Dani Martín 2</p>
+                    <img src="../assets/artistas/danimartin.jpeg" alt="Artista" style="width: 100%; height: 100%;">
+                    <p>Dani Martín</p>
                 </div>
                 <div class="artist">
-                    <img src="../assets/artistas/estopa.jpeg" alt="Artista">
+                    <img src="../assets/artistas/estopa.jpeg" alt="Artista" style="width: 100%; height: 100%;">
                     <p>Estopa</p>
                 </div>
                 <div class="artist">
-                    <img src="../assets/artistas/fito.jpeg" alt="Artista">
+                    <img src="../assets/artistas/fito.jpeg" alt="Artista" style="width: 100%; height: 100%;">
                     <p>Fito y Fitipaldis</p>
                 </div>
 
                 <div class="artist">
-                    <img src="../assets/artistas/sabina.jpeg" alt="Artista">
+                    <img src="../assets/artistas/sabina.jpeg" alt="Artista" style="width: 100%; height: 100%;">
                     <p>Sabina</p>
                 </div>
               <div class="artist">
-                <img src="../assets/artistas/extremoduro.jpeg" alt="Artista">
+                <img src="../assets/artistas/extremoduro.jpeg" alt="Artista" style="width: 100%; height: 100%;">
                 <p>Extremoduro</p>
               </div>
             </div>
@@ -296,6 +294,7 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: center;
+
     }
     .album img {
       width: 150px;
@@ -307,6 +306,7 @@ export default {
       margin: 0;
       color: white;
       text-align: left;
+      font-size: 200%;
     }
     .album {
       display: flex;
@@ -319,7 +319,6 @@ export default {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-
     .album-item img {
       width: 100%;
       border-radius: 10px;
@@ -331,7 +330,6 @@ export default {
       color: white;
       text-align: center;
     }
-
 
     @media screen and (max-width: 900px) {
       .container {
@@ -346,9 +344,10 @@ export default {
       }
     }
     .artist-section h2 {
-      font-size: 2.5em;
+      font-size: 5em;
       text-align: center;
-
+      margin-top: 4%;
+      margin-bottom: 2.5%;
       color: #e53935;
     }
 
@@ -356,19 +355,19 @@ export default {
       display: flex;
       justify-content: center;
       gap: 40px;
+      margin-bottom: 5%;
     }
 
     .artist {
       text-align: center;
+      font-size: 180%;
     }
 
     .artist img {
-      width: 100%;
-      height: 100%;
       border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #e53935;
+      border: 3px solid #e53935;;
       transition: transform 0.3s ease;
+      margin-bottom: 15%;
     }
 
     .artist img:hover {
@@ -387,6 +386,7 @@ export default {
     footer .legal, footer .social-icons {
       display: flex;
       align-items: center;
+
     }
 
     footer .legal a {
