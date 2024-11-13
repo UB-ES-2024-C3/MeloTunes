@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
     <body>
         <header>
             <div></div> <!-- Espacio para alinear botones a la derecha -->
@@ -17,49 +17,67 @@
 
         <div class="search-bar">
             <input type="text" placeholder="Busca canciones, artistas">
-            <button><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width: 20px; vertical-align: middle;"> Buscar</button>
+            <button><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;" > Buscar</button>
         </div>
 
         <div class="album-grid">
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
+              </div>
             </div>
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
+              </div>
             </div>
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
+              </div>
             </div>
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
+              </div>
+            </div>
+        </div>
+        <div class="album-grid">
+            <div class="album">
+                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
+                <p>Nombre del álbum</p>
+                <p>Nombre del artista</p>
+              </div>
             </div>
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
+              </div>
             </div>
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
+              </div>
             </div>
             <div class="album">
                 <img src="https://via.placeholder.com/150" alt="Portada del álbum">
+              <div class="album-info">
                 <p>Nombre del álbum</p>
                 <p>Nombre del artista</p>
-            </div>
-            <div class="album">
-                <img src="https://via.placeholder.com/150" alt="Portada del álbum">
-                <p>Nombre del álbum</p>
-                <p>Nombre del artista</p>
+              </div>
             </div>
         </div>
 
@@ -67,25 +85,30 @@
             <h2>Artistas Populares</h2>
             <div class="artist-grid">
                 <div class="artist">
-                    <img src="https://via.placeholder.com/120" alt="Artista">
-                    <p>Artista 1</p>
+                    <img src="../assets/artistas/melendi.jpeg" alt="Artista">
+                    <p>Melendi</p>
                 </div>
                 <div class="artist">
-                    <img src="https://via.placeholder.com/120" alt="Artista">
-                    <p>Artista 2</p>
+                    <img src="../assets/artistas/danimartin.jpeg" alt="Artista">
+                    <p>Dani Martín 2</p>
                 </div>
                 <div class="artist">
-                    <img src="https://via.placeholder.com/120" alt="Artista">
-                    <p>Artista 3</p>
+                    <img src="../assets/artistas/estopa.jpeg" alt="Artista">
+                    <p>Estopa</p>
                 </div>
                 <div class="artist">
-                    <img src="https://via.placeholder.com/120" alt="Artista">
-                    <p>Artista 4</p>
+                    <img src="../assets/artistas/fito.jpeg" alt="Artista">
+                    <p>Fito y Fitipaldis</p>
                 </div>
+
                 <div class="artist">
-                    <img src="https://via.placeholder.com/120" alt="Artista">
-                    <p>Artista 5</p>
+                    <img src="../assets/artistas/sabina.jpeg" alt="Artista">
+                    <p>Sabina</p>
                 </div>
+              <div class="artist">
+                <img src="../assets/artistas/extremoduro.jpeg" alt="Artista">
+                <p>Extremoduro</p>
+              </div>
             </div>
         </div>
 
@@ -147,14 +170,14 @@ export default {
       padding: 0;
       background-color: black;
       color: white;
-      padding-top: 80px; /* Ajusta el valor según la altura de tu header */
+      padding-top: 80px;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 30px;
+      padding: 2%;
       position: fixed;
       top: 0;
       left: 0;
@@ -169,11 +192,12 @@ export default {
       text-decoration: none;
       color: white;
       background-color: transparent;
-      padding: 10px 20px;
+      padding: 8% 30px;
       border: 1px solid white;
-      border-radius: 5px;
+      border-radius: 25px;
       margin-left: 15px;
       transition: background-color 0.3s ease, color 0.3s ease;
+      font-size: 25px;
     }
 
     header .auth-buttons a:hover {
@@ -197,12 +221,14 @@ export default {
     }
 
     .hero {
+
       text-align: center;
-      margin: 60px 0;
+      margin-top: 8%;
+
     }
 
     .hero h1 {
-      font-size: 4em;
+      font-size: 10em;
       color: white;
       letter-spacing: 5px;
     }
@@ -226,60 +252,64 @@ export default {
       justify-content: center;
       margin: 40px 0;
       margin-bottom: 15%;
+      height: 20%;
+      margin-top: 6%;
 
-      background-image: url("../assets/notas.png") ;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: cover;
-      color: #000;
     }
 
     .search-bar input[type="text"] {
-      width: 40%;
+      width: 50%;
       padding: 15px;
-      font-size: 1.1em;
+      font-size: 2.8em;
       border: none;
       border-radius: 30px;
-      margin-right: 10px;
+      margin-right: 0.5%;
       outline: none;
       box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .search-bar button {
-      padding: 15px 25px;
-      font-size: 1em;
+      padding: 0.5%;
+      font-size: 2.5em;
       background-color: #e53935;
       color: white;
       border: none;
       border-radius: 30px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 10%;
     }
 
     .search-bar button:hover {
       background-color: #c62828;
     }
 
-    /* Estilos del carrusel de álbumes */
-    .album-carousel {
-      position: relative;
-      overflow: hidden;
-      width: 90%;
-      margin: 70px ;
-    }
-
-    .album-container {
+    .album-grid {
       display: flex;
-      transition: transform 0.5s ease;
-      width: 300%; /* Ajustamos el tamaño del contenedor para que se pueda deslizar */
+      justify-content: center;
+      gap: 1%;
+      margin-left: 5%;
+      margin-right: 5%;
+      margin-bottom: 0.5%;
     }
-
-    .mySlides {
+    .album-info {
       display: flex;
-      justify-content: space-between;
-      width: 33.33%; /* Cada slide ocupa 1/3 del contenedor */
+      flex-direction: column;
+      justify-content: center;
+    }
+    .album img {
+      width: 150px;
+      height: 150px;
+      border-radius: 10px;
+      margin-right: 20px; /* Espacio entre la imagen y el texto */
+    }
+    .album-info p {
+      margin: 0;
+      color: white;
+      text-align: left;
     }
     .album {
+      display: flex;
       text-align: center;
       padding: 20px;
       background-color: #1f1f1f;
@@ -289,12 +319,6 @@ export default {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .album-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 23%; /* Cada imagen ocupará el 23% del ancho de la slide */
-    }
 
     .album-item img {
       width: 100%;
@@ -308,53 +332,6 @@ export default {
       text-align: center;
     }
 
-    .prev,
-    .next {
-      cursor: pointer;
-      position: absolute;
-      top: 50%;
-      width: auto;
-      margin-top: -22px;
-      padding: 16px;
-      color: #fff;
-      font-weight: bold;
-      font-size: 18px;
-      transition: 0.6s ease;
-      border-radius: 0 3px 3px 0;
-      user-select: none;
-      border: solid #fff 2px;
-    }
-
-    .next {
-      right: 0;
-      border-radius: 3px 0 0 3px;
-    }
-
-    .prev:hover,
-    .next:hover {
-      background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    .elements {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .quadrate {
-      cursor: pointer;
-      height: 4px;
-      width: 50px;
-      margin: 0 2px;
-      background-color: #717171;
-      display: inline-block;
-      transition: background-color 0.6s ease;
-      border-radius: 2px;
-    }
-
-    .active,
-    .quadrate:hover {
-      background-color: #fff;
-    }
 
     @media screen and (max-width: 900px) {
       .container {
@@ -386,8 +363,8 @@ export default {
     }
 
     .artist img {
-      width: 180px;
-      height: 180px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid #e53935;
