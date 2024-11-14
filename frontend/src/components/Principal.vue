@@ -12,7 +12,7 @@
   </header>
   <div class="hero">
     <h1>
-      <span class="melo">¡MELO</span><span class="tunes">TUNES!</span>
+      <span translate="no" class="melo">¡MELO</span><span translate="no" class="tunes">TUNES!</span>
     </h1>
   </div>
 
@@ -275,8 +275,12 @@ header .auth-buttons a:hover {
   gap: 0.5vw;
   margin: 1vh  0.15vw 1vh;
 
-}
 
+}
+.album:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
+}
 
 .album img {
   width: 8vw;
@@ -284,6 +288,10 @@ header .auth-buttons a:hover {
   border-radius: 10px;
   margin-right: 0.3vw;
   object-fit: cover;
+}
+.album img:hover {
+  transform: scale(1.1);
+
 }
 .album-info {
   display: flex;
@@ -346,7 +354,7 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2vh 5vw;
+  padding: 2vh 2vw;
 }
 
 footer .legal {
@@ -361,14 +369,14 @@ footer .social-icons a {
 }
 
 footer .social-icons img {
-  width: 5vw;
+  width: 3vw;
   margin-top: 1vh;
 }
 
 footer .legal a {
   color: white;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 /* Media Queries para mejorar la adaptabilidad */
