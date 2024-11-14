@@ -275,7 +275,6 @@ header .auth-buttons a:hover {
   gap: 0.5vw;
   margin: 1vh  0.15vw 1vh;
 
-
 }
 .album:hover {
   transform: scale(1.1);
