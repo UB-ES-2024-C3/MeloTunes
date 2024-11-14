@@ -5,7 +5,7 @@
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
 
-      <img src="@/assets/Im_logo.png" alt="Logo"><br>
+      <img src="../assets/Im_logo.png" alt="Logo"><br>
       <h1>Log in to MeloTunes</h1>
 
       <form @submit.prevent="handleSubmit">
@@ -21,7 +21,7 @@
             required
           />
           <img
-            :src="showPassword ? require('@/assets/Im_ojo.png') : require('@/assets/Im_ojo2.png')"
+            :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
             alt="Show/Hide Password"
             @click="togglePassword"
           >
@@ -29,7 +29,7 @@
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <b-button @click="login" variant="primary">Log In</b-button>
+        <b-button @click="login" class="red-button">Log In</b-button>
       </form>
 
       <p><a href="#">Forgot your password?</a></p>
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     cerrarPopup () {
-      this.$router.push('/seleccio_perfils') // Cambia la ruta de Vue Router
+      this.$router.push('/home') // Cambia la ruta de Vue Router
     },
     login () {
       AuthService.login(this.email, this.password)
@@ -96,7 +96,7 @@ body, html {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 150%;
   background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8)); /* Gradiente rojo a negro */
   overflow: hidden;
   z-index: 1; /* Asegura que esté detrás del popup */
@@ -201,6 +201,14 @@ body, html {
 
 .container a:hover {
   text-decoration: underline;
+}
+
+.red-button {
+  background-color: red;   /* Color de fondo rojo */
+  color: white;            /* Color del texto blanco */
+  border: none;            /* Sin borde */
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .error {
