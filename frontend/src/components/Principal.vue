@@ -430,6 +430,4 @@ export default {
       margin-right: 2%;
       font-size: 150%
     }
-
-
 </style>
