@@ -30,7 +30,64 @@
         <p>2008</p>
       </div>
     </div>
-    <!-- Repetir elementos de álbum según sea necesario -->
+    <div class="album">
+      <img src="../assets/albumes/melendi1.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>Lágrimas desordenadas</p>
+        <p>Melendi</p>
+        <p>2012</p>
+      </div>
+    </div>
+    <div class="album">
+      <img src="../assets/albumes/dani1.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>Pequeño</p>
+        <p>Dani Martín</p>
+        <p>2010</p>
+      </div>
+    </div>
+    <div class="album">
+      <img src="../assets/albumes/dani2.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>Grandes éxitos y pequeños desastres</p>
+        <p>Dani Martín</p>
+        <p>2017</p>
+      </div>
+    </div>
+  </div>
+  <div class="album-grid">
+    <div class="album">
+      <img src="../assets/albumes/fito.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>Antes de que cuente diez</p>
+        <p>Fito y Fitipaldis</p>
+        <p>2009</p>
+      </div>
+    </div>
+    <div class="album">
+      <img src="../assets/albumes/fito2.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>Fitografía</p>
+        <p>Fito y Fitipaldis</p>
+        <p>2017</p>
+      </div>
+    </div>
+    <div class="album">
+      <img src="../assets/albumes/ex1.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>Agila</p>
+        <p>Extremoduro</p>
+        <p>1996</p>
+      </div>
+    </div>
+    <div class="album">
+      <img src="../assets/albumes/sabina1.jpeg" alt="Portada del álbum">
+      <div class="album-info">
+        <p>19 días y 500 noches</p>
+        <p>Sabina</p>
+        <p>1999</p>
+      </div>
+    </div>
   </div>
 
   <div class="artist-section">
@@ -40,7 +97,26 @@
         <img src="../assets/artistas/melendi.jpeg" alt="Artista" style="width: 100%; height: 100%;">
         <p>Melendi</p>
       </div>
-      <!-- Repetir elementos de artista según sea necesario -->
+      <div class="artist">
+        <img src="../assets/artistas/danimartin.jpeg" alt="Artista" style="width: 100%; height: 100%;">
+        <p>Dani Martín</p>
+      </div>
+      <div class="artist">
+        <img src="../assets/artistas/estopa.jpeg" alt="Artista" style="width: 100%; height: 100%;">
+        <p>Estopa</p>
+      </div>
+      <div class="artist">
+        <img src="../assets/artistas/fito.jpeg" alt="Artista" style="width: 100%; height: 100%;">
+        <p>Fito y Fitipaldis</p>
+      </div>
+      <div class="artist">
+        <img src="../assets/artistas/sabina.jpeg" alt="Artista" style="width: 100%; height: 100%;">
+        <p>Sabina</p>
+      </div>
+      <div class="artist">
+        <img src="../assets/artistas/extremoduro.jpeg" alt="Artista" style="width: 100%; height: 100%;">
+        <p>Extremoduro</p>
+      </div>
     </div>
   </div>
 
@@ -161,8 +237,7 @@ header .auth-buttons a:hover {
 .search-bar {
   display: flex;
   justify-content: center;
-  margin: 10vh ;
-  margin-bottom: 30vh;
+  margin: 10vh 10vh 30vh;
 }
 
 .search-bar input[type="text"] {
@@ -196,27 +271,39 @@ header .auth-buttons a:hover {
 .album-grid {
   display: flex;
   justify-content: center;
-  gap: 2vw;
-  margin: 0 5vw 2vh;
+  flex-wrap: wrap;
+  gap: 0.5vw;
+  margin: 1vh  0.15vw 1vh;
+
 }
 
+
 .album img {
-  width: 15vw;
-  height: 15vw;
+  width: 8vw;
+  height: 8vw;
   border-radius: 10px;
+  margin-right: 0.3vw;
+  object-fit: cover;
+}
+.album-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .album-info p {
-  margin: 0;
+  margin: 0.2vw;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   text-align: left;
 }
 
 .album {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 24vw;
   text-align: center;
-  padding: 2vh 1vw;
+  padding: 0.5vh 0.1vw;
   background-color: #1f1f1f;
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -225,14 +312,15 @@ header .auth-buttons a:hover {
 .artist-section h2 {
   font-size: 5vw;
   text-align: center;
-  margin: 4vh 0 2vh;
+  margin: 5vh 0 5vh;
   color: #e53935;
 }
 
 .artist-grid {
   display: flex;
   justify-content: center;
-  gap: 5vw;
+  flex-wrap: wrap;
+  gap: 2vw;
   margin-bottom: 5vh;
 }
 
