@@ -72,6 +72,13 @@ export default {
       this.showPassword = !this.showPassword
     },
     handleSubmit () {
+      // Verifica si los campos están vacíos antes de hacer login
+      if (!this.email || !this.password) {
+        this.error = 'Por favor, complete todos los campos';
+      } else {
+        this.error = null;
+        this.login();
+      }
     }
   }
 }
@@ -87,7 +94,7 @@ body, html {
   align-items: center;
   height: 100vh;
   margin: 0;
-  overflow: hidden; /* Oculta el scroll si el fondo es más grande */
+  overflow: hidden;
 }
 
 /* Fondo animado */
@@ -97,9 +104,9 @@ body, html {
   left: 0;
   width: 100%;
   height: 150%;
-  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8)); /* Gradiente rojo a negro */
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
   overflow: hidden;
-  z-index: 1; /* Asegura que esté detrás del popup */
+  z-index: 1;
 }
 
 .background-animation::before {
@@ -124,13 +131,13 @@ body, html {
 .container {
   text-align: center;
   justify-content: center;
-  background-color: #717d7e; /* Fondo del popup */
+  background-color: #717d7e;
   padding: 20px;
   margin-top: 5%;
   border-radius: 10px;
   width: 700px;
   position: relative;
-  z-index: 10; /* Asegúrate de que esté por encima del fondo */
+  z-index: 10;
 }
 
 .close-btn {
@@ -204,9 +211,9 @@ body, html {
 }
 
 .red-button {
-  background-color: red;   /* Color de fondo rojo */
-  color: white;            /* Color del texto blanco */
-  border: none;            /* Sin borde */
+  background-color: red;
+  color: white;
+  border: none;
   padding: 10px;
   border-radius: 5px;
 }
