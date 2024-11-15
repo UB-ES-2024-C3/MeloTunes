@@ -21,14 +21,13 @@
   </div>
   <div class="information">
     <div class="texto">
-      <p>Nombre del album</p>
+      <p>Nombre del álbum</p>
       <p>Año</p>
       <p>Género Musical</p>
     </div>
     <div class="favorito">
-      <img src="../assets/favorito.png">
+      <img src="../assets/favorito.png" alt="Favorito">
     </div>
-
   </div>
   </body>
 </template>
@@ -43,7 +42,9 @@ export default {
 
 <style>
 /* Estilos del header */
-
+body {
+  background-color: black;
+}
 header {
   display: flex;
   justify-content: space-between;
@@ -120,7 +121,6 @@ header {
   height: 50vh;
   object-fit: cover;
   border-radius: 10px;
-
 }
 
 .song-info {
@@ -137,7 +137,6 @@ header {
   margin-top: -2vh;
   justify-content: center;
   width: 40vw;
-
 }
 
 .song-title {
@@ -150,9 +149,24 @@ header {
   font-size: 2rem;
 }
 
-.texto{
-  margin-left: 2vw;
+/* Estilos de la información del álbum */
+.information {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Esto empuja el corazón a la derecha */
+  margin-top: -15vh;
+  padding: 0 2vw;
+}
+
+.texto {
   font-size: 2rem;
-  margin-top: -20vh;
+}
+
+.favorito img {
+  width: 4vw;
+  height: 6vh;
+  cursor: pointer;
+  margin-right: 25vw;
+  margin-top: 8vh;
 }
 </style>
