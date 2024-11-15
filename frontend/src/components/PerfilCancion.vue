@@ -26,7 +26,7 @@
       <p>Género Musical</p>
     </div>
     <div class="favorito">
-      <img src="../assets/favorito.png" alt="Favorito">
+      <img src="../assets/me-gusta.png" alt="Favorito">
     </div>
   </div>
   </body>
@@ -43,7 +43,7 @@ export default {
 <style>
 /* Estilos del header */
 body {
-  background-color: black;
+  background-color: #000000;
 }
 header {
   display: flex;
