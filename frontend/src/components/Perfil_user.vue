@@ -61,14 +61,22 @@
 </template>
 
 <script>
+import UserService from '../services/UserService';
 import vertigoCover from '../assets/facebook.png'
 import lagrimasCover from '../assets/twitter.png'
 import sinFronterasCover from '../assets/instagram.png'
 export default {
   name: 'Perfil_user',
+  mounted () {
+    UserService.getAll().then(response => {
+      console.log(response.data)
+      this.users_list = response.data
+    })
+  },
   data () {
     return {
-      userName: 'Joan Prats',
+      users_list: [], 
+      userName: this.$route.query.email,
       location: 'Barcelona',
       bio: 'Amante de la música rock y pop. ...',
       shortBio: 'Amante de la música r...',
@@ -97,7 +105,15 @@ export default {
   methods: {
     toggleBio () {
       this.expandedBio = !this.expandedBio
-    }
+    },
+    getUser (email) {
+      for (const user of this.users_list) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
+    },
   }
 }
 </script>
