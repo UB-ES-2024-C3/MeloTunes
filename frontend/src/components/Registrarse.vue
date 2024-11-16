@@ -31,7 +31,11 @@
             <label for="nombre">Nombre</label><br>
             <input type="text" id="nombre" name="nombre" placeholder="Introduce tu nombre"><br>
 
-            <!-- Campo de nombre de usuario -->
+          <!-- Campo de apellido -->
+          <label for="nombre">Apellido</label><br>
+          <input type="text" id="apellido" name="apellido" placeholder="Introduce tu apellido"><br>
+
+          <!-- Campo de nombre de usuario -->
             <label for="usuario">Nombre de Usuario</label><br>
             <input type="text" id="usuario" name="usuario" placeholder="Nombre de usuario"><br>
 
