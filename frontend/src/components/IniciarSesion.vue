@@ -5,7 +5,7 @@
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
 
-      <img src="@/assets/Im_logo.png" alt="Logo"><br>
+      <img src="../assets/Im_logo.png" alt="Logo"><br>
       <h1>Log in to MeloTunes</h1>
 
       <form @submit.prevent="handleSubmit">
@@ -21,7 +21,7 @@
             required
           />
           <img
-            :src="showPassword ? require('@/assets/Im_ojo.png') : require('@/assets/Im_ojo2.png')"
+            :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
             alt="Show/Hide Password"
             @click="togglePassword"
           >
@@ -29,7 +29,7 @@
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <b-button @click="login" variant="primary">Log In</b-button>
+        <button type="submit" class="red-button">Log in</button>
       </form>
 
       <p><a href="#">Forgot your password?</a></p>
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     cerrarPopup () {
-      this.$router.push('/seleccio_perfils') // Cambia la ruta de Vue Router
+      this.$router.push('/home') // Cambia la ruta de Vue Router
     },
     login () {
       AuthService.login(this.email, this.password)
@@ -72,6 +72,17 @@ export default {
       this.showPassword = !this.showPassword
     },
     handleSubmit () {
+      // Verifica si los campos están vacíos antes de hacer login
+      if (!this.email.trim() || !this.password.trim()) {
+        this.error = 'Por favor, complete todos los campos' // Mensaje de error
+        return // Detiene el flujo y no llama a `login`
+      }
+
+      // Limpia el mensaje de error si pasa la validación
+      this.error = null
+
+      // Llama al método login
+      this.login()
     }
   }
 }
@@ -87,7 +98,7 @@ body, html {
   align-items: center;
   height: 100vh;
   margin: 0;
-  overflow: hidden; /* Oculta el scroll si el fondo es más grande */
+  overflow: hidden;
 }
 
 /* Fondo animado */
@@ -96,10 +107,10 @@ body, html {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8)); /* Gradiente rojo a negro */
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
   overflow: hidden;
-  z-index: 1; /* Asegura que esté detrás del popup */
+  z-index: 1;
 }
 
 .background-animation::before {
@@ -124,13 +135,13 @@ body, html {
 .container {
   text-align: center;
   justify-content: center;
-  background-color: #717d7e; /* Fondo del popup */
+  background-color: #717d7e;
   padding: 20px;
   margin-top: 5%;
   border-radius: 10px;
   width: 700px;
   position: relative;
-  z-index: 10; /* Asegúrate de que esté por encima del fondo */
+  z-index: 10;
 }
 
 .close-btn {
@@ -201,6 +212,14 @@ body, html {
 
 .container a:hover {
   text-decoration: underline;
+}
+
+.red-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .error {
