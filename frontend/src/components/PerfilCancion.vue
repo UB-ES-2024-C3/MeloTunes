@@ -36,7 +36,7 @@
   <div>
     <v-app class="main-container">
       <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
-      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121" height="100vh" width="22vw">
+      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 4vh" height="100vh" width="22vw">
         <v-list>
           <v-list-item style="margin-top: 10vh">
             <v-list-item-content>
@@ -117,7 +117,6 @@ export default {
 
 }
 .v-navigation-drawer .v-list-item {
-  margin: 10px;
   color: white;
 }
 
