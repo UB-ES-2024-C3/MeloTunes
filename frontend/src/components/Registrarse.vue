@@ -46,7 +46,7 @@
             <div id="error-edad" class="error"></div>
 
             <!-- Botón de enviar -->
-            <input type="button" value="Completar Registro" @click="registerUser()" class="submit-btn">
+            <input type="button" value="Completar Registro" @click="registerUser" class="submit-btn">
 
           <!-- Texto para iniciar sesión -->
           <p class="login-text">
@@ -78,10 +78,18 @@ export default {
     },
     registerUser () {
       RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('apellido').value, document.getElementById('password').value)
-      this.$router.push('/login')
+        .then(response => {
+          alert('Se ha registrado correctamente al usuario con email ' + document.getElementById('email').value + '.')
+          this.$router.push('/login')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          alert('El usuario con email ' + document.getElementById('email').value + ' ya está registrado en el sistema.')
+        })
     },
     cerrarPopup () {
-      this.$router.replace({ path: '/home' })
+      this.$router.push('/home')
     },
     togglePassword (fieldId) {
       const field = document.getElementById(fieldId)
