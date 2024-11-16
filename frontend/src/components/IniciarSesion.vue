@@ -29,7 +29,7 @@
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <b-button @click="login" class="red-button">Log In</b-button>
+        <button type="submit" class="red-button">Log in</button>
       </form>
 
       <p><a href="#">Forgot your password?</a></p>
@@ -73,12 +73,16 @@ export default {
     },
     handleSubmit () {
       // Verifica si los campos están vacíos antes de hacer login
-      if (!this.email || !this.password) {
-        this.error = 'Por favor, complete todos los campos';
-      } else {
-        this.error = null;
-        this.login();
+      if (!this.email.trim() || !this.password.trim()) {
+        this.error = 'Por favor, complete todos los campos' // Mensaje de error
+        return // Detiene el flujo y no llama a `login`
       }
+
+      // Limpia el mensaje de error si pasa la validación
+      this.error = null
+
+      // Llama al método login
+      this.login()
     }
   }
 }
