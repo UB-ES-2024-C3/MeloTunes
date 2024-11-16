@@ -1,51 +1,66 @@
 <template>
+  <div>
+    <div class ="background-animation"></div>
+
     <div class="container">
-        <h1>Complete Your Registration</h1>
+      <button class="close-btn" @click="cerrarPopup">X</button>
+      <img src="@/assets/Im_logo.png" alt="Logo"><br>
+      <br>
+      <h1>Completa tu Registro</h1>
 
         <form>
-            <!-- Mostrar el correo del paso anterior que no se puede modificar -->
+            <!-- Campo del correo electrónico -->
             <label for="email">Email</label><br>
             <input type="text" id="email" name="email" placeholder="name@domain.com"><br>
 
             <!-- Campo de contraseña -->
-            <label for="password">Password</label><br>
+            <label for="password">Contraseña</label><br>
             <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Enter your password">
-                <img id="togglePassword" src="Im_ojo2.png" alt="Show/Hide Password">
+                <input type="password" id="password" name="password" placeholder="Introduce tu contraseña">
+                <img id="togglePassword" src="Im_ojo2.png" alt="Mostrar/Ocultar Contraseña" @click="togglePassword('password')">
             </div>
 
             <!-- Campo de confirmar contraseña -->
-            <label for="confirm_password">Confirm Password</label><br>
+            <label for="confirm_password">Confirmar Contraseña</label><br>
             <div class="password-container">
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password">
-                <img id="toggleConfirmPassword" src="Im_ojo2.png" alt="Show/Hide Password">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirma tu contraseña">
+                <img id="toggleConfirmPassword" src="Im_ojo2.png" alt="Mostrar/Ocultar Contraseña" @click="togglePassword('confirm_password')">
             </div>
 
             <!-- Mostrar error si las contraseñas no coinciden o no se cumplen las condiciones -->
             <div id="error-password" class="error"></div>
 
             <!-- Campo de nombre -->
-            <label for="nombre">First Name</label><br>
-            <input type="text" id="nombre" name="nombre" placeholder="Enter your first name"><br>
+            <label for="nombre">Nombre</label><br>
+            <input type="text" id="nombre" name="nombre" placeholder="Introduce tu nombre"><br>
 
-            <!-- Campo de nombre de usuario -->
-            <label for="usuario">Username</label><br>
-            <input type="text" id="usuario" name="usuario" placeholder="Username"><br>
+          <!-- Campo de apellido -->
+          <label for="nombre">Apellido</label><br>
+          <input type="text" id="apellido" name="apellido" placeholder="Introduce tu apellido"><br>
+
+          <!-- Campo de nombre de usuario -->
+            <label for="usuario">Nombre de Usuario</label><br>
+            <input type="text" id="usuario" name="usuario" placeholder="Nombre de usuario"><br>
 
             <!-- Campo de fecha de nacimiento -->
-            <label for="fecha_nacimiento">Date of Birth</label><br>
+            <label for="fecha_nacimiento">Fecha de Nacimiento</label><br>
             <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"><br>
 
             <!-- Mostrar error si la persona es menor de 16 años -->
             <div id="error-edad" class="error"></div>
 
             <!-- Botón de enviar -->
-            <input type="button" value="Complete Registration" @click=registerUser()>
+            <input type="button" value="Completar Registro" @click="registerUser()" class="submit-btn">
 
-            <button class="close-btn" @click="cerrarPopup()">X</button>
+          <!-- Texto para iniciar sesión -->
+          <p class="login-text">
+            ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
+          </p>
+
         </form>
 
     </div>
+  </div>
 </template>
 
 <script>
@@ -71,14 +86,18 @@ export default {
     },
     cerrarPopup () {
       this.$router.replace({ path: '/home' })
+    },
+    togglePassword (fieldId) {
+      const field = document.getElementById(fieldId)
+      field.type = field.type === 'password' ? 'text' : 'password'
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Estilos para el componente -->
 <style scoped>
-        body {
+        body, html {
             background-color: black;
             font-family: Arial, sans-serif;
             color: white;
@@ -88,15 +107,54 @@ export default {
             height: 100vh;
             margin: 0;
             overflow: hidden; /* Evitar el desplazamiento en toda la página */
+            position: relative;
         }
+
+        /* Fondo animado */
+        .background-animation {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
+          overflow: hidden;
+          z-index: 1;
+        }
+
+        .background-animation::before {
+          content: '';
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          background-image: linear-gradient(60deg, rgba(255, 0, 0, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 0, 0, 0.3) 75%);
+          background-size: 30px 30px;
+          animation: move 4s linear infinite;
+        }
+
+        @keyframes move {
+          0% {
+            background-position: 0 0;
+          }
+          100% {
+            background-position: 30px 30px;
+          }
+        }
+
         .container {
+            position: absolute;
+            top: 50%; /* Centramos en el eje vertical */
+            left: 50%; /* Centramos en el eje horizontal */
+            transform: translate(-50%, -50%); /* Ajustamos el centro exacto */
             text-align: center;
+            justify-content: center;
             background-color: #717d7e;
             padding: 20px;
             border-radius: 10px;
             width: 700px;
             max-height: 80vh; /* Limitar la altura para evitar que sea demasiado alta */
             overflow-y: auto; /* Hacer que el contenido sea desplazable solo dentro del recuadro */
+            z-index: 2;
         }
         .container h1 {
             font-size: 24px;
@@ -119,13 +177,12 @@ export default {
             border-radius: 5px;
             background-color: #ccc;
             color: #666;
-            pointer-events: none; /* El correo no será editable */
         }
         .password-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40%;
+            width: 37%;
             margin: 0px auto;
         }
         .password-container input {
@@ -141,6 +198,36 @@ export default {
             height: 40px;
             margin-left: -45px;
             cursor: pointer;
+        }
+        .submit-btn {
+          width: 37%;
+          padding: 15px;
+          margin-top: 10px;
+          border: none;
+          border-radius: 5px;
+          background-color: red;
+          color: white;
+          font-size: 18px;
+          cursor: pointer;
+        }
+        .submit-btn:hover {
+          background-color: darkred;
+        }
+        .login-text {
+          margin-top: 20px;
+          font-size: 15px;
+          color: white;
+        }
+        .login-text a {
+          color: #00f;
+          text-decoration: underline;
+        }
+        .login-text a:hover {
+          color: yellow;
+        }
+        .logo {
+          width: 100px;
+          margin-bottom: 20px;
         }
         .container input[type="submit"] {
             width: 40%;
@@ -170,5 +257,18 @@ export default {
             padding: 10px;
             border-radius: 5px;
             margin: 10px 0;
+        }
+        .close-btn{
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: none;
+          border: none;
+          color: white;
+          font-size: 24px;
+          cursor: pointer;
+        }
+        .close-btn:hover {
+          color: #ff4d4d;
         }
 </style>
