@@ -4,6 +4,7 @@ import Welcome from '@/components/Welcome'
 import Principal from '@/components/Principal'
 import Registrarse from '@/components/Registrarse'
 import IniciarSesion from '@/components/IniciarSesion'
+import PerfilCancion from '@/components/PerfilCancion'
 import TeamSet from '@/components/TeamSet'
 import PerfilUser from '@/components/Perfil_user'
 
@@ -41,6 +42,11 @@ export default new Router({
       path: '/teams',
       name: 'Teams',
       component: TeamSet
+    },
+    {
+      path: '/perfilcancion',
+      name: 'PerfilCancion',
+      component: PerfilCancion
     }
   ]
 })
