@@ -19,7 +19,7 @@ class Song(SongBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
 # Properties to receive via API on creation
-class UserCreate(SongBase):
+class SongCreate(SongBase):
     pass
 
 
