@@ -9,6 +9,10 @@
       <a href="#" @click="login">Iniciar sesión</a>
       <a href="#" @click="register">Registrarse</a>
     </div>
+    <div class="auth-buttons" v-if="isLogedIn">
+      <h4><strong>{{user_name}}</strong></h4>
+      <a href="#" @click="logOut">Cerrar sesión</a>
+    </div>
   </header>
   <div class="hero">
     <h1>
