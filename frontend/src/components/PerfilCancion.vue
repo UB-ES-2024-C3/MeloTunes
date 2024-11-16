@@ -1,5 +1,5 @@
 <template>
-  <body>
+  <body >
   <header>
     <div class="logo">
       <img src="../assets/logo2.png" alt="Logo">
@@ -17,16 +17,16 @@
         <img src="../assets/orozco.jpeg" alt="Album Cover">
       </div>
       <div class="song-info">
-        <p class="song-title">Título de la canción</p>
-        <p class="song-author">Nombre del autor</p>
+        <p class="song-title">Que me queda</p>
+        <p class="song-author">Antonio Orozco </p>
         <img src="../assets/reo.png">
       </div>
     </div>
     <div class="information">
       <div class="texto">
-        <p>Nombre del álbum</p>
-        <p>Año</p>
-        <p>Género Musical</p>
+        <p>Renovatio</p>
+        <p>2009</p>
+        <p>Pop, Hip-hop/Rap, Tropipop</p>
       </div>
       <div class="favorito">
         <img src="../assets/me-gusta.png" alt="Favorito">
@@ -36,15 +36,21 @@
   <div>
     <v-app class="main-container">
       <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
-      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121" height="100vh">
+      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121" height="100vh" width="22vw">
         <v-list>
           <v-list-item style="margin-top: 10vh">
             <v-list-item-content>
-              <v-list-item-title class="item">Item 1</v-list-item-title>
-              <v-list-item-title class="item">Item 1</v-list-item-title>
-              <v-list-item-title class="item">Item 1</v-list-item-title>
-              <v-list-item-title class="item">Item 1</v-list-item-title>
-              <v-list-item-title class="item">Item 3</v-list-item-title>
+              <v-list-item-title
+                v-for="(item, index) in items"
+                :key="index"
+                class="item"
+                >
+                <img src="../assets/orozco.jpeg" alt="Portada del álbum">
+                <div class="item-info">
+                  <p>{{ item.name }}</p>
+                </div>
+              </v-list-item-title>
+
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -53,7 +59,7 @@
       <v-main>
         <v-container>
           <!-- Botón con imagen a la derecha y centrado verticalmente -->
-          <v-btn color=black  @click="toggleDrawer" class="floating-btn" :class="{'move-left': drawer}">
+          <v-btn color=transparent  @click="toggleDrawer" class="floating-btn" :class="{'move-left': drawer}">
             <img
               src="../assets/avance-rapido.png"
               alt="Botón Imagen"
@@ -73,7 +79,20 @@
 export default {
   data () {
     return {
-      drawer: false // Estado del drawer
+      drawer: false, // Estado del drawer
+      items: [
+        { name: 'Llévatelo' },
+        { name: 'No hay más' },
+        { name: 'Pasó' },
+        { name: 'Aire en las espaldas' },
+        { name: 'Y no hay manera' },
+        { name: 'Es mi momento' },
+        { name: 'Un poquito de ti' },
+        { name: 'Yo sé de ti' },
+        { name: 'Ya lo sabes' },
+        { name: 'Un lugar' },
+        { name: 'No vale dormir' }
+      ]
     }
   },
   methods: {
@@ -85,6 +104,10 @@ export default {
 </script>
 
 <style>
+::-webkit-scrollbar {
+  display: none;
+}
+
 .v-main{
   background-color: black;
   padding-top: 15vh;
@@ -94,13 +117,8 @@ export default {
 
 }
 .v-navigation-drawer .v-list-item {
-  padding: 20px 15px;
   margin: 10px;
   color: white;
-}
-.item {
-  color: white;
-  font-size: 2rem;
 }
 
 .v-toolbar {
@@ -111,7 +129,7 @@ export default {
 .floating-btn {
   position: absolute; /* Posiciona el botón de manera absoluta */
   top: -40vh; /* Centra verticalmente */
-  right: 16px; /* Coloca el botón a la derecha */
+  right: -1vw; /* Coloca el botón a la derecha */
   transform: translateY(-50%); /* Ajusta el botón para centrarlo verticalmente */
   border: none;
   box-shadow: none;
@@ -266,10 +284,50 @@ header {
 }
 
 .favorito img {
-  width: 4vw;
-  height: 6vh;
+  width: 2.5vw;
+  height: 5vh;
   cursor: pointer;
   margin-right: 25vw;
   margin-top: 8vh;
 }
+
+.item:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.item img {
+  width: 5vw;
+  height: 5vw;
+  border-radius: 10px;
+  margin-right: 0.2vw;
+  object-fit: cover;
+  margin-left: 0.1vw;
+  margin-bottom: 2vh;
+}
+.item img:hover {
+  transform: scale(1.1);
+
+}
+
+.item-info p {
+  margin: 0.5vw;
+  color: white;
+  font-size: 1.7rem;
+  text-align: left;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 24vw;
+  text-align: center;
+  padding: 0.5vh -0.9vw;
+  background-color: #1f1f1f;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+}
+
 </style>
