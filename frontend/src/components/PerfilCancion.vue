@@ -38,15 +38,13 @@
       <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
       <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121" height="100vh">
         <v-list>
-          <v-list-item>
+          <v-list-item style="margin-top: 10vh">
             <v-list-item-content>
-              <v-list-item-title>Item 1</v-list-item-title>
-              <v-list-item-title>Item 1</v-list-item-title>
-              <v-list-item-title>Item 1</v-list-item-title>
-              <v-list-item-title>Item 1</v-list-item-title>
-              <v-list-item-title>Item 3</v-list-item-title>
-              <v-list-item-title>Item 3</v-list-item-title>
-              <v-list-item-title>Item 3</v-list-item-title>
+              <v-list-item-title class="item">Item 1</v-list-item-title>
+              <v-list-item-title class="item">Item 1</v-list-item-title>
+              <v-list-item-title class="item">Item 1</v-list-item-title>
+              <v-list-item-title class="item">Item 1</v-list-item-title>
+              <v-list-item-title class="item">Item 3</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -100,9 +98,9 @@ export default {
   margin: 10px;
   color: white;
 }
-.v-navigation-drawer .v-list-item-title{
-  font-size: 3rem;
-
+.item {
+  color: white;
+  font-size: 2rem;
 }
 
 .v-toolbar {
@@ -167,6 +165,7 @@ header {
   display: flex;
   justify-content: center;
   height: auto;
+
 }
 
 .search-bar input[type="text"] {
@@ -178,6 +177,7 @@ header {
   margin-right: 0.5%;
   outline: none;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
 .search-bar button {
