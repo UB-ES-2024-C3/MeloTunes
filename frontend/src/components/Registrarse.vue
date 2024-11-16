@@ -96,8 +96,8 @@ export default {
 </script>
 
 <!-- Estilos para el componente -->
-<style>
-        body {
+<style scoped>
+        body, html {
             background-color: black;
             font-family: Arial, sans-serif;
             color: white;
@@ -107,6 +107,7 @@ export default {
             height: 100vh;
             margin: 0;
             overflow: hidden; /* Evitar el desplazamiento en toda la página */
+            position: relative;
         }
 
         /* Fondo animado */
@@ -115,7 +116,7 @@ export default {
           top: 0;
           left: 0;
           width: 100%;
-          height: 150%;
+          height: 100%;
           background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
           overflow: hidden;
           z-index: 1;
@@ -141,8 +142,12 @@ export default {
         }
 
         .container {
-            position: relative;
+            position: absolute;
+            top: 50%; /* Centramos en el eje vertical */
+            left: 50%; /* Centramos en el eje horizontal */
+            transform: translate(-50%, -50%); /* Ajustamos el centro exacto */
             text-align: center;
+            justify-content: center;
             background-color: #717d7e;
             padding: 20px;
             border-radius: 10px;
