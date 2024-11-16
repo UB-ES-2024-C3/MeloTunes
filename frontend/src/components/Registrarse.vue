@@ -79,6 +79,7 @@ export default {
     registerUser () {
       RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('apellido').value, document.getElementById('password').value)
         .then(response => {
+          alert('Se ha registrado correctamente al usuario con email ' + document.getElementById('email').value + '.')
           this.$router.push('/login')
         })
         .catch((error) => {
