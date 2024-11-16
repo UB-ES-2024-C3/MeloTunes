@@ -1,4 +1,7 @@
 <template>
+  <div>
+    <div class ="background-animation"></div>
+
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
       <img src="@/assets/Im_logo.png" alt="Logo"><br>
@@ -57,6 +60,7 @@
         </form>
 
     </div>
+  </div>
 </template>
 
 <script>
@@ -94,7 +98,7 @@ export default {
 <!-- Estilos para el componente -->
 <style>
         body {
-            background: linear-gradient(to bottom, red, black) !important; /* Fondo degradado de rojo a negro */
+            background-color: black;
             font-family: Arial, sans-serif;
             color: white;
             display: flex;
@@ -104,6 +108,38 @@ export default {
             margin: 0;
             overflow: hidden; /* Evitar el desplazamiento en toda la página */
         }
+
+        /* Fondo animado */
+        .background-animation {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 150%;
+          background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
+          overflow: hidden;
+          z-index: 1;
+        }
+
+        .background-animation::before {
+          content: '';
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          background-image: linear-gradient(60deg, rgba(255, 0, 0, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 0, 0, 0.3) 75%);
+          background-size: 30px 30px;
+          animation: move 4s linear infinite;
+        }
+
+        @keyframes move {
+          0% {
+            background-position: 0 0;
+          }
+          100% {
+            background-position: 30px 30px;
+          }
+        }
+
         .container {
             position: relative;
             text-align: center;
@@ -113,6 +149,7 @@ export default {
             width: 700px;
             max-height: 80vh; /* Limitar la altura para evitar que sea demasiado alta */
             overflow-y: auto; /* Hacer que el contenido sea desplazable solo dentro del recuadro */
+            z-index: 2;
         }
         .container h1 {
             font-size: 24px;
