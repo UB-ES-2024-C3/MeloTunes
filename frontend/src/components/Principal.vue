@@ -9,6 +9,9 @@
       <a href="#" @click="login">Iniciar sesión</a>
       <a href="#" @click="register">Registrarse</a>
     </div>
+    <div class="auth-buttons" v-if="isLogedIn">
+      <a href="#" @click="profile">Ver perfil</a>
+    </div>
   </header>
   <div class="hero">
     <h1>
@@ -164,6 +167,9 @@ export default {
     },
     logOut () {
       this.$router.push('/home')
+    },
+    profile () {
+      this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
     }
   }
 }
