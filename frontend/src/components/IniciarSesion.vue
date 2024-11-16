@@ -29,7 +29,7 @@
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <button type="submit">Log in</button>
+        <button type="submit" class="red-button">Log in</button>
       </form>
 
       <p><a href="#">Forgot your password?</a></p>
