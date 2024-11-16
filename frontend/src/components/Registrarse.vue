@@ -38,10 +38,6 @@
           <label for="nombre">Apellido</label><br>
           <input type="text" id="apellido" name="apellido" placeholder="Introduce tu apellido"><br>
 
-          <!-- Campo de nombre de usuario -->
-            <label for="usuario">Nombre de Usuario</label><br>
-            <input type="text" id="usuario" name="usuario" placeholder="Nombre de usuario"><br>
-
             <!-- Campo de fecha de nacimiento -->
             <label for="fecha_nacimiento">Fecha de Nacimiento</label><br>
             <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"><br>
@@ -81,7 +77,7 @@ export default {
       }
     },
     registerUser () {
-      RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('password').value)
+      RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('apellido').value, document.getElementById('password').value)
       this.$router.push('/login')
     },
     cerrarPopup () {
