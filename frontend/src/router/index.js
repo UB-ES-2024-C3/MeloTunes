@@ -6,9 +6,9 @@ import Registrarse from '@/components/Registrarse'
 import IniciarSesion from '@/components/IniciarSesion'
 import PerfilCancion from '@/components/PerfilCancion'
 import TeamSet from '@/components/TeamSet'
+import PerfilUser from '@/components/Perfil_user'
 
 Vue.use(Router)
-
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -17,6 +17,11 @@ export default new Router({
       path: '/',
       name: 'Welcome',
       component: Welcome
+    },
+    {
+      path: '/perfil_user',
+      name: 'PerfilUser',
+      component: PerfilUser
     },
     {
       path: '/home',
