@@ -29,7 +29,7 @@
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <button type="submit" class="red-button">Log in</button>
+        <button type="submit" class="submit-btn">Log in</button>
       </form>
 
       <p><a href="#">Forgot your password?</a></p>
@@ -63,7 +63,6 @@ export default {
           this.$router.push({ path: '/home', query: { email: this.email, logged: this.is_authenticated, token: this.token } })
         })
         .catch((error) => {
-          // eslint-disable-next-line
           console.error(error)
           alert('Username or Password incorrect')
         })
@@ -72,16 +71,11 @@ export default {
       this.showPassword = !this.showPassword
     },
     handleSubmit () {
-      // Verifica si los campos están vacíos antes de hacer login
       if (!this.email.trim() || !this.password.trim()) {
-        this.error = 'Por favor, complete todos los campos' // Mensaje de error
-        return // Detiene el flujo y no llama a `login`
+        this.error = 'Por favor, complete todos los campos'
+        return
       }
-
-      // Limpia el mensaje de error si pasa la validación
       this.error = null
-
-      // Llama al método login
       this.login()
     }
   }
@@ -107,7 +101,7 @@ body, html {
   top: 0;
   left: 0;
   width: 100%;
-  height: 150%;
+  height: 100%;
   background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
   overflow: hidden;
   z-index: 1;
@@ -133,27 +127,47 @@ body, html {
 }
 
 .container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
   justify-content: center;
   background-color: #717d7e;
   padding: 20px;
-  margin-top: 5%;
-  border-radius: 10px;
+  border-radius: 15px;
   width: 700px;
-  position: relative;
-  z-index: 10;
+  height: auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* Ocultar barra de desplazamiento */
+.container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: transparent;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
+  background: none;
   border: none;
+  color: white;
+  font-size: 24px;
   cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #ff4d4d;
 }
 
 .container h1 {
@@ -162,7 +176,7 @@ body, html {
 
 .container input[type="email"],
 .container input[type="password"] {
-  width: 37%;
+  width: 60%;
   padding: 10px;
   margin: 10px 0;
   border: none;
@@ -174,17 +188,8 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40%;
+  width: 100%;
   margin: 0 auto;
-}
-
-.password-container input {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 16px;
-  margin: 10px auto;
 }
 
 .password-container img {
@@ -194,15 +199,20 @@ body, html {
   cursor: pointer;
 }
 
-.container input[type="submit"] {
-  width: 40%;
-  padding: 10px;
+.submit-btn {
+  width: 60%;
+  padding: 15px;
   margin-top: 10px;
   border: none;
   border-radius: 5px;
   background-color: red;
   color: white;
-  font-size: 16px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: red;
 }
 
 .container a {
@@ -214,20 +224,8 @@ body, html {
   text-decoration: underline;
 }
 
-.red-button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-}
-
 .error {
   color: red;
   font-size: 14px;
-}
-
-.red-text {
-  color: red;
 }
 </style>
