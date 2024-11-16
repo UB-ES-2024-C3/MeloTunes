@@ -179,8 +179,8 @@ export default {
 /* Estilos básicos */
 .logo img {
   width: 3.5vw; /* Adaptable */
-  margin-top: -2%;
-  margin-left: 2%;
+  margin-top: -2vh;
+  margin-left: -1vw;
 }
 
 body {
@@ -211,12 +211,12 @@ header {
 header .auth-buttons a {
   text-decoration: none;
   color: white;
-  padding: 2vh 1.5vw;
+  padding: 1.5vh 1vw;
   border: 1px solid white;
   border-radius: 25px;
   margin-left: 1vw;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 header .auth-buttons a:hover {
