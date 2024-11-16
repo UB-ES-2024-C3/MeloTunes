@@ -18,8 +18,7 @@ from app.models import (
     SongCreateOpen,
     SongOut,
     SongsOut,
-    SongUpdate,
-    SongUpdateMe,
+    SongUpdate
 )
 
 router = APIRouter()
@@ -52,7 +51,7 @@ def create_song(*, session: SessionDep, song_in: SongCreate) -> Any:
     """
     Create new song.
     """
-    song = crud.user.get_song_by_title_and_artist(session=session, title=song_in.title, artist=song_in.artist)
+    song = crud.song.get_song_by_title_and_artist(session=session, title=song_in.title, artist=song_in.artist)
     if song:
         raise HTTPException(
             status_code=400,
@@ -120,24 +119,23 @@ def read_song_by_id(song_id: int, session: SessionDep) -> Any:
     song = session.get(Song, song_id)
     return song
 
-@router.get("/{song_title}", response_model=SongOut)
+@router.get("/songs/{song_title}", response_model=SongsOut)
 def read_song_by_title(song_title: str, session: SessionDep) -> Any:
     """
     Get a specific song by title.
     """
     songs = crud.song.get_song_by_title(session=session, title=song_title)
-    return songs
+    return SongsOut(data=songs, count=len(songs))
 
 
 @router.patch(
     "/{song_id}",
     response_model=SongOut,
 )
-def update_song(*, session: SessionDep, song_id: int) -> Any:
+def update_song(*, session: SessionDep, song_id: int, song_in: SongUpdate) -> Any:
     """
     Update a song.
     """
-
     db_song = session.get(Song, song_id)
     if not db_song:
         raise HTTPException(
@@ -149,11 +147,11 @@ def update_song(*, session: SessionDep, song_id: int) -> Any:
             status_code=409, detail="This song does not belong to you"
         )
 
-    db_song = crud.song.update_song(session=session, db_song=db_song)
+    db_song = crud.song.update_song(session=session, db_song=db_song, song_in=song_in)
     return db_song
 
 
-@router.delete("/{user_id}")
+@router.delete("/{song_id}")
 def delete_song(session: SessionDep, current_user: CurrentUser, song_id: int) -> Message:
     """
     Delete a song.
@@ -161,7 +159,7 @@ def delete_song(session: SessionDep, current_user: CurrentUser, song_id: int) ->
     song = session.get(Song, song_id)
     if not song:
         raise HTTPException(status_code=404, detail="Song not found")
-    elif song.artist != current_user.first_name.concat(" " + current_user.second_name) and not current_user.is_superuser:
+    elif song.artist != current_user.first_name + " " + current_user.second_name and not current_user.is_superuser:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )

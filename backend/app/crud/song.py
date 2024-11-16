@@ -6,6 +6,7 @@ from sqlmodel import Session, select
 from app.models import Song, SongCreate, SongUpdate
 
 
+
 def create_song(*, session: Session, song_create: SongCreate) -> Song:
     db_obj = Song.model_validate(
         song_create
@@ -32,6 +33,6 @@ def get_song_by_title_and_artist(*, session: Session, title: str, artist: str) -
     return session_song
 
 def get_song_by_title(*, session: Session, title: str) -> list[Song] | None:
-    statement = select(Song).where(Song.title.contains(title))
+    statement = select(Song).where(Song.title.contains(title.lower()))
     session_song = session.exec(statement).all()
     return session_song
