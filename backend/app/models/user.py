@@ -7,8 +7,10 @@ class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     is_active: bool = True
     is_superuser: bool = False
-    full_name: str | None = None
-
+    first_name: str | None = None
+    second_name: str | None = None
+    description: str | None = None
+    is_artist: bool = False
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
@@ -24,19 +26,24 @@ class UserCreate(UserBase):
 class UserCreateOpen(SQLModel):
     email: str
     password: str
-    full_name: str | None = None
+    first_name: str
+    second_name: str | None = None
+    description: str | None = None
 
 
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: str | None = None  # type: ignore
     password: str | None = None
+    is_artist: bool | None = None
 
 
 # TODO replace email str with EmailStr when sqlmodel supports it
 class UserUpdateMe(SQLModel):
-    full_name: str | None = None
+    first_name: str | None = None
+    second_name: str | None = None
     email: str | None = None
+    description: str | None = None
 
 class UpdatePassword(SQLModel):
     current_password: str
