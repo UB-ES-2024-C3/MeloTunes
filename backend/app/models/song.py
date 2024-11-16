@@ -32,11 +32,10 @@ class SongCreateOpen(SQLModel):
 # Properties to receive via API on update, all are optional
 class SongUpdate(SongBase):
     artist: str | None = None
-
-
-class SongUpdateMe(SQLModel):
     title: str | None = None
     album: str | None = None
+    duration: timedelta | None = None
+    timestamp: datetime | None = None
 
 
 # Properties to return via API, id is always required
