@@ -178,9 +178,9 @@ export default {
 <style scoped>
 /* Estilos básicos */
 .logo img {
-  width: 30%; /* Adaptable */
+  width: 3.5vw; /* Adaptable */
   margin-top: -2%;
-  margin-left: 5%;
+  margin-left: 2%;
 }
 
 body {
@@ -189,7 +189,7 @@ body {
   padding: 0;
   background-color: black;
   color: white;
-  padding-top: 10vh; /* Ajuste para adaptarse a la altura del header */
+  padding-top: 17vh; /* Ajuste para adaptarse a la altura del header */
 }
 
 header {
@@ -230,7 +230,7 @@ header .auth-buttons a:hover {
 }
 
 .hero h1 {
-  font-size: 12vw;
+  font-size: 6vw;
   color: white;
   letter-spacing: 0.5vw;
   margin-bottom: 15vh;
@@ -244,6 +244,7 @@ header .auth-buttons a:hover {
   display: flex;
   justify-content: center;
   margin: 10vh 10vh 30vh;
+  color: white;
 }
 
 .search-bar input[type="text"] {
@@ -255,6 +256,7 @@ header .auth-buttons a:hover {
   margin-right: 1vw;
   outline: none;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
 .search-bar button {

@@ -44,8 +44,8 @@ export default new Router({
       component: TeamSet
     },
     {
-      path: '/perfilcancion',
-      name: 'PerfilCancion',
+      path: '/song',
+      name: 'Song',
       component: PerfilCancion
     }
   ]

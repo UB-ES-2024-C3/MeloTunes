@@ -284,7 +284,7 @@ header {
 }
 
 .favorito img {
-  width: 2.5vw;
+  width: 2.7vw;
   height: 5vh;
   cursor: pointer;
   margin-right: 25vw;
@@ -347,7 +347,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1%;
     position: fixed;
     top: 0;
     left: 0;
@@ -361,17 +360,19 @@ export default {
     flex-grow: 2; /* Aumenta el espacio en la barra de búsqueda para centrar */
     display: flex;
     justify-content: center;
-    height: 10%;
+    height: 10vh;
   }
   .search-bar input[type="text"] {
     width: 60%;
-    padding: 3%;
-    font-size: 1.2em;
+    font-size: 1.2rem;
     border: none;
     border-radius: 30px;
     margin-right: 0.5%;
     outline: none;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    height: 5vh;
+    margin-top: 2vh;
+
   }
   .search-bar button {
     padding: 0.5%;
@@ -382,7 +383,9 @@ export default {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 10%;
+    width: 8vw;
+    height: 5vh;
+    margin-top: 2vh;
   }
 
   .search-bar button:hover {

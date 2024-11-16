@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import UserService from '../services/UserService';
+import UserService from '../services/UserService'
 import vertigoCover from '../assets/facebook.png'
 import lagrimasCover from '../assets/twitter.png'
 import sinFronterasCover from '../assets/instagram.png'
@@ -75,7 +75,7 @@ export default {
   },
   data () {
     return {
-      users_list: [], 
+      users_list: [],
       userName: this.$route.query.email,
       location: 'Barcelona',
       bio: 'Amante de la música rock y pop. ...',
@@ -113,7 +113,7 @@ export default {
         }
       }
       return NaN
-    },
+    }
   }
 }
 </script>
