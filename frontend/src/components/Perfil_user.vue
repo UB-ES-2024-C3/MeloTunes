@@ -6,11 +6,14 @@
         <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
       </div>
       <div class="user-details">
-        <h1>{{ userName }}</h1>
-        <p class="location">{{ location }}</p>
-        <p v-if="expandedBio" class="bio">{{ bio }}</p>
-        <p v-else class="bio-short">{{ shortBio }}</p>
-        <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        <h1>{{ getUser(userName).first_name }} {{ getUser(userName).second_name }}</h1>
+        <h4>{{ userName }}</h4>
+        <p class="location" v-if="getUser(userName).isArtist">{{ location }}</p>
+        <div v-if="getUser(userName).isArtist">
+          <p v-if="expandedBio" class="bio">{{ bio }}</p>
+          <p v-else class="bio-short">{{ shortBio }}</p>
+          <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        </div>
         <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
       </div>
     </header>
@@ -82,15 +85,22 @@
 </template>
 
 <script>
+import UserService from '../services/UserService'
 import vertigoCover from '../assets/facebook.png'
 import lagrimasCover from '../assets/instagram.png'
 import sinFronterasCover from '../assets/twitter.png'
 
 export default {
   name: 'Perfil_user',
+  mounted () {
+    UserService.getAll().then(response => {
+      this.users_list = response.data.data
+    })
+  },
   data () {
     return {
-      userName: 'Joan Prats',
+      users_list: [],
+      userName: this.$route.query.email,
       location: 'Barcelona',
       bio: 'Amante de la música rock y pop. ...',
       shortBio: 'Amante de la música r...',
@@ -132,6 +142,14 @@ export default {
   methods: {
     toggleBio () {
       this.expandedBio = !this.expandedBio
+    },
+    getUser (email) {
+      for (const user of this.users_list) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
     }
   }
 }
