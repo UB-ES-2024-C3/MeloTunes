@@ -8,45 +8,92 @@
       <br>
       <h1>Completa tu Registro</h1>
 
-      <form>
+      <form @submit.prevent="handleSubmit">
         <!-- Campo del correo electrónico -->
         <label for="email">Email</label><br>
-        <input type="text" id="email" name="email" placeholder="name@domain.com" class="form-input"><br>
+        <input
+          type="text"
+          id="email"
+          v-model="email"
+          placeholder="name@domain.com"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorEmail">{{ errorEmail }}</div>
 
         <!-- Campo de contraseña -->
         <label for="password">Contraseña</label><br>
         <div class="password-container">
-          <input :type="showPassword ? 'text' : 'password'" id="password" name="password" placeholder="Introduce tu contraseña" class="form-input">
-          <img :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')" alt="Mostrar/Ocultar Contraseña" @click="togglePassword">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            v-model="password"
+            placeholder="Introduce tu contraseña"
+            class="form-input"
+          >
+          <img
+            :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
+            alt="Mostrar/Ocultar Contraseña"
+            @click="togglePassword"
+          >
         </div>
+        <div class="error" v-if="errorPassword">{{ errorPassword }}</div>
 
         <!-- Campo de confirmar contraseña -->
         <label for="confirm_password">Confirmar Contraseña</label><br>
         <div class="password-container">
-          <input :type="showConfirmPassword ? 'text' : 'password'" id="confirm_password" name="confirm_password" placeholder="Confirma tu contraseña" class="form-input">
-          <img :src="showConfirmPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')" alt="Mostrar/Ocultar Contraseña" @click="toggleConfirmPassword">
+          <input
+            :type="showConfirmPassword ? 'text' : 'password'"
+            id="confirm_password"
+            v-model="confirmPassword"
+            placeholder="Confirma tu contraseña"
+            class="form-input"
+          >
+          <img
+            :src="showConfirmPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
+            alt="Mostrar/Ocultar Contraseña"
+            @click="toggleConfirmPassword"
+          >
         </div>
-
-        <!-- Mostrar error si las contraseñas no coinciden o no se cumplen las condiciones -->
-        <div id="error-password" class="error"></div>
+        <div class="error" v-if="errorConfirmPassword">{{ errorConfirmPassword }}</div>
 
         <!-- Campo de nombre -->
         <label for="nombre">Nombre</label><br>
-        <input type="text" id="nombre" name="nombre" placeholder="Introduce tu nombre" class="form-input"><br>
+        <input
+          type="text"
+          id="nombre"
+          v-model="firstName"
+          placeholder="Introduce tu nombre"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorFirstName">{{ errorFirstName }}</div>
 
         <!-- Campo de apellido -->
         <label for="apellido">Apellido</label><br>
-        <input type="text" id="apellido" name="apellido" placeholder="Introduce tu apellido" class="form-input"><br>
+        <input
+          type="text"
+          id="apellido"
+          v-model="lastName"
+          placeholder="Introduce tu apellido"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorLastName">{{ errorLastName }}</div>
 
         <!-- Campo de fecha de nacimiento -->
         <label for="fecha_nacimiento">Fecha de Nacimiento</label><br>
-        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-input"><br>
-
-        <!-- Mostrar error si la persona es menor de 16 años -->
-        <div id="error-edad" class="error"></div>
+        <input
+          type="date"
+          id="fecha_nacimiento"
+          v-model="dob"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorDob">{{ errorDob }}</div>
 
         <!-- Botón de enviar -->
-        <input type="button" value="Completar Registro" @click="registerUser()" class="submit-btn">
+        <input
+          type="submit"
+          value="Completar Registro"
+          class="submit-btn"
+        >
 
         <!-- Texto para iniciar sesión -->
         <p class="login-text">
@@ -64,8 +111,20 @@ export default {
   name: 'Registrarse',
   data () {
     return {
-      showPassword: false, // Controla la visibilidad de la contraseña
-      showConfirmPassword: false // Controla la visibilidad de la confirmación de la contraseña
+      email: '',
+      password: '',
+      confirmPassword: '',
+      firstName: '',
+      lastName: '',
+      dob: '',
+      showPassword: false,
+      showConfirmPassword: false,
+      errorEmail: '',
+      errorPassword: '',
+      errorConfirmPassword: '',
+      errorFirstName: '',
+      errorLastName: '',
+      errorDob: ''
     }
   },
   methods: {
@@ -73,20 +132,86 @@ export default {
       this.$router.replace({ path: '/home' })
     },
     togglePassword () {
-      this.showPassword = !this.showPassword // Alterna el estado del primer campo de contraseña
+      this.showPassword = !this.showPassword
     },
     toggleConfirmPassword () {
-      this.showConfirmPassword = !this.showConfirmPassword // Alterna el estado del segundo campo de contraseña
+      this.showConfirmPassword = !this.showConfirmPassword
     },
-    registerUser () {
-      const email = document.getElementById('email').value
-      const nombre = document.getElementById('nombre').value
-      const apellido = document.getElementById('apellido').value
-      const password = document.getElementById('password').value
+    validateEmail (email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Regex para validar formato de email
+      return regex.test(email)
+    },
+    validatePassword (password) {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/ // Regex para validar contraseña
+      return regex.test(password)
+    },
+    validateName (name) {
+      const regex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/ // Solo letras y espacios
+      return regex.test(name)
+    },
+    validateAge (dob) {
+      const birthDate = new Date(dob)
+      const today = new Date()
+      const age = today.getFullYear() - birthDate.getFullYear()
+      const monthDifference = today.getMonth() - birthDate.getMonth()
+      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        return age - 1
+      }
+      return age
+    },
+    handleSubmit () {
+      // Reinicia errores
+      this.errorEmail = ''
+      this.errorPassword = ''
+      this.errorConfirmPassword = ''
+      this.errorFirstName = ''
+      this.errorLastName = ''
+      this.errorDob = ''
 
-      RegisterService.registerUser(email, nombre, apellido, password)
+      let hasError = false
+
+      // Validaciones
+      if (!this.email.trim()) {
+        this.errorEmail = 'El campo de correo electrónico no puede estar vacío.'
+        hasError = true
+      } else if (!this.validateEmail(this.email)) {
+        this.errorEmail = 'El formato del correo electrónico no es válido.'
+        hasError = true
+      }
+      if (!this.password.trim()) {
+        this.errorPassword = 'La contraseña no puede estar vacía.'
+        hasError = true
+      } else if (!this.validatePassword(this.password)) {
+        this.errorPassword = 'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.'
+        hasError = true
+      }
+      if (this.password !== this.confirmPassword) {
+        this.errorConfirmPassword = 'Las contraseñas no coinciden.'
+        hasError = true
+      }
+      if (!this.validateName(this.firstName)) {
+        this.errorFirstName = 'El nombre solo puede contener letras.'
+        hasError = true
+      }
+      if (!this.validateName(this.lastName)) {
+        this.errorLastName = 'El apellido solo puede contener letras.'
+        hasError = true
+      }
+      if (!this.dob.trim()) {
+        this.errorDob = 'Debes ingresar tu fecha de nacimiento.'
+        hasError = true
+      } else if (this.validateAge(this.dob) < 16) {
+        this.errorDob = 'Debes tener al menos 16 años para registrarte.'
+        hasError = true
+      }
+
+      if (hasError) return
+
+      // Si todo está correcto
+      RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
         .then(() => {
-          this.$router.push('/login')
+          alert('Registro exitoso!')
+          this.$router.push('/home')
         })
         .catch((error) => {
           console.error(error)
@@ -219,7 +344,7 @@ body, html {
 }
 
 .error {
-  color: rgb(187, 255, 41);
+  color: red;
   font-size: 14px;
 }
 
