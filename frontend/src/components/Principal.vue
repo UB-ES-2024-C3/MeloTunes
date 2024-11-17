@@ -121,7 +121,7 @@ export default {
       return date.getFullYear()
     },
     handleClick (song) {
-      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
     },
     removeAccents (str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
