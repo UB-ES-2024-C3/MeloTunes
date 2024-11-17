@@ -50,7 +50,8 @@
 
         <label for="dob">Date of Birth</label><br>
         <input type="date" v-model="dob" required><br>
-        <button type="submit" class="red-button">Register</button>
+        <input type="button" value="Completar Registro" @click="registerUser" class="submit-btn">
+
 
         <!-- Texto para iniciar sesión -->
         <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
@@ -87,14 +88,24 @@ export default {
   methods: {
     registerUser () {
       RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('apellido').value, document.getElementById('password').value)
-      this.$router.push('/login')
+      .then(response => {
+          alert('Se ha registrado correctamente al usuario con email ' + document.getElementById('email').value + '.')
+          this.$router.push('/login')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          alert('El usuario con email ' + document.getElementById('email').value + ' ya está registrado en el sistema.')
+        })
     },
 
     cerrarPopup () {
+
       this.$router.push('/home') // Cambia la ruta de Vue Router
     },
     togglePassword () {
       this.showPassword = !this.showPassword
+
     },
     toggleConfirmPassword () {
       this.showConfirmPassword = !this.showConfirmPassword
