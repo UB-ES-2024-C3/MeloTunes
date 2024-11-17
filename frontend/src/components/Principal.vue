@@ -11,6 +11,7 @@
     </div>
     <div class="auth-buttons" v-if="isLogedIn">
       <a href="#" @click="profile">Ver perfil</a>
+      <a href="#" @click="logOut">Cerrar sesión</a>
     </div>
   </header>
   <div class="hero">
@@ -20,105 +21,35 @@
   </div>
 
   <div class="search-bar">
-    <input type="text" placeholder="Busca canciones, artistas">
-    <button><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;"> Buscar</button>
+    <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
+    <button @click="searchSong"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;">
+      Buscar
+    </button>
   </div>
 
   <div class="album-grid">
-    <div class="album">
-      <img src="../assets/albumes/melendi2.jpeg" alt="Portada del álbum">
+    <!-- Aquí cambiamos las canciones por un bucle que renderiza cada álbum dinámicamente -->
+    <div v-for="song in songs_list" :key="song.id" class="album" @click="handleClick(song)">
+      <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
       <div class="album-info">
-        <p>Curiosa la cara de tu padre</p>
-        <p>Melendi</p>
-        <p>2008</p>
-      </div>
-    </div>
-    <div class="album">
-      <img src="../assets/albumes/melendi1.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>Lágrimas desordenadas</p>
-        <p>Melendi</p>
-        <p>2012</p>
-      </div>
-    </div>
-    <div class="album">
-      <img src="../assets/albumes/dani1.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>Pequeño</p>
-        <p>Dani Martín</p>
-        <p>2010</p>
-      </div>
-    </div>
-    <div class="album">
-      <img src="../assets/albumes/dani2.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>Grandes éxitos y pequeños desastres</p>
-        <p>Dani Martín</p>
-        <p>2017</p>
-      </div>
-    </div>
-  </div>
-  <div class="album-grid">
-    <div class="album">
-      <img src="../assets/albumes/fito.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>Antes de que cuente diez</p>
-        <p>Fito y Fitipaldis</p>
-        <p>2009</p>
-      </div>
-    </div>
-    <div class="album">
-      <img src="../assets/albumes/fito2.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>Fitografía</p>
-        <p>Fito y Fitipaldis</p>
-        <p>2017</p>
-      </div>
-    </div>
-    <div class="album">
-      <img src="../assets/albumes/ex1.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>Agila</p>
-        <p>Extremoduro</p>
-        <p>1996</p>
-      </div>
-    </div>
-    <div class="album">
-      <img src="../assets/albumes/sabina1.jpeg" alt="Portada del álbum">
-      <div class="album-info">
-        <p>19 días y 500 noches</p>
-        <p>Sabina</p>
-        <p>1999</p>
+        <p>{{ song.title }}</p>
+        <p>{{ song.artist }}</p>
+        <p>{{ song.album }}</p>
+        <p>{{ getYear(song.timestamp) }}</p>
       </div>
     </div>
   </div>
 
-  <div class="artist-section">
+  <div v-if="!searchQuery" class="artist-section">
     <h2>Artistas Populares</h2>
     <div class="artist-grid">
-      <div class="artist">
-        <img src="../assets/artistas/melendi.jpeg" alt="Artista" style="width: 100%; height: 100%;">
-        <p>Melendi</p>
-      </div>
-      <div class="artist">
-        <img src="../assets/artistas/danimartin.jpeg" alt="Artista" style="width: 100%; height: 100%;">
-        <p>Dani Martín</p>
-      </div>
-      <div class="artist">
-        <img src="../assets/artistas/estopa.jpeg" alt="Artista" style="width: 100%; height: 100%;">
-        <p>Estopa</p>
-      </div>
-      <div class="artist">
-        <img src="../assets/artistas/fito.jpeg" alt="Artista" style="width: 100%; height: 100%;">
-        <p>Fito y Fitipaldis</p>
-      </div>
-      <div class="artist">
-        <img src="../assets/artistas/sabina.jpeg" alt="Artista" style="width: 100%; height: 100%;">
-        <p>Sabina</p>
-      </div>
-      <div class="artist">
-        <img src="../assets/artistas/extremoduro.jpeg" alt="Artista" style="width: 100%; height: 100%;">
-        <p>Extremoduro</p>
+      <div v-for="artist in artists" :key="artist" class="artist">
+        <img
+          :src="getArtistImage(artist)"
+          alt="Artista"
+          style="width: 100%; height: 100%;"
+        >
+        <p>{{ artist }}</p>
       </div>
     </div>
   </div>
@@ -139,6 +70,7 @@
 </template>
 
 <script>
+import SongService from '../services/SongService'
 export default {
   name: 'Home',
   computed: {
@@ -150,9 +82,22 @@ export default {
     if (this.isLogedIn) {
       this.user_name = this.$route.query.email
     }
+    SongService.getAll().then(response => {
+      this.all_songs = response.data.data
+      this.songs_list = response.data.data.slice(0, 8)
+      for (const song of this.songs_list) {
+        if (!this.artists.includes(song.artist)) {
+          this.artists.push(song.artist)
+        }
+      }
+    })
   },
   data () {
     return {
+      searchQuery: '',
+      songs_list: [],
+      all_songs: [],
+      artists: [],
       user_name: null
     }
   },
@@ -170,6 +115,42 @@ export default {
     },
     profile () {
       this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+    },
+    getYear (timestamp) {
+      const date = new Date(timestamp)
+      return date.getFullYear()
+    },
+    handleClick (song) {
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+    },
+    removeAccents (str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+    },
+    getArtistImage (artist) {
+      const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
+    },
+    getAlbumImage (artist) {
+      const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/albumes/${sanitizedArtist}.jpeg`)
+    },
+    searchSong () {
+      // Si la búsqueda está vacía, mostrar todas las canciones
+      if (!this.searchQuery.trim()) {
+        SongService.getAll().then(response => {
+          this.songs_list = response.data.data.slice(0, 8)
+        })
+        return
+      }
+
+      const normalizedSearchQuery = this.removeAccents(this.searchQuery.toLowerCase())
+
+      // Filtra las canciones que coinciden parcialmente con el título
+      this.songs_list = this.all_songs.filter(song =>
+        this.removeAccents(song.title.toLowerCase()).includes(normalizedSearchQuery) ||
+        this.removeAccents(song.artist.toLowerCase()).includes(normalizedSearchQuery) ||
+        this.removeAccents(song.album.toLowerCase()).includes(normalizedSearchQuery)
+      ).slice(0, 8)
     }
   }
 }
@@ -178,9 +159,9 @@ export default {
 <style scoped>
 /* Estilos básicos */
 .logo img {
-  width: 30%; /* Adaptable */
-  margin-top: -2%;
-  margin-left: 5%;
+  width: 3.5vw; /* Adaptable */
+  margin-top: -2vh;
+  margin-left: -1vw;
 }
 
 body {
@@ -189,7 +170,7 @@ body {
   padding: 0;
   background-color: black;
   color: white;
-  padding-top: 10vh; /* Ajuste para adaptarse a la altura del header */
+  padding-top: 17vh; /* Ajuste para adaptarse a la altura del header */
 }
 
 header {
@@ -211,12 +192,12 @@ header {
 header .auth-buttons a {
   text-decoration: none;
   color: white;
-  padding: 2vh 1.5vw;
+  padding: 1.5vh 1vw;
   border: 1px solid white;
   border-radius: 25px;
   margin-left: 1vw;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 header .auth-buttons a:hover {
@@ -230,7 +211,7 @@ header .auth-buttons a:hover {
 }
 
 .hero h1 {
-  font-size: 12vw;
+  font-size: 6vw;
   color: white;
   letter-spacing: 0.5vw;
   margin-bottom: 15vh;
@@ -244,6 +225,7 @@ header .auth-buttons a:hover {
   display: flex;
   justify-content: center;
   margin: 10vh 10vh 30vh;
+  color: white;
 }
 
 .search-bar input[type="text"] {
@@ -255,6 +237,7 @@ header .auth-buttons a:hover {
   margin-right: 1vw;
   outline: none;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
 .search-bar button {

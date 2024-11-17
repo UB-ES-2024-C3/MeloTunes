@@ -2,8 +2,7 @@ import axios from '../http-common'
 
 class RegisterService {
   registerUser (strEmail, strNombre, strApellido, strPassword) {
-    window.alert(strEmail)
-    axios.post('/api/v1/users/', {
+    return axios.post('/api/v1/users/', {
       email: strEmail,
       is_active: true,
       is_superuser: false,
@@ -11,6 +10,13 @@ class RegisterService {
       second_name: strApellido,
       password: strPassword
     })
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('Email no disponible')
+      })
   }
 }
 

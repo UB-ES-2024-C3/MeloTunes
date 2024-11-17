@@ -7,6 +7,12 @@ class UserService {
         return res
       })
   }
+  get () {
+    return http.get(`/api/v1/users/me`)
+      .then((res) => {
+        return res
+      })
+  }
 }
 
 export default new UserService()

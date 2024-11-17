@@ -1,6 +1,8 @@
 """ User models """
-from sqlmodel import Field
+from sqlmodel import Field, Relationship
 from .base import SQLModel
+from .userSong import userSongLink
+
 
 # Shared properties
 class UserBase(SQLModel):
@@ -16,6 +18,7 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
+    favourite_songs: list["Song"] = Relationship(back_populates="users_liked_me", link_model=userSongLink)
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):

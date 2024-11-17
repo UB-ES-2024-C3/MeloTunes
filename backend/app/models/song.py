@@ -2,7 +2,9 @@
 from datetime import timedelta
 from datetime import datetime
 
-from sqlmodel import Field
+from sqlmodel import Field, Relationship
+
+from . import userSongLink
 from .base import SQLModel
 
 # Shared properties
@@ -17,6 +19,7 @@ class SongBase(SQLModel):
 # Database model, database table inferred from class name
 class Song(SongBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    users_liked_me: list["User"] = Relationship(back_populates="favourite_songs", link_model=userSongLink)
 
 # Properties to receive via API on creation
 class SongCreate(SongBase):

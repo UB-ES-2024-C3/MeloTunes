@@ -6,14 +6,38 @@
         <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
       </div>
       <div class="user-details">
-        <h1>{{ userName }}</h1>
-        <p class="location">{{ location }}</p>
-        <p v-if="expandedBio" class="bio">{{ bio }}</p>
-        <p v-else class="bio-short">{{ shortBio }}</p>
-        <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        <h1>{{ getUser(userName).first_name }} {{ getUser(userName).second_name }}</h1>
+        <h4>{{ userName }}</h4>
+        <p class="location" v-if="getUser(userName).isArtist">{{ location }}</p>
+        <div v-if="getUser(userName).isArtist">
+          <p v-if="expandedBio" class="bio">{{ bio }}</p>
+          <p v-else class="bio-short">{{ shortBio }}</p>
+          <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        </div>
         <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
       </div>
     </header>
+
+    <!-- Popup modal de favoritos -->
+    <div v-if="showFavorites" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="showFavorites = false">×</button>
+        <h2>Mis Favoritos</h2>
+        <ul v-if="favorites && favorites.length" class="favorites-list">
+          <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
+            <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
+              <img :src="favorite.cover" alt="Cover Image" class="favorite-cover" />
+            </a>
+            <div class="favorite-details">
+              <h3>{{ favorite.title }}</h3>
+              <p>{{ favorite.artist }}</p>
+              <span class="song-duration">{{ favorite.duration }}</span>
+            </div>
+          </li>
+        </ul>
+        <p v-else>No tienes favoritos aún.</p>
+      </div>
+    </div>
 
     <!-- Sección Top Canciones y Álbumes en columnas con línea divisoria -->
     <section class="top-section">
@@ -61,26 +85,39 @@
 </template>
 
 <script>
-import UserService from '../services/UserService';
+import UserService from '../services/UserService'
 import vertigoCover from '../assets/facebook.png'
-import lagrimasCover from '../assets/twitter.png'
-import sinFronterasCover from '../assets/instagram.png'
+import lagrimasCover from '../assets/instagram.png'
+import sinFronterasCover from '../assets/twitter.png'
+
 export default {
   name: 'Perfil_user',
   mounted () {
     UserService.getAll().then(response => {
-      console.log(response.data)
-      this.users_list = response.data
+      this.users_list = response.data.data
     })
   },
   data () {
     return {
-      users_list: [], 
+      users_list: [],
       userName: this.$route.query.email,
       location: 'Barcelona',
       bio: 'Amante de la música rock y pop. ...',
       shortBio: 'Amante de la música r...',
       expandedBio: false,
+      showFavorites: false,
+      favorites: [
+        { id: 1, title: 'Highway to Hell', artist: 'AC/DC', cover: vertigoCover, duration: '3:28' },
+        { id: 2, title: 'Bohemian Rhapsody', artist: 'Queen', cover: vertigoCover, duration: '5:55' },
+        { id: 3, title: 'Imagine', artist: 'John Lennon', cover: vertigoCover, duration: '3:04' },
+        { id: 4, title: 'Hotel California', artist: 'Eagles', cover: vertigoCover, duration: '6:31' },
+        { id: 5, title: 'Sweet Child O\' Mine', artist: 'Guns N\' Roses', cover: vertigoCover, duration: '5:56' },
+        { id: 6, title: 'Billie Jean', artist: 'Michael Jackson', cover: vertigoCover, duration: '4:54' },
+        { id: 7, title: 'Like a Rolling Stone', artist: 'Bob Dylan', cover: vertigoCover, duration: '6:13' },
+        { id: 8, title: 'Smells Like Teen Spirit', artist: 'Nirvana', cover: vertigoCover, duration: '5:01' },
+        { id: 9, title: 'Stairway to Heaven', artist: 'Led Zeppelin', cover: vertigoCover, duration: '8:02' },
+        { id: 10, title: 'What\'s Going On', artist: 'Marvin Gaye', cover: vertigoCover, duration: '3:53' }
+      ],
       musicRecommendations: [
         { id: 1, title: 'Vértigo', artist: 'Pablo Alborán', cover: vertigoCover },
         { id: 2, title: 'Lágrimas desordenadas', artist: 'Melendi', cover: lagrimasCover },
@@ -113,7 +150,7 @@ export default {
         }
       }
       return NaN
-    },
+    }
   }
 }
 </script>

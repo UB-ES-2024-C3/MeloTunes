@@ -53,6 +53,7 @@
           ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
       </form>
+
     </div>
   </div>
 </template>
@@ -64,13 +65,42 @@ export default {
   name: 'Registrarse',
   data () {
     return {
+
       showPassword: false, // Controla la visibilidad de la contraseña
       showConfirmPassword: false // Controla la visibilidad de la confirmación de la contraseña
+      email: '',
+      password: '',
+      confirmPassword: '',
+      firstName: '',
+      lastName: '',
+      dob: '',
+      showPassword: false,
+      showConfirmPassword: false,
+      error: null
     }
   },
-  methods: {
+  methods:{
+  registerUser () {
+      RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
+        .then(response => {
+          alert('Se ha registrado correctamente al usuario con email ' + this.email + '.')
+          this.$router.push('/login')
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error)
+          alert('El usuario con email ' + this.email + ' ya está registrado en el sistema.')
+        })
+    },
+
     cerrarPopup () {
-      this.$router.replace({ path: '/home' })
+      this.$router.push('/home') // Cambia la ruta de Vue Router
+    },
+    togglePassword () {
+      this.showPassword = !this.showPassword
+    },
+    toggleConfirmPassword () {
+      this.showConfirmPassword = !this.showConfirmPassword
     },
     togglePassword () {
       this.showPassword = !this.showPassword // Alterna el estado del primer campo de contraseña
@@ -92,6 +122,62 @@ export default {
           console.error(error)
           alert('Error al registrar el usuario.')
         })
+    validatePassword (password) {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/ // Regex para validar contraseña
+      return regex.test(password)
+    },
+    validateName (name) {
+      const regex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/ // Solo letras y espacios
+      return regex.test(name)
+    },
+    validateAge (dob) {
+      const birthDate = new Date(dob)
+      const today = new Date()
+      const age = today.getFullYear() - birthDate.getFullYear()
+      const monthDifference = today.getMonth() - birthDate.getMonth()
+      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        return age - 1
+      }
+      return age
+    },
+    handleSubmit () {
+      // Validaciones
+      if (!this.email.trim() || !this.password.trim() || !this.confirmPassword.trim() || !this.firstName.trim() || !this.lastName.trim() || !this.dob) {
+        this.error = 'Please complete all fields.'
+        return
+      }
+
+      if (!this.validatePassword(this.password)) {
+        this.error = 'Password must be at least 8 characters long, contain a capital letter, a lowercase letter, and a number.'
+        return
+      }
+
+      if (this.password !== this.confirmPassword) {
+        this.error = 'Passwords do not match.'
+        return
+      }
+
+      if (!this.validateName(this.firstName)) {
+        this.error = 'First Name can only contain letters.'
+        return
+      }
+
+      if (!this.validateName(this.lastName)) {
+        this.error = 'Last Name can only contain letters.'
+        return
+      }
+
+      if (this.validateAge(this.dob) < 16) {
+        this.error = 'You must be at least 16 years old to register.'
+        return
+      }
+
+      // Limpia el error si todas las validaciones pasan
+      this.error = null
+
+      // Simular registro o llamar a un servicio
+      this.registerUser()
+
     }
   }
 }
@@ -176,6 +262,7 @@ body, html {
   justify-content: center;
   width: 100%;
   margin: 0px auto;
+
 }
 
 .password-container img {
@@ -229,4 +316,5 @@ body, html {
 .close-btn:hover {
   color: #ff4d4d;
 }
+
 </style>
