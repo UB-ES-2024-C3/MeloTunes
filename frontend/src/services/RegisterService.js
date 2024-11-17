@@ -10,13 +10,13 @@ class RegisterService {
       second_name: strApellido,
       password: strPassword
     })
-    .then((res) => {
-      return res
-    })
-    .catch(error => {
-      console.error(error)
-      throw new Error('Email no disponible')
-    })
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('Email no disponible')
+      })
   }
 }
 
