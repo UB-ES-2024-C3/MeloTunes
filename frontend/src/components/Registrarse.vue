@@ -1,73 +1,110 @@
 <template>
   <div>
-    <div class="background-animation"></div> <!-- Fondo animado -->
+    <div class="background-animation"></div>
 
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
-
       <img src="../assets/Im_logo.png" alt="Logo"><br>
-      <h1>Register to MeloTunes</h1>
+      <br>
+      <h1>Completa tu Registro</h1>
 
       <form @submit.prevent="handleSubmit">
+        <!-- Campo del correo electrónico -->
         <label for="email">Email</label><br>
-        <input type="email" v-model="email" placeholder="name@domain.com" required><br>
+        <input
+          type="text"
+          id="email"
+          v-model="email"
+          placeholder="name@domain.com"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorEmail">{{ errorEmail }}</div>
 
-        <label for="password">Password</label><br>
+        <!-- Campo de contraseña -->
+        <label for="password">Contraseña</label><br>
         <div class="password-container">
           <input
             :type="showPassword ? 'text' : 'password'"
+            id="password"
             v-model="password"
-            placeholder="Password"
-            required
-          />
+            placeholder="Introduce tu contraseña"
+            class="form-input"
+          >
           <img
             :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
-            alt="Show/Hide Password"
+            alt="Mostrar/Ocultar Contraseña"
             @click="togglePassword"
           >
         </div>
+        <div class="error" v-if="errorPassword">{{ errorPassword }}</div>
 
-        <label for="confirmPassword">Confirm Password</label><br>
+        <!-- Campo de confirmar contraseña -->
+        <label for="confirm_password">Confirmar Contraseña</label><br>
         <div class="password-container">
           <input
             :type="showConfirmPassword ? 'text' : 'password'"
+            id="confirm_password"
             v-model="confirmPassword"
-            placeholder="Confirm Password"
-            required
-          />
+            placeholder="Confirma tu contraseña"
+            class="form-input"
+          >
           <img
             :src="showConfirmPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
-            alt="Show/Hide Confirm Password"
+            alt="Mostrar/Ocultar Contraseña"
             @click="toggleConfirmPassword"
           >
         </div>
+        <div class="error" v-if="errorConfirmPassword">{{ errorConfirmPassword }}</div>
 
-        <label for="name">First Name</label><br>
-        <input type="text" v-model="firstName" placeholder="First Name" required><br>
+        <!-- Campo de nombre -->
+        <label for="nombre">Nombre</label><br>
+        <input
+          type="text"
+          id="nombre"
+          v-model="firstName"
+          placeholder="Introduce tu nombre"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorFirstName">{{ errorFirstName }}</div>
 
-        <label for="surname">Last Name</label><br>
-        <input type="text" v-model="lastName" placeholder="Last Name" required><br>
+        <!-- Campo de apellido -->
+        <label for="apellido">Apellido</label><br>
+        <input
+          type="text"
+          id="apellido"
+          v-model="lastName"
+          placeholder="Introduce tu apellido"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorLastName">{{ errorLastName }}</div>
 
-        <label for="dob">Date of Birth</label><br>
-        <input type="date" v-model="dob" required><br>
+        <!-- Campo de fecha de nacimiento -->
+        <label for="fecha_nacimiento">Fecha de Nacimiento</label><br>
+        <input
+          type="date"
+          id="fecha_nacimiento"
+          v-model="dob"
+          class="form-input"
+        ><br>
+        <div class="error" v-if="errorDob">{{ errorDob }}</div>
 
-        <button type="submit" class="red-button">Log in</button>
+        <!-- Botón de enviar -->
+        <input
+          type="submit"
+          value="Completar Registro"
+          class="submit-btn"
+        >
 
         <!-- Texto para iniciar sesión -->
-        <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
+        <p class="login-text">
+          ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
       </form>
-
-      <!-- Popup de errores -->
-      <div v-if="error" class="error-popup">
-        {{ error }}
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-
 import RegisterService from '../services/RegisterService'
 
 export default {
@@ -82,31 +119,27 @@ export default {
       dob: '',
       showPassword: false,
       showConfirmPassword: false,
-      error: null
+      errorEmail: '',
+      errorPassword: '',
+      errorConfirmPassword: '',
+      errorFirstName: '',
+      errorLastName: '',
+      errorDob: ''
     }
   },
   methods: {
-    registerUser () {
-      RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
-        .then(response => {
-          alert('Se ha registrado correctamente al usuario con email ' + this.email + '.')
-          this.$router.push('/login')
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error)
-          alert('El usuario con email ' + this.email + ' ya está registrado en el sistema.')
-        })
-    },
-
     cerrarPopup () {
-      this.$router.push('/home') // Cambia la ruta de Vue Router
+      this.$router.replace({ path: '/home' })
     },
     togglePassword () {
       this.showPassword = !this.showPassword
     },
     toggleConfirmPassword () {
       this.showConfirmPassword = !this.showConfirmPassword
+    },
+    validateEmail (email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Regex para validar formato de email
+      return regex.test(email)
     },
     validatePassword (password) {
       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/ // Regex para validar contraseña
@@ -127,42 +160,63 @@ export default {
       return age
     },
     handleSubmit () {
+      // Reinicia errores
+      this.errorEmail = ''
+      this.errorPassword = ''
+      this.errorConfirmPassword = ''
+      this.errorFirstName = ''
+      this.errorLastName = ''
+      this.errorDob = ''
+
+      let hasError = false
+
       // Validaciones
-      if (!this.email.trim() || !this.password.trim() || !this.confirmPassword.trim() || !this.firstName.trim() || !this.lastName.trim() || !this.dob) {
-        this.error = 'Please complete all fields.'
-        return
+      if (!this.email.trim()) {
+        this.errorEmail = 'El campo de correo electrónico no puede estar vacío.'
+        hasError = true
+      } else if (!this.validateEmail(this.email)) {
+        this.errorEmail = 'El formato del correo electrónico no es válido.'
+        hasError = true
       }
-
-      if (!this.validatePassword(this.password)) {
-        this.error = 'Password must be at least 8 characters long, contain a capital letter, a lowercase letter, and a number.'
-        return
+      if (!this.password.trim()) {
+        this.errorPassword = 'La contraseña no puede estar vacía.'
+        hasError = true
+      } else if (!this.validatePassword(this.password)) {
+        this.errorPassword = 'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.'
+        hasError = true
       }
-
       if (this.password !== this.confirmPassword) {
-        this.error = 'Passwords do not match.'
-        return
+        this.errorConfirmPassword = 'Las contraseñas no coinciden.'
+        hasError = true
       }
-
       if (!this.validateName(this.firstName)) {
-        this.error = 'First Name can only contain letters.'
-        return
+        this.errorFirstName = 'El nombre solo puede contener letras.'
+        hasError = true
       }
-
       if (!this.validateName(this.lastName)) {
-        this.error = 'Last Name can only contain letters.'
-        return
+        this.errorLastName = 'El apellido solo puede contener letras.'
+        hasError = true
+      }
+      if (!this.dob.trim()) {
+        this.errorDob = 'Debes ingresar tu fecha de nacimiento.'
+        hasError = true
+      } else if (this.validateAge(this.dob) < 16) {
+        this.errorDob = 'Debes tener al menos 16 años para registrarte.'
+        hasError = true
       }
 
-      if (this.validateAge(this.dob) < 16) {
-        this.error = 'You must be at least 16 years old to register.'
-        return
-      }
+      if (hasError) return
 
-      // Limpia el error si todas las validaciones pasan
-      this.error = null
-
-      // Simular registro o llamar a un servicio
-      this.registerUser()
+      // Si todo está correcto
+      RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
+        .then(() => {
+          alert('Registro exitoso!')
+          this.$router.push('/home')
+        })
+        .catch((error) => {
+          console.error(error)
+          alert('Error al registrar el usuario.')
+        })
     }
   }
 }
@@ -187,7 +241,7 @@ body, html {
   top: 0;
   left: 0;
   width: 100%;
-  height: 150%;
+  height: 100%;
   background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
   overflow: hidden;
   z-index: 1;
@@ -213,57 +267,40 @@ body, html {
 }
 
 .container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
   justify-content: center;
   background-color: #717d7e;
   padding: 20px;
-  margin-top: 5%;
-  border-radius: 10px;
+  border-radius: 15px;
   width: 700px;
-  position: relative;
-  z-index: 10;
+  height: auto; /* Altura automática según contenido */
+  max-height: 80vh; /* Limitar la altura máxima */
+  overflow-y: auto; /* Permitir desplazamiento interno */
+  z-index: 2;
+  box-sizing: border-box; /* Asegura que el padding no afecte las dimensiones */
 }
 
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: transparent;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
+/* Ocultar barra de desplazamiento en navegadores modernos */
+.container::-webkit-scrollbar {
+  width: 0; /* Anchura de la barra de desplazamiento */
+  height: 0; /* Altura de la barra de desplazamiento horizontal */
 }
 
-.container h1 {
-  font-size: 24px;
-}
-
-.container input {
-  width: 37%;
-  padding: 10px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
+.container {
+  scrollbar-width: none; /* Firefox: Oculta la barra de desplazamiento */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
 .password-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40%;
-  margin: 0 auto;
-}
-
-.password-container input {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 16px;
-  margin: 10px auto;
+  width: 100%;
+  margin: 0px auto;
 }
 
 .password-container img {
@@ -273,43 +310,56 @@ body, html {
   cursor: pointer;
 }
 
-.red-button {
+.form-input {
+  width: 60%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc; /* Borde gris claro */
+  border-radius: 5px;
+  background-color: white; /* Fondo blanco */
+  color: black; /* Texto negro */
+  font-size: 16px;
+  box-sizing: border-box; /* Para evitar desbordamientos */
+}
+
+.form-input:focus {
+  border-color: #007BFF; /* Color azul al hacer foco */
+  outline: none; /* Elimina el borde predeterminado del navegador */
+}
+
+.submit-btn {
+  width: 60%;
+  padding: 15px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
   background-color: red;
   color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: darkred;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
   border: none;
-  padding: 10px;
-  border-radius: 5px;
-}
-.container a {
   color: white;
-  text-decoration: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
-.container a:hover {
-  text-decoration: underline;
-}
-
-.error-popup {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #ff4c4c;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  font-weight: bold;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.close-btn:hover {
+  color: #ff4d4d;
 }
 </style>
