@@ -11,6 +11,7 @@
     </div>
     <div class="auth-buttons" v-if="isLogedIn">
       <a href="#" @click="profile">Ver perfil</a>
+      <a href="#" @click="logOut">Cerrar sesión</a>
     </div>
   </header>
   <div class="hero">
