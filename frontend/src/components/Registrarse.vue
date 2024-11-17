@@ -96,7 +96,7 @@
         >
 
         <!-- Texto para iniciar sesión -->
-        <p class="login-text">
+        <p>
           ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
       </form>
@@ -344,8 +344,9 @@ body, html {
 }
 
 .error {
-  color: red;
+  color: yellow;
   font-size: 14px;
+  font-weight: bold;
 }
 
 .close-btn {
@@ -357,6 +358,15 @@ body, html {
   color: white;
   font-size: 24px;
   cursor: pointer;
+}
+
+.container a {
+  color: white;
+  text-decoration: none;
+}
+
+.container a:hover {
+  text-decoration: underline;
 }
 
 .close-btn:hover {
