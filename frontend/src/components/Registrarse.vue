@@ -211,11 +211,11 @@ export default {
       RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
         .then(() => {
           alert('Registro exitoso!')
-          this.$router.push('/home')
+          this.$router.push('/login')
         })
         .catch((error) => {
           console.error(error)
-          alert('Error al registrar el usuario.')
+          alert('El usuario con email ' + this.email + ' ya está registrado en el sistema.')
         })
     }
   }
