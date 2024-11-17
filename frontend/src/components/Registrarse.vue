@@ -1,60 +1,67 @@
 <template>
   <div>
-    <div class ="background-animation"></div>
+    <div class="background-animation"></div> <!-- Fondo animado -->
 
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
-      <img src="@/assets/Im_logo.png" alt="Logo"><br>
-      <br>
-      <h1>Completa tu Registro</h1>
 
-        <form>
-            <!-- Campo del correo electrónico -->
-            <label for="email">Email</label><br>
-            <input type="text" id="email" name="email" placeholder="name@domain.com"><br>
+      <img src="../assets/Im_logo.png" alt="Logo"><br>
+      <h1>Register to MeloTunes</h1>
 
-            <!-- Campo de contraseña -->
-            <label for="password">Contraseña</label><br>
-            <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Introduce tu contraseña">
-                <img id="togglePassword" src="Im_ojo2.png" alt="Mostrar/Ocultar Contraseña" @click="togglePassword('password')">
-            </div>
+      <form @submit.prevent="handleSubmit">
+        <label for="email">Email</label><br>
+        <input type="email" v-model="email" placeholder="name@domain.com" required><br>
 
-            <!-- Campo de confirmar contraseña -->
-            <label for="confirm_password">Confirmar Contraseña</label><br>
-            <div class="password-container">
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirma tu contraseña">
-                <img id="toggleConfirmPassword" src="Im_ojo2.png" alt="Mostrar/Ocultar Contraseña" @click="togglePassword('confirm_password')">
-            </div>
+        <label for="password">Password</label><br>
+        <div class="password-container">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            v-model="password"
+            placeholder="Password"
+            required
+          />
+          <img
+            :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
+            alt="Show/Hide Password"
+            @click="togglePassword"
+          >
+        </div>
 
-            <!-- Mostrar error si las contraseñas no coinciden o no se cumplen las condiciones -->
-            <div id="error-password" class="error"></div>
+        <label for="confirmPassword">Confirm Password</label><br>
+        <div class="password-container">
+          <input
+            :type="showConfirmPassword ? 'text' : 'password'"
+            v-model="confirmPassword"
+            placeholder="Confirm Password"
+            required
+          />
+          <img
+            :src="showConfirmPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
+            alt="Show/Hide Confirm Password"
+            @click="toggleConfirmPassword"
+          >
+        </div>
 
-            <!-- Campo de nombre -->
-            <label for="nombre">Nombre</label><br>
-            <input type="text" id="nombre" name="nombre" placeholder="Introduce tu nombre"><br>
+        <label for="name">First Name</label><br>
+        <input type="text" v-model="firstName" placeholder="First Name" required><br>
 
-          <!-- Campo de apellido -->
-          <label for="nombre">Apellido</label><br>
-          <input type="text" id="apellido" name="apellido" placeholder="Introduce tu apellido"><br>
+        <label for="surname">Last Name</label><br>
+        <input type="text" v-model="lastName" placeholder="Last Name" required><br>
 
-            <!-- Campo de fecha de nacimiento -->
-            <label for="fecha_nacimiento">Fecha de Nacimiento</label><br>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"><br>
+        <label for="dob">Date of Birth</label><br>
+        <input type="date" v-model="dob" required><br>
+        <input type="button" value="Completar Registro" @click="registerUser" class="submit-btn">
 
-            <!-- Mostrar error si la persona es menor de 16 años -->
-            <div id="error-edad" class="error"></div>
 
-            <!-- Botón de enviar -->
-            <input type="button" value="Completar Registro" @click="registerUser" class="submit-btn">
+        <!-- Texto para iniciar sesión -->
+        <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
+        </p>
+      </form>
 
-          <!-- Texto para iniciar sesión -->
-          <p class="login-text">
-            ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
-          </p>
-
-        </form>
-
+      <!-- Popup de errores -->
+      <div v-if="error" class="error-popup">
+        {{ error }}
+      </div>
     </div>
   </div>
 </template>
@@ -66,16 +73,19 @@ import RegisterService from '../services/RegisterService'
 export default {
   name: 'Registrarse',
   data () {
+    return {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      firstName: '',
+      lastName: '',
+      dob: '',
+      showPassword: false,
+      showConfirmPassword: false,
+      error: null
+    }
   },
   methods: {
-    validateEmail () {
-      // eslint-disable-next-line
-      if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
-        this.msg['email'] = 'Please enter a valid email address'
-      } else {
-        this.msg['email'] = ''
-      }
-    },
     registerUser () {
       RegisterService.registerUser(document.getElementById('email').value, document.getElementById('nombre').value, document.getElementById('apellido').value, document.getElementById('password').value)
       .then(response => {
@@ -88,191 +98,221 @@ export default {
           alert('El usuario con email ' + document.getElementById('email').value + ' ya está registrado en el sistema.')
         })
     },
+
     cerrarPopup () {
-      this.$router.push('/home')
+
+      this.$router.push('/home') // Cambia la ruta de Vue Router
     },
-    togglePassword (fieldId) {
-      const field = document.getElementById(fieldId)
-      field.type = field.type === 'password' ? 'text' : 'password'
+    togglePassword () {
+      this.showPassword = !this.showPassword
+
+    },
+    toggleConfirmPassword () {
+      this.showConfirmPassword = !this.showConfirmPassword
+    },
+    validatePassword (password) {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/ // Regex para validar contraseña
+      return regex.test(password)
+    },
+    validateName (name) {
+      const regex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/ // Solo letras y espacios
+      return regex.test(name)
+    },
+    validateAge (dob) {
+      const birthDate = new Date(dob)
+      const today = new Date()
+      const age = today.getFullYear() - birthDate.getFullYear()
+      const monthDifference = today.getMonth() - birthDate.getMonth()
+      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        return age - 1
+      }
+      return age
+    },
+    handleSubmit () {
+      // Validaciones
+      if (!this.email.trim() || !this.password.trim() || !this.confirmPassword.trim() || !this.firstName.trim() || !this.lastName.trim() || !this.dob) {
+        this.error = 'Please complete all fields.'
+        return
+      }
+
+      if (!this.validatePassword(this.password)) {
+        this.error = 'Password must be at least 8 characters long, contain a capital letter, a lowercase letter, and a number.'
+        return
+      }
+
+      if (this.password !== this.confirmPassword) {
+        this.error = 'Passwords do not match.'
+        return
+      }
+
+      if (!this.validateName(this.firstName)) {
+        this.error = 'First Name can only contain letters.'
+        return
+      }
+
+      if (!this.validateName(this.lastName)) {
+        this.error = 'Last Name can only contain letters.'
+        return
+      }
+
+      if (this.validateAge(this.dob) < 16) {
+        this.error = 'You must be at least 16 years old to register.'
+        return
+      }
+
+      // Limpia el error si todas las validaciones pasan
+      this.error = null
+
+      // Simular registro o llamar a un servicio
+      alert('Registration successful!')
+      this.$router.push('/home') // Redirigir a la página principal después del registro
     }
   }
 }
 </script>
 
-<!-- Estilos para el componente -->
 <style scoped>
-        body, html {
-            background-color: black;
-            font-family: Arial, sans-serif;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden; /* Evitar el desplazamiento en toda la página */
-            position: relative;
-        }
+body, html {
+  background-color: black;
+  font-family: Arial, sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
 
-        /* Fondo animado */
-        .background-animation {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
-          overflow: hidden;
-          z-index: 1;
-        }
+/* Fondo animado */
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
+  overflow: hidden;
+  z-index: 1;
+}
 
-        .background-animation::before {
-          content: '';
-          position: absolute;
-          width: 200%;
-          height: 200%;
-          background-image: linear-gradient(60deg, rgba(255, 0, 0, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 0, 0, 0.3) 75%);
-          background-size: 30px 30px;
-          animation: move 4s linear infinite;
-        }
+.background-animation::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image: linear-gradient(60deg, rgba(255, 0, 0, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 0, 0, 0.3) 75%);
+  background-size: 30px 30px;
+  animation: move 4s linear infinite;
+}
 
-        @keyframes move {
-          0% {
-            background-position: 0 0;
-          }
-          100% {
-            background-position: 30px 30px;
-          }
-        }
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 30px 30px;
+  }
+}
 
-        .container {
-            position: absolute;
-            top: 50%; /* Centramos en el eje vertical */
-            left: 50%; /* Centramos en el eje horizontal */
-            transform: translate(-50%, -50%); /* Ajustamos el centro exacto */
-            text-align: center;
-            justify-content: center;
-            background-color: #717d7e;
-            padding: 20px;
-            border-radius: 10px;
-            width: 700px;
-            max-height: 80vh; /* Limitar la altura para evitar que sea demasiado alta */
-            overflow-y: auto; /* Hacer que el contenido sea desplazable solo dentro del recuadro */
-            z-index: 2;
-        }
-        .container h1 {
-            font-size: 24px;
-        }
-        .container input[type="text"],
-        .container input[type="date"],
-        .container input[type="tel"],
-        .container input[type="password"] {
-            width: 37%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-        }
-        .container input[type="email"] {
-            width: 37%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: #ccc;
-            color: #666;
-        }
-        .password-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 37%;
-            margin: 0px auto;
-        }
-        .password-container input {
-            flex: 1;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            margin: 10px auto;
-        }
-        .password-container img {
-            width: 45px;
-            height: 40px;
-            margin-left: -45px;
-            cursor: pointer;
-        }
-        .submit-btn {
-          width: 37%;
-          padding: 15px;
-          margin-top: 10px;
-          border: none;
-          border-radius: 5px;
-          background-color: red;
-          color: white;
-          font-size: 18px;
-          cursor: pointer;
-        }
-        .submit-btn:hover {
-          background-color: darkred;
-        }
-        .login-text {
-          margin-top: 20px;
-          font-size: 15px;
-          color: white;
-        }
-        .login-text a {
-          color: #00f;
-          text-decoration: underline;
-        }
-        .login-text a:hover {
-          color: yellow;
-        }
-        .logo {
-          width: 100px;
-          margin-bottom: 20px;
-        }
-        .container input[type="submit"] {
-            width: 40%;
-            padding: 10px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: red;
-            color: white;
-            font-size: 16px;
-        }
-        .container a {
-            color: white;
-            text-decoration: none;
-        }
-        .container a:hover {
-            text-decoration: underline;
-        }
-        .error {
-            color: rgb(187, 255, 41);
-            font-size: 14px;
-        }
-        .error-box {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        .close-btn{
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          background: none;
-          border: none;
-          color: white;
-          font-size: 24px;
-          cursor: pointer;
-        }
-        .close-btn:hover {
-          color: #ff4d4d;
-        }
+.container {
+  text-align: center;
+  justify-content: center;
+  background-color: #717d7e;
+  padding: 20px;
+  margin-top: 5%;
+  border-radius: 10px;
+  width: 700px;
+  position: relative;
+  z-index: 10;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.container h1 {
+  font-size: 24px;
+}
+
+.container input {
+  width: 37%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+  margin: 0 auto;
+}
+
+.password-container input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin: 10px auto;
+}
+
+.password-container img {
+  width: 45px;
+  height: 40px;
+  margin-left: -45px;
+  cursor: pointer;
+}
+
+.red-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+.container a {
+  color: white;
+  text-decoration: none;
+}
+
+.container a:hover {
+  text-decoration: underline;
+}
+
+.error-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ff4c4c;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 </style>
