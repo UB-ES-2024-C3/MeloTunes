@@ -20,11 +20,9 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify()
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
   router,
   components: { App },
   template: '<App/>',
   vuetify,
-  render: (h) => h(App)
-
-}).$mount('#app')
+  render: (h) => h(App), // Renderiza el componente raíz
+}).$mount('#app'); // Esto es suficiente

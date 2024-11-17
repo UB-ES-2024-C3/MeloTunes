@@ -1,5 +1,5 @@
 <template>
-  <body >
+  <div class="main-container">
   <header>
     <div class="logo">
       <img src="../assets/logo2.png" alt="Logo">
@@ -14,19 +14,18 @@
   <div>
     <div class="perfil">
       <div class="album">
-        <img src="../assets/orozco.jpeg" alt="Album Cover">
+        <img :src="getAlbumImage(song.album)" alt="Album Cover">
       </div>
       <div class="song-info">
-        <p class="song-title">Que me queda</p>
-        <p class="song-author">Antonio Orozco </p>
+        <p class="song-title">{{ song.title }}</p>
+        <p class="song-author">{{ song.artist }}</p>
         <img src="../assets/reo.png">
       </div>
     </div>
     <div class="information">
       <div class="texto">
-        <p>Renovatio</p>
-        <p>2009</p>
-        <p>Pop, Hip-hop/Rap, Tropipop</p>
+        <p>{{ song.album }}</p>
+        <p>{{ getYear(song.timestamp) }}</p>
       </div>
       <div class="favorito">
         <img src="../assets/me-gusta.png" alt="Favorito">
@@ -38,24 +37,20 @@
       <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
       <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 4vh" height="100vh" width="22vw">
         <v-list>
-          <v-list-item style="margin-top: 10vh">
+          <v-list-item style="margin-top: 10vh" v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
             <v-list-item-content>
-              <v-list-item-title
-                v-for="(item, index) in items"
-                :key="index"
-                class="item"
-                >
-                <img src="../assets/orozco.jpeg" alt="Portada del álbum">
+              <v-list-item-title class="item">
+                <!-- Muestra la portada del álbum o una imagen por defecto -->
+                <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
                 <div class="item-info">
-                  <p>{{ item.name }}</p>
+                  <!-- Muestra el título de la canción y el nombre del artista -->
+                  <p>{{ song.title }}</p>
                 </div>
               </v-list-item-title>
-
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-
       <v-main>
         <v-container>
           <!-- Botón con imagen a la derecha y centrado verticalmente -->
@@ -71,14 +66,18 @@
       </v-main>
     </v-app>
   </div>
-  </body>
-
+  </div>
 </template>
 
 <script>
+import SongService from '../services/SongService'
 export default {
   data () {
     return {
+      all_songs: [],
+      artist_songs: [],
+      song: {},
+      song_id: 0,
       drawer: false, // Estado del drawer
       items: [
         { name: 'Llévatelo' },
@@ -95,9 +94,41 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.song_id = this.$route.query.song
+    SongService.get(this.song_id).then(response => {
+      this.song = response.data
+      SongService.getAll().then(response => {
+        this.all_songs = response.data.data
+        this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+      })
+    })
+  },
   methods: {
     toggleDrawer () {
       this.drawer = !this.drawer // Alterna el estado del drawer
+    },
+    getYear (timestamp) {
+      const date = new Date(timestamp)
+      return date.getFullYear()
+    },
+    removeAccents (str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+    },
+    getAlbumImage (album) {
+      console.log(album)
+      const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
+    },
+    handleClick (song) {
+      const currentSongId = this.$route.query.song
+      const targetSongId = song.id
+
+      // Si el ID de la canción es el mismo que el actual, no realizamos la navegación
+      if (currentSongId === targetSongId) {
+        return
+      }
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
     }
   }
 }
@@ -326,74 +357,5 @@ header {
   background-color: #1f1f1f;
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-
 }
-
-      <button><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:10%; vertical-align: middle;" ></button>
-    </div>
-
-  </header>
-</template>
-<script setup>
-export default {
-  name: 'PerfilCancion',
-  data () {
-  }
-}
-</script>
-<style>
-  header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to bottom, #e53935, #000);
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
-    transition: top 0.3s;
-    z-index: 1000;
-  }
-  .search-bar {
-    flex-grow: 2; /* Aumenta el espacio en la barra de búsqueda para centrar */
-    display: flex;
-    justify-content: center;
-    height: 10vh;
-  }
-  .search-bar input[type="text"] {
-    width: 60%;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 30px;
-    margin-right: 0.5%;
-    outline: none;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-    height: 5vh;
-    margin-top: 2vh;
-
-  }
-  .search-bar button {
-    padding: 0.5%;
-    font-size: 2em;
-    background-color: #e53935;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 8vw;
-    height: 5vh;
-    margin-top: 2vh;
-  }
-
-  .search-bar button:hover {
-    background-color: #c62828;
-  }
-
-  .logo img {
-    width: 50%;
-    margin-top: -5%;
-    margin-left: 10%;
-  }
 </style>

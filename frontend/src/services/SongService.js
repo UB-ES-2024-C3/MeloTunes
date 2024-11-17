@@ -7,6 +7,12 @@ class SongService {
         return res
       })
   }
+  get (songId) {
+    return http.get(`/api/v1/songs/${songId}`)
+      .then((res) => {
+        return res
+      })
+  }
 }
 
 export default new SongService()
