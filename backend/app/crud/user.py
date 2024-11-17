@@ -4,7 +4,8 @@ from typing import Any
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
-from app.models import User, UserCreate, UserUpdate
+from app.models import User, UserCreate, UserUpdate, Song
+
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -44,3 +45,18 @@ def authenticate(*, session: Session, email: str, password: str) -> User | None:
     if not verify_password(password, db_user.hashed_password):
         return None
     return db_user
+
+def add_song_to_favourites(*, session: Session, db_user: User, db_song: Song) -> Any:
+    db_user.favourite_songs.append(db_song)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
+
+def remove_song_from_favourites(*, session: Session, db_user: User, db_song: Song) -> Any:
+    db_user.favourite_songs.remove(db_song)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
+
