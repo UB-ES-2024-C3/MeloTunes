@@ -1,24 +1,19 @@
 """ User models """
-from sqlmodel import Field, Relationship
+from sqlmodel import Field
 from .base import SQLModel
-from .userSong import userSongLink
-
 
 # Shared properties
 class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     is_active: bool = True
     is_superuser: bool = False
-    first_name: str | None = None
-    second_name: str | None = None
-    description: str | None = None
-    is_artist: bool = False
+    full_name: str | None = None
+
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
-    favourite_songs: list["Song"] = Relationship(back_populates="users_liked_me", link_model=userSongLink)
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
@@ -29,24 +24,19 @@ class UserCreate(UserBase):
 class UserCreateOpen(SQLModel):
     email: str
     password: str
-    first_name: str
-    second_name: str | None = None
-    description: str | None = None
+    full_name: str | None = None
 
 
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: str | None = None  # type: ignore
     password: str | None = None
-    is_artist: bool | None = None
 
 
 # TODO replace email str with EmailStr when sqlmodel supports it
 class UserUpdateMe(SQLModel):
-    first_name: str | None = None
-    second_name: str | None = None
+    full_name: str | None = None
     email: str | None = None
-    description: str | None = None
 
 class UpdatePassword(SQLModel):
     current_password: str

@@ -5,37 +5,35 @@
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
 
-      <img src="../assets/Im_logo.png" alt="Logo"><br>
-      <h1>Inicia sesión en MeloTunes</h1>
+      <img src="@/assets/Im_logo.png" alt="Logo"><br>
+      <h1>Log in to MeloTunes</h1>
 
       <form @submit.prevent="handleSubmit">
-        <label for="email">Email</label><br>
-        <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input"><br>
+        <label for="email">Email Address</label><br>
+        <input type="email" v-model="email" placeholder="name@domain.com" required><br>
 
-        <label for="password">Contraseña</label><br>
+        <label for="password">Password</label><br>
         <div class="password-container">
           <input
             :type="showPassword ? 'text' : 'password'"
-            id="password"
             v-model="password"
-            placeholder="Contraseña"
+            placeholder="Password"
             required
-            class="form-input"
-          >
+          />
           <img
-            :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
-            alt="Mostrar/Ocultar Contraseña"
+            :src="showPassword ? require('@/assets/Im_ojo.png') : require('@/assets/Im_ojo2.png')"
+            alt="Show/Hide Password"
             @click="togglePassword"
           >
         </div>
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <button type="submit" class="submit-btn">Inicia sesión</button>
+        <b-button @click="login" variant="primary">Log In</b-button>
       </form>
 
-      <p><a href="#">¿Has olvidado la contraseña?</a></p>
-      <p>¿No tienes una cuenta? <a href="/register">Regístrate gratis</a></p>
+      <p><a href="#">Forgot your password?</a></p>
+      <p>Don't have an account? <a href="/register">Register for free</a></p>
     </div>
   </div>
 </template>
@@ -55,7 +53,7 @@ export default {
   },
   methods: {
     cerrarPopup () {
-      this.$router.push('/home') // Cambia la ruta de Vue Router
+      this.$router.push('/seleccio_perfils') // Cambia la ruta de Vue Router
     },
     login () {
       AuthService.login(this.email, this.password)
@@ -65,20 +63,15 @@ export default {
           this.$router.push({ path: '/home', query: { email: this.email, logged: this.is_authenticated, token: this.token } })
         })
         .catch((error) => {
+          // eslint-disable-next-line
           console.error(error)
-          alert('Correo o contraseña incorrectos')
+          alert('Username or Password incorrect')
         })
     },
     togglePassword () {
       this.showPassword = !this.showPassword
     },
     handleSubmit () {
-      if (!this.email.trim() || !this.password.trim()) {
-        this.error = 'Por favor, complete todos los campos'
-        return
-      }
-      this.error = null
-      this.login()
     }
   }
 }
@@ -94,7 +87,7 @@ body, html {
   align-items: center;
   height: 100vh;
   margin: 0;
-  overflow: hidden;
+  overflow: hidden; /* Oculta el scroll si el fondo es más grande */
 }
 
 /* Fondo animado */
@@ -104,9 +97,9 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8)); /* Gradiente rojo a negro */
   overflow: hidden;
-  z-index: 1;
+  z-index: 1; /* Asegura que esté detrás del popup */
 }
 
 .background-animation::before {
@@ -129,73 +122,58 @@ body, html {
 }
 
 .container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
   justify-content: center;
-  background-color: #717d7e;
+  background-color: #717d7e; /* Fondo del popup */
   padding: 20px;
-  border-radius: 15px;
+  margin-top: 5%;
+  border-radius: 10px;
   width: 700px;
-  height: auto;
-  max-height: 80vh;
-  overflow-y: auto;
-  z-index: 2;
-  box-sizing: border-box;
-}
-
-/* Ocultar barra de desplazamiento */
-.container::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-.container {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  position: relative;
+  z-index: 10; /* Asegúrate de que esté por encima del fondo */
 }
 
 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: none;
-  border: none;
+  background-color: transparent;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
   cursor: pointer;
 }
 
-.close-btn:hover {
-  color: #ff4d4d;
+.container h1 {
+  font-size: 24px;
 }
 
 .container input[type="email"],
-.container .form-input {
-  width: 60%;
+.container input[type="password"] {
+  width: 37%;
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #ccc; /* Borde gris claro */
+  border: none;
   border-radius: 5px;
-  background-color: white; /* Fondo blanco */
-  color: black; /* Texto negro */
   font-size: 16px;
-  box-sizing: border-box; /* Asegura que el padding no desborde */
-}
-
-.container input:focus {
-  border-color: #007BFF; /* Borde azul al hacer foco */
-  outline: none; /* Elimina el borde predeterminado del navegador */
 }
 
 .password-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  margin: 0px auto;
+  width: 40%;
+  margin: 0 auto;
+}
+
+.password-container input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin: 10px auto;
 }
 
 .password-container img {
@@ -205,20 +183,15 @@ body, html {
   cursor: pointer;
 }
 
-.submit-btn {
-  width: 60%;
-  padding: 15px;
+.container input[type="submit"] {
+  width: 40%;
+  padding: 10px;
   margin-top: 10px;
   border: none;
   border-radius: 5px;
   background-color: red;
   color: white;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.submit-btn:hover {
-  background-color: darkred;
+  font-size: 16px;
 }
 
 .container a {
@@ -233,5 +206,9 @@ body, html {
 .error {
   color: red;
   font-size: 14px;
+}
+
+.red-text {
+  color: red;
 }
 </style>
