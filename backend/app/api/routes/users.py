@@ -224,7 +224,7 @@ def new_favourite_song(session: SessionDep, current_user: CurrentUser, song_id: 
     if not db_song:
         raise HTTPException(
             status_code=404,
-            detail="The song with this id does not exist in the system",
+            detail="The song with this id does not exist in the system"
         )
     if db_song in db_user.favourite_songs:
             raise HTTPException(
