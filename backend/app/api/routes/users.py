@@ -22,8 +22,10 @@ from app.models import (
     UsersOut,
     UserUpdate,
     UserUpdateMe,
+    Song
 )
 from app.utils import generate_new_account_email, send_email
+
 
 router = APIRouter()
 
@@ -205,3 +207,41 @@ def delete_user(session: SessionDep, current_user: CurrentUser, user_id: int) ->
     session.delete(user)
     session.commit()
     return Message(message="User deleted successfully")
+
+
+
+@router.get("/me/my_songs")
+def get_my_favourite_songs(session: SessionDep, current_user: CurrentUser) -> Any:
+    statement = select(User).where(User.id == current_user.id)
+    user = session.exec(statement).first()
+    return user.favourite_songs
+
+
+@router.patch("/me/{song_id}")
+def new_favourite_song(session: SessionDep, current_user: CurrentUser, song_id: int) -> Any:
+    db_user = session.get(User, current_user.id)
+    db_song = session.get(Song, song_id)
+    if not db_song:
+        raise HTTPException(
+            status_code=404,
+            detail="The song with this id does not exist in the system"
+        )
+    if db_song in db_user.favourite_songs:
+            raise HTTPException(
+                status_code=409, detail="You already liked this song"
+            )
+
+    db_user = crud.user.add_song_to_favourites(session=session, db_user=db_user, db_song=db_song)
+    return Message(message="Song liked successfully")
+
+@router.patch("/me/my_songs/{song_id}")
+def delete_favourite_song(session: SessionDep, current_user: CurrentUser, song_id: int) -> Message:
+    """
+    Delete a user.
+    """
+    db_user = session.get(User, current_user.id)
+    db_song = session.get(Song, song_id)
+    if not db_song in db_user.favourite_songs:
+        raise HTTPException(status_code=404, detail="Song not found")
+    db_user = crud.user.remove_song_from_favourites(session=session, db_user=db_user, db_song=db_song)
+    return Message(message="Song unliked successfully")
