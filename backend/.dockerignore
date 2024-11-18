@@ -7,4 +7,3 @@ app.egg-info
 htmlcov
 .venv
 .env
-initial_data.py
