@@ -6,10 +6,10 @@
         <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
       </div>
       <div class="user-details">
-        <h1>{{ getUser(userName).first_name }} {{ getUser(userName).second_name }}</h1>
-        <h4>{{ userName }}</h4>
-        <p class="location" v-if="getUser(userName).isArtist">{{ location }}</p>
-        <div v-if="getUser(userName).isArtist">
+        <h1>{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
+        <h4>{{ this.user_logged.email }}</h4>
+        <p class="location" v-if="this.user_logged.isArtist">{{ location }}</p>
+        <div v-if="this.user_logged.isArtist">
           <p v-if="expandedBio" class="bio">{{ bio }}</p>
           <p v-else class="bio-short">{{ shortBio }}</p>
           <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
@@ -23,15 +23,15 @@
       <div class="modal-content">
         <button class="close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
-        <ul v-if="favorites && favorites.length" class="favorites-list">
-          <li v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
+        <ul v-if="this.fav_songs && this.fav_songs.length" class="favorites-list">
+          <li v-for="favorite in this.fav_songs" :key="favorite.id" class="favorite-item">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
               <img :src="favorite.cover" alt="Cover Image" class="favorite-cover" />
             </a>
             <div class="favorite-details">
               <h3>{{ favorite.title }}</h3>
               <p>{{ favorite.artist }}</p>
-              <span class="song-duration">{{ favorite.duration }}</span>
+              <span class="song-duration">{{ getYear(favorite.timestamp) }}</span>
             </div>
           </li>
         </ul>
@@ -93,31 +93,24 @@ import sinFronterasCover from '../assets/twitter.png'
 export default {
   name: 'Perfil_user',
   mounted () {
-    UserService.getAll().then(response => {
-      this.users_list = response.data.data
+    UserService.get().then(response => {
+      this.user_logged = response.data
+      console.log(response.data)
+    })
+    UserService.getMyFavouriteSongs().then(response => {
+      this.fav_songs = response
+      console.log(response)
     })
   },
   data () {
     return {
-      users_list: [],
-      userName: this.$route.query.email,
+      user_logged: {},
+      fav_songs: [],
       location: 'Barcelona',
       bio: 'Amante de la música rock y pop. ...',
       shortBio: 'Amante de la música r...',
       expandedBio: false,
       showFavorites: false,
-      favorites: [
-        { id: 1, title: 'Highway to Hell', artist: 'AC/DC', cover: vertigoCover, duration: '3:28' },
-        { id: 2, title: 'Bohemian Rhapsody', artist: 'Queen', cover: vertigoCover, duration: '5:55' },
-        { id: 3, title: 'Imagine', artist: 'John Lennon', cover: vertigoCover, duration: '3:04' },
-        { id: 4, title: 'Hotel California', artist: 'Eagles', cover: vertigoCover, duration: '6:31' },
-        { id: 5, title: 'Sweet Child O\' Mine', artist: 'Guns N\' Roses', cover: vertigoCover, duration: '5:56' },
-        { id: 6, title: 'Billie Jean', artist: 'Michael Jackson', cover: vertigoCover, duration: '4:54' },
-        { id: 7, title: 'Like a Rolling Stone', artist: 'Bob Dylan', cover: vertigoCover, duration: '6:13' },
-        { id: 8, title: 'Smells Like Teen Spirit', artist: 'Nirvana', cover: vertigoCover, duration: '5:01' },
-        { id: 9, title: 'Stairway to Heaven', artist: 'Led Zeppelin', cover: vertigoCover, duration: '8:02' },
-        { id: 10, title: 'What\'s Going On', artist: 'Marvin Gaye', cover: vertigoCover, duration: '3:53' }
-      ],
       musicRecommendations: [
         { id: 1, title: 'Vértigo', artist: 'Pablo Alborán', cover: vertigoCover },
         { id: 2, title: 'Lágrimas desordenadas', artist: 'Melendi', cover: lagrimasCover },
@@ -143,13 +136,9 @@ export default {
     toggleBio () {
       this.expandedBio = !this.expandedBio
     },
-    getUser (email) {
-      for (const user of this.users_list) {
-        if (email === user.email) {
-          return user
-        }
-      }
-      return NaN
+    getYear (timestamp) {
+      const date = new Date(timestamp)
+      return date.getFullYear()
     }
   }
 }

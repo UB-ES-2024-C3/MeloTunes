@@ -24,5 +24,5 @@ new Vue({
   components: { App },
   template: '<App/>',
   vuetify,
-  render: (h) => h(App), // Renderiza el componente raíz
-}).$mount('#app'); // Esto es suficiente
+  render: (h) => h(App) // Renderiza el componente raíz
+}).$mount('#app') // Esto es suficiente

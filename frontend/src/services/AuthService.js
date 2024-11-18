@@ -12,6 +12,10 @@ class AuthService {
     const path = 'http://localhost:8000/api/v1/login/access-token'
     return axios.post(path, parameters, config)
       .then((res) => {
+        const token = res.data.access_token // Asegúrate de que el backend devuelva el token aquí
+        if (token) {
+          localStorage.setItem('accessToken', token) // Guardar token
+        }
         return res
       })
       .catch(error => {
