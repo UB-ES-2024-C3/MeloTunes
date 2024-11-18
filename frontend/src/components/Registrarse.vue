@@ -96,7 +96,7 @@
         >
 
         <!-- Texto para iniciar sesión -->
-        <p class="login-text">
+        <p>
           ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
       </form>
@@ -211,11 +211,11 @@ export default {
       RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
         .then(() => {
           alert('Registro exitoso!')
-          this.$router.push('/home')
+          this.$router.push('/login')
         })
         .catch((error) => {
           console.error(error)
-          alert('Error al registrar el usuario.')
+          alert('El usuario con email ' + this.email + ' ya está registrado en el sistema.')
         })
     }
   }
@@ -344,8 +344,9 @@ body, html {
 }
 
 .error {
-  color: red;
+  color: yellow;
   font-size: 14px;
+  font-weight: bold;
 }
 
 .close-btn {
@@ -357,6 +358,15 @@ body, html {
   color: white;
   font-size: 24px;
   cursor: pointer;
+}
+
+.container a {
+  color: white;
+  text-decoration: none;
+}
+
+.container a:hover {
+  text-decoration: underline;
 }
 
 .close-btn:hover {

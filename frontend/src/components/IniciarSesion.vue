@@ -6,34 +6,36 @@
       <button class="close-btn" @click="cerrarPopup">X</button>
 
       <img src="../assets/Im_logo.png" alt="Logo"><br>
-      <h1>Log in to MeloTunes</h1>
+      <h1>Inicia sesión en MeloTunes</h1>
 
       <form @submit.prevent="handleSubmit">
-        <label for="email">Email Address</label><br>
-        <input type="email" v-model="email" placeholder="name@domain.com" required><br>
+        <label for="email">Email</label><br>
+        <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input"><br>
 
-        <label for="password">Password</label><br>
+        <label for="password">Contraseña</label><br>
         <div class="password-container">
           <input
             :type="showPassword ? 'text' : 'password'"
+            id="password"
             v-model="password"
-            placeholder="Password"
+            placeholder="Contraseña"
             required
-          />
+            class="form-input"
+          >
           <img
             :src="showPassword ? require('../assets/ojo.png') : require('../assets/ojo2.png')"
-            alt="Show/Hide Password"
+            alt="Mostrar/Ocultar Contraseña"
             @click="togglePassword"
           >
         </div>
 
         <div v-if="error" class="error">{{ error }}</div>
 
-        <button type="submit" class="submit-btn">Log in</button>
+        <button type="submit" class="submit-btn">Inicia sesión</button>
       </form>
 
-      <p><a href="#">Forgot your password?</a></p>
-      <p>Don't have an account? <a href="/register">Register for free</a></p>
+      <p><a href="#">¿Has olvidado la contraseña?</a></p>
+      <p>¿No tienes una cuenta? <a href="/register">Regístrate gratis</a></p>
     </div>
   </div>
 </template>
@@ -64,7 +66,7 @@ export default {
         })
         .catch((error) => {
           console.error(error)
-          alert('Username or Password incorrect')
+          alert('Correo o contraseña incorrectos')
         })
     },
     togglePassword () {
@@ -170,12 +172,8 @@ body, html {
   color: #ff4d4d;
 }
 
-.container h1 {
-  font-size: 24px;
-}
-
 .container input[type="email"],
-.container input[type="password"] {
+.container .form-input {
   width: 60%;
   padding: 10px;
   margin: 10px 0;
@@ -187,8 +185,7 @@ body, html {
   box-sizing: border-box; /* Asegura que el padding no desborde */
 }
 
-.container input[type="email"]:focus,
-.container input[type="password"]:focus {
+.container input:focus {
   border-color: #007BFF; /* Borde azul al hacer foco */
   outline: none; /* Elimina el borde predeterminado del navegador */
 }
@@ -197,14 +194,14 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%; /* Asegura alineación */
-  margin: 10px auto; /* Espaciado */
+  width: 100%;
+  margin: 0px auto;
 }
 
 .password-container img {
   width: 45px;
   height: 40px;
-  margin-left: -45px; /* Superposición del ícono */
+  margin-left: -45px;
   cursor: pointer;
 }
 
