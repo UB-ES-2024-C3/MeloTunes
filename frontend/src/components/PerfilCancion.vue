@@ -5,12 +5,6 @@
       <button @click="goHome" style="border: none; background: none;">
       <img src="../assets/logo2.png" alt="Logo"></button>
     </div>
-    <div class="search-bar">
-      <input type="text" placeholder="Busca canciones, artistas">
-      <button>
-        <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:100%; vertical-align: middle;">
-      </button>
-    </div>
   </header>
   <div>
     <div class="perfil">
@@ -131,7 +125,7 @@ export default {
       }
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
     },
-    goHome (){
+    goHome () {
       this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
     }
   }
