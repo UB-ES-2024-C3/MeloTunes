@@ -1,6 +1,7 @@
 <template>
   <div class="perfil">
     <!-- Encabezado del perfil con fondo -->
+    <button @click="goHome">Ir a Inicio</button>
     <header class="perfil-header">
       <div class="avatar-container">
         <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
@@ -26,7 +27,7 @@
         <ul v-if="this.fav_songs && this.fav_songs.length" class="favorites-list">
           <li v-for="favorite in this.fav_songs" :key="favorite.id" class="favorite-item">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
-              <img :src="favorite.cover" alt="Cover Image" class="favorite-cover" />
+              <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" />
             </a>
             <div class="favorite-details">
               <h3>{{ favorite.title }}</h3>
@@ -46,7 +47,7 @@
         <div class="top-songs">
           <h2>MI TOP 3 CANCIONES</h2>
           <ul>
-            <li v-for="song in topSongs" :key="song.id">{{ song.title }} - {{ song.artist }}</li>
+            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.title }} - {{ song.artist }}</li>
           </ul>
         </div>
 
@@ -56,7 +57,7 @@
         <div class="top-albums">
           <h2>MI TOP 3 ÁLBUMES</h2>
           <ul>
-            <li v-for="album in topAlbums" :key="album.id">{{ album.title }} - {{ album.artist }}</li>
+            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.album }} - {{ song.artist }}</li>
           </ul>
         </div>
 
@@ -116,16 +117,6 @@ export default {
         { id: 2, title: 'Lágrimas desordenadas', artist: 'Melendi', cover: lagrimasCover },
         { id: 3, title: 'Sin fronteras', artist: 'Luis Fonsi', cover: sinFronterasCover }
       ],
-      topSongs: [
-        { id: 1, title: 'Como camarón', artist: 'Estopa' },
-        { id: 2, title: 'Con la luna llena', artist: 'Melendi' },
-        { id: 3, title: 'Lo que sobra de mí', artist: 'Fito y Fitipaldis' }
-      ],
-      topAlbums: [
-        { id: 1, title: 'Curiosa la cara de tu padre', artist: 'Melendi' },
-        { id: 2, title: 'Pequeño', artist: 'Dani Martín' },
-        { id: 3, title: 'El perdón', artist: 'Nicky Jam & Enrique Iglesias' }
-      ],
       upcomingEvents: [
         { id: 1, name: 'Concierto de Melendi', date: '15 de diciembre', location: 'Girona' },
         { id: 2, name: 'Festival de Pop español', date: '23 de noviembre', location: 'Palau Sant Jordi, Barcelona' }
@@ -139,6 +130,17 @@ export default {
     getYear (timestamp) {
       const date = new Date(timestamp)
       return date.getFullYear()
+    },
+    goHome (){
+      this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+    },
+    removeAccents (str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+    },
+    getAlbumImage (album) {
+      console.log(album)
+      const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
     }
   }
 }

@@ -2,7 +2,8 @@
   <div class="main-container">
   <header>
     <div class="logo">
-      <img src="../assets/logo2.png" alt="Logo">
+      <button @click="goHome" style="border: none; background: none;">
+      <img src="../assets/logo2.png" alt="Logo"></button>
     </div>
     <div class="search-bar">
       <input type="text" placeholder="Busca canciones, artistas">
@@ -129,6 +130,9 @@ export default {
         return
       }
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+    },
+    goHome (){
+      this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
     }
   }
 }
