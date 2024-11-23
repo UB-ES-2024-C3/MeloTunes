@@ -51,14 +51,13 @@ class UserService {
       })
   }
   addToFavoriteSongs (songId) {
-    console.log(songId)
     const token = localStorage.getItem('accessToken') // Recuperar token
     if (!token) {
       return Promise.reject(new Error('No token found')) // Rechazar si no hay token
     }
-    return axios.patch(`http://localhost:8000/api/v1/users/me/${songId}`, {
+    const parameters = `song_id=${songId}`
+    return axios.patch(`http://localhost:8000/api/v1/users/me/${songId}`, parameters, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}` // Incluir token en la cabecera
       }
     })
