@@ -124,9 +124,11 @@ export default {
         return
       }
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     },
     goHome () {
       this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.go()
     }
   }
 }
