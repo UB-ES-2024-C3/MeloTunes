@@ -125,10 +125,17 @@ export default {
       this.$router.go()
     },
     addFavorites () {
-      UserService.addToFavoriteSongs(this.song_id).then(response => {
-        console.log(response)
-        this.isFavorited = !this.isFavorited // Cambia el estado cuando se agrega a favoritos
-      })
+      if (!this.isFavorited) {
+        UserService.addToFavoriteSongs(this.song_id).then(response => {
+          console.log(response)
+          this.isFavorited = true
+        })
+      } else {
+        UserService.deleteOfFavoriteSongs(this.song_id).then(response => {
+          console.log(response)
+          this.isFavorited = false
+        })
+      }
     },
     checkIfFavorite () {
       UserService.getMyFavouriteSongs().then(response => {
