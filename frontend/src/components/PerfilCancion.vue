@@ -23,7 +23,11 @@
         <p>{{ getYear(song.timestamp) }}</p>
       </div>
       <div class="favorito">
-        <img src="../assets/me-gusta.png" alt="Favorito">
+        <i
+          :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
+          @click="addFavorites"
+          style="cursor: pointer; font-size: 24px; color: red;"
+        ></i>
       </div>
     </div>
   </div>
@@ -66,6 +70,7 @@
 
 <script>
 import SongService from '../services/SongService'
+import UserService from '../services/UserService'
 export default {
   data () {
     return {
@@ -74,19 +79,7 @@ export default {
       song: {},
       song_id: 0,
       drawer: false, // Estado del drawer
-      items: [
-        { name: 'Llévatelo' },
-        { name: 'No hay más' },
-        { name: 'Pasó' },
-        { name: 'Aire en las espaldas' },
-        { name: 'Y no hay manera' },
-        { name: 'Es mi momento' },
-        { name: 'Un poquito de ti' },
-        { name: 'Yo sé de ti' },
-        { name: 'Ya lo sabes' },
-        { name: 'Un lugar' },
-        { name: 'No vale dormir' }
-      ]
+      isFavorited: false
     }
   },
   mounted () {
@@ -97,6 +90,7 @@ export default {
         this.all_songs = response.data.data
         this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
       })
+      this.checkIfFavorite()
     })
   },
   methods: {
@@ -124,9 +118,25 @@ export default {
         return
       }
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     },
     goHome () {
       this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.go()
+    },
+    addFavorites () {
+      UserService.addToFavoriteSongs(this.song_id).then(response => {
+        console.log(response)
+        this.isFavorited = !this.isFavorited // Cambia el estado cuando se agrega a favoritos
+      })
+    },
+    checkIfFavorite () {
+      UserService.getMyFavouriteSongs().then(response => {
+        const favorites = response // Asumiendo que la API devuelve un arreglo de canciones favoritas
+        console.log(favorites)
+        this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
+        console.log(this.isFavorite)
+      })
     }
   }
 }
