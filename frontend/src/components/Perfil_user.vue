@@ -133,6 +133,7 @@ export default {
     },
     goHome () {
       this.$router.push({ path: '/home', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+      this.$router.go()
     },
     removeAccents (str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos

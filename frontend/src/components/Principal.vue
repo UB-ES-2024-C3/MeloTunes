@@ -112,9 +112,11 @@ export default {
     },
     logOut () {
       this.$router.push('/home')
+      this.$router.go()
     },
     profile () {
       this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.go()
     },
     getYear (timestamp) {
       const date = new Date(timestamp)
@@ -122,6 +124,7 @@ export default {
     },
     handleClick (song) {
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     },
     removeAccents (str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
