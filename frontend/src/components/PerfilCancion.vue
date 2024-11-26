@@ -5,6 +5,13 @@
       <button @click="goHome" style="border: none; background: none;">
       <img src="../assets/logo2.png" alt="Logo"></button>
     </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
+      <button @click="goHome"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;">
+        Buscar
+      </button>
+    </div>
   </header>
   <div>
     <div class="perfil">
@@ -79,7 +86,8 @@ export default {
       song: {},
       song_id: 0,
       drawer: false, // Estado del drawer
-      isFavorited: false
+      isFavorited: false,
+      searchQuery: ''
     }
   },
   mounted () {
@@ -121,7 +129,8 @@ export default {
       this.$router.go()
     },
     goHome () {
-      this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      localStorage.setItem('searchQuery', this.searchQuery)
+      this.$router.push({ path: '/home', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
       this.$router.go()
     },
     addFavorites () {

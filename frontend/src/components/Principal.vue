@@ -90,6 +90,12 @@ export default {
           this.artists.push(song.artist)
         }
       }
+      const savedSearchQuery = localStorage.getItem('searchQuery')
+      console.log(savedSearchQuery)
+      if (savedSearchQuery !== '') {
+        this.searchQuery = savedSearchQuery
+        this.searchSong()
+      }
     })
   },
   data () {
@@ -147,7 +153,6 @@ export default {
       }
 
       const normalizedSearchQuery = this.removeAccents(this.searchQuery.toLowerCase())
-
       // Filtra las canciones que coinciden parcialmente con el título
       this.songs_list = this.all_songs.filter(song =>
         this.removeAccents(song.title.toLowerCase()).includes(normalizedSearchQuery) ||
