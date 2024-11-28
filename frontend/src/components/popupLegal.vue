@@ -120,6 +120,7 @@ export default {
   color: #ffffff; /* Texto negro para contraste */
   margin: 0;
   font-size: 1.4rem;
+  line-height: 2.7rem;
 }
 .info::-webkit-scrollbar {
   width: 8px; /* Ancho de la scrollbar */
