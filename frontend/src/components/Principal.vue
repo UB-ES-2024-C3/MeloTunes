@@ -56,9 +56,19 @@
 
   <footer>
     <div class="legal">
-      <a href="#">Legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Configuración de cookies</a>
+      <v-flex class="mt-12 mb-3">
+        <popuplegal ref="popuplegal" />
+        <button class="legal" @click="$refs.popuplegal.openPopup()">Legal</button>
+      </v-flex>
+      <v-flex class="mt-12 mb-3">
+        <popup ref="popup" />
+        <button class="legal" @click="$refs.popup.openPopup()">Política de privacidad</button>
+      </v-flex>
+      <v-flex class="mt-12 mb-3">
+        <popup ref="popup" />
+        <button class="legal" @click="$refs.popup.openPopup()">Configuración de cookies</button>
+      </v-flex>
+
     </div>
     <div class="social-icons">
       <a href="#"><img src="../assets/facebook.png" alt="Logo de Facebook"></a>
@@ -71,7 +81,9 @@
 
 <script>
 import SongService from '../services/SongService'
+import popuplegal from './popupLegal'
 export default {
+  components: { popuplegal },
   name: 'Home',
   computed: {
     isLogedIn () {
@@ -356,8 +368,9 @@ footer {
 footer .legal {
   display: flex;
   flex-direction: column;
-  gap: 1vh;
+  gap: 0.1vh;
   width: 50%;
+  font-size: 1.5rem;
 }
 
 footer .social-icons a {
@@ -367,6 +380,7 @@ footer .social-icons a {
 footer .social-icons img {
   width: 3vw;
   margin-top: 1vh;
+  margin-right: 0.4vw;
 }
 
 footer .legal a {
@@ -398,8 +412,5 @@ footer .legal a {
     font-size: 6vw;
   }
 
-  .footer .legal a {
-    font-size: 1.2rem;
-  }
 }
 </style>
