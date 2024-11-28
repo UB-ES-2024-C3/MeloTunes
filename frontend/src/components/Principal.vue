@@ -65,8 +65,8 @@
         <button class="legal" @click="$refs.popuppolitica.openPopup()">Política de privacidad</button>
       </v-flex>
       <v-flex class="mt-12 mb-3">
-        <popup ref="popup" />
-        <button class="legal" @click="$refs.popup.openPopup()">Configuración de cookies</button>
+        <popupcookies ref="popupcookies" />
+        <button class="legal" @click="$refs.popupcookies.openPopup()">Cookies</button>
       </v-flex>
 
     </div>
@@ -83,8 +83,9 @@
 import SongService from '../services/SongService'
 import popuplegal from './popupLegal'
 import popuppolitica from './popupPolitica'
+import popupcookies from './popupCookies'
 export default {
-  components: { popuplegal, popuppolitica },
+  components: { popuplegal, popuppolitica, popupcookies },
   name: 'Home',
   computed: {
     isLogedIn () {
