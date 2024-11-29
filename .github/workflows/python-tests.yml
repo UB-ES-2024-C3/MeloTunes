@@ -3,10 +3,10 @@ name: Run Backend Tests
 on:
   push:
     branches:
-      - Integration_Tests  # Ejecuta los tests en cada commit a la rama principal
+      - Integration_Tests  # Ejecuta los tests en cada commit a la rama Integration_Tests
   pull_request:
     branches:
-      - Integration_Tests  # También en cada PR hacia la rama principal
+      - Integration_Tests  # También en cada PR hacia la rama Integration_Tests
 
 jobs:
   test:
@@ -35,16 +35,13 @@ jobs:
         run: |
           poetry install
 
-      # 5. Configura las variables de entorno necesarias
-      - name: Set environment variables
+      # 5. Ejecuta los tests con pytest, configurando las variables de entorno necesarias
+      - name: Run tests
+        working-directory: ./backend
         env:
           PROJECT_NAME: mt_app
           FIRST_SUPERUSER: Melotunes
           FIRST_SUPERUSER_PASSWORD: Melotunes123
           BACKEND_CORS_ORIGINS: http://localhost:8080
-
-      # 6. Ejecuta los tests con pytest
-      - name: Run tests
-        working-directory: ./backend
         run: |
           poetry run pytest --disable-warnings
