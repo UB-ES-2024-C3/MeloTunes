@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11.3"
 
       # 3. Instala Poetry
       - name: Install Poetry
@@ -35,7 +35,13 @@ jobs:
         run: |
           poetry install
 
-      # 5. Ejecuta los tests con pytest, configurando las variables de entorno necesarias
+      # 5. Ejecuta las migraciones de Alembic
+      - name: Run Alembic migrations
+        working-directory: ./backend
+        run: |
+          poetry run alembic upgrade head
+
+      # 6. Ejecuta los tests con pytest, configurando las variables de entorno necesarias
       - name: Run tests
         working-directory: ./backend
         env:
@@ -43,5 +49,6 @@ jobs:
           FIRST_SUPERUSER: Melotunes
           FIRST_SUPERUSER_PASSWORD: Melotunes123
           BACKEND_CORS_ORIGINS: http://localhost:8080
+          DATABASE_URL: sqlite:///./mt_db.sqlite  # Establece la URL de la base de datos (SQLite en este caso)
         run: |
           poetry run pytest --disable-warnings
