@@ -4,107 +4,175 @@
       <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
     </router-link>
 
-    <header class="add-song-header">
-      <h1>Subir una Canción o Álbum</h1>
-      <p>Selecciona una opción y completa los detalles para subir la canción o el álbum.</p>
-    </header>
-
+    <!-- Opciones de formulario -->
     <div class="form-options">
       <div
-        :class="['form-option', { 'active': !isAlbum && !isAlbumUpload }]"
+        :class="['form-option', { active: !isAlbum && !isAlbumUpload }]"
         @click="setOption('single')"
       >
         Subir Single
       </div>
       <div
-        :class="['form-option', { 'active': isAlbum && !isAlbumUpload }]"
+        :class="['form-option', { active: isAlbum && !isAlbumUpload }]"
         @click="setOption('album')"
       >
         Subir Canción en un Álbum
       </div>
       <div
-        :class="['form-option', { 'active': isAlbumUpload }]"
+        :class="['form-option', { active: isAlbumUpload }]"
         @click="setOption('uploadAlbum')"
       >
         Subir Álbum Completo
       </div>
     </div>
 
+    <!-- Formulario principal -->
     <form class="add-song-form" @submit.prevent="submitSong">
-      <div class="form-group">
-        <label for="songTitle">Título de la canción</label>
-        <input
-          type="text"
-          id="songTitle"
-          v-model="song.title"
-          placeholder="Ingresa el título de la canción"
-          required
-        />
+      <!-- Subir Single -->
+      <div v-if="!isAlbum && !isAlbumUpload">
+        <div class="form-group">
+          <label for="songTitle">Título de la canción</label>
+          <input
+            type="text"
+            id="songTitle"
+            v-model="song.title"
+            placeholder="Ingresa el título de la canción"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="songArtist">Artista</label>
+          <input
+            type="text"
+            id="songArtist"
+            v-model="song.artist"
+            placeholder="Ingresa el nombre del artista"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="songFile">Selecciona la canción</label>
+          <input
+            type="file"
+            id="songFile"
+            @change="handleFileChange"
+            accept="audio/*"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="albumCover">Portada del Single (PNG, JPEG)</label>
+          <input
+            type="file"
+            id="albumCover"
+            @change="handleImageChange"
+            accept="image/png, image/jpeg"
+          />
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="songArtist">Artista</label>
-        <input
-          type="text"
-          id="songArtist"
-          v-model="song.artist"
-          placeholder="Ingresa el nombre del artista"
-          required
-        />
+      <!-- Subir Canción en un Álbum -->
+      <div v-if="isAlbum">
+        <div class="form-group">
+          <label for="songTitle">Título de la canción</label>
+          <input
+            type="text"
+            id="songTitle"
+            v-model="song.title"
+            placeholder="Ingresa el título de la canción"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="songArtist">Artista</label>
+          <input
+            type="text"
+            id="songArtist"
+            v-model="song.artist"
+            placeholder="Ingresa el nombre del artista"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="songAlbum">Álbum</label>
+          <input
+            type="text"
+            id="songAlbum"
+            v-model="song.album"
+            placeholder="Ingresa el nombre del álbum"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="songFile">Selecciona la canción</label>
+          <input
+            type="file"
+            id="songFile"
+            @change="handleFileChange"
+            accept="audio/*"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="albumCover">Portada del Álbum (PNG, JPEG)</label>
+          <input
+            type="file"
+            id="albumCover"
+            @change="handleAlbumCoverChange"
+            accept="image/png, image/jpeg"
+            required
+          />
+        </div>
       </div>
 
-      <!-- Campos específicos para "Subir Canción en un Álbum" -->
-      <div v-if="isAlbum" class="form-group">
-        <label for="songAlbum">Álbum</label>
-        <input
-          type="text"
-          id="songAlbum"
-          v-model="song.album"
-          placeholder="Ingresa el nombre del álbum"
-          required
-        />
-      </div>
-
-      <!-- Campo común para ambos: Archivo de la canción -->
-      <div class="form-group">
-        <label for="songFile">Selecciona la canción</label>
-        <input
-          type="file"
-          id="songFile"
-          @change="handleFileChange"
-          accept="audio/*"
-          required
-        />
-      </div>
-
-      <!-- Campo de portada solo aparece si se selecciona "Subir Single" -->
-      <div v-if="!isAlbum && !isAlbumUpload" class="form-group">
-        <label for="albumCover">Portada del Single (PNG, JPEG)</label>
-        <input
-          type="file"
-          id="albumCover"
-          @change="handleImageChange"
-          accept="image/png, image/jpeg"
-        />
-      </div>
-
-      <div v-if="isAlbumUpload" class="form-group">
-        <label for="songCount">Número de Canciones</label>
-        <input
-          type="number"
-          id="songCount"
-          v-model="album.songCount"
-          min="1"
-          placeholder="Número de canciones en el álbum"
-          @change="updateSongCount"
-          required
-        />
-      </div>
-
-      <!-- Carrusel de canciones para "Subir Álbum Completo" -->
+      <!-- Subir Álbum Completo -->
       <div v-if="isAlbumUpload">
+        <div class="form-group">
+          <label for="albumTitle">Título del Álbum</label>
+          <input
+            type="text"
+            id="albumTitle"
+            v-model="album.title"
+            placeholder="Ingresa el título del álbum"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="albumArtist">Artista</label>
+          <input
+            type="text"
+            id="albumArtist"
+            v-model="album.artist"
+            placeholder="Ingresa el nombre del artista"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Número de Canciones</label>
+          <div class="song-counter">
+            <button
+              type="button"
+              class="btn-counter"
+              @click="adjustSongCount(-1)"
+              :disabled="album.songCount <= 1"
+            >
+              -
+            </button>
+            <span class="song-count">{{ album.songCount }}</span>
+            <button
+              type="button"
+              class="btn-counter"
+              @click="adjustSongCount(1)"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista dinámica de canciones -->
         <div
-          v-for="(songItem, index) in album.songs"
+          v-for="(song, index) in album.songs"
           :key="index"
           class="song-entry"
         >
@@ -113,12 +181,11 @@
             <input
               type="text"
               :id="'songTitle_' + index"
-              v-model="songItem.title"
-              placeholder="Ingresa el título de la canción"
+              v-model="album.songs[index].title"
+              placeholder="Título de la canción"
               required
             />
           </div>
-
           <div class="form-group">
             <label :for="'songFile_' + index">Archivo de la canción</label>
             <input
@@ -129,15 +196,12 @@
               required
             />
           </div>
-
-          <!-- Botón para eliminar canción -->
-          <button type="button" @click="removeSong(index)" class="btn-remove">
-            Eliminar Canción
-          </button>
         </div>
       </div>
+
+      <!-- Botón de envío -->
       <button type="submit" class="btn-submit">
-        {{ isAlbumUpload ? 'Subir Álbum' : (isAlbum ? 'Subir Canción' : 'Subir Single') }}
+        {{ isAlbumUpload ? 'Subir Álbum' : isAlbum ? 'Subir Canción' : 'Subir Single' }}
       </button>
     </form>
   </div>
@@ -157,8 +221,9 @@ export default {
       },
       album: {
         title: '',
+        artist: '',
         songCount: 1,
-        songs: [{ title: '', artist: '', file: null }]
+        songs: [{ title: '', file: null }]
       },
       isAlbum: false,
       isAlbumUpload: false
@@ -168,13 +233,16 @@ export default {
     setOption (option) {
       this.isAlbum = option === 'album'
       this.isAlbumUpload = option === 'uploadAlbum'
-      if (this.isAlbumUpload && !this.album.songs.length) {
-        this.album.songs = Array.from({ length: this.album.songCount }, () => ({
-          title: '',
-          artist: '',
-          file: null
-        }))
+
+      if (this.isAlbumUpload) {
+        this.initializeAlbumSongs()
       }
+    },
+    initializeAlbumSongs () {
+      this.album.songs = Array.from({ length: this.album.songCount }, () => ({
+        title: '',
+        file: null
+      }))
     },
     handleFileChange (event) {
       const file = event.target.files[0]
@@ -182,7 +250,6 @@ export default {
         this.song.file = file
       } else {
         alert('Por favor selecciona un archivo de audio válido.')
-        this.song.file = null
       }
     },
     handleFileChangeAlbum (index, event) {
@@ -191,47 +258,36 @@ export default {
         this.album.songs[index].file = file
       } else {
         alert('Por favor selecciona un archivo de audio válido.')
-        this.album.songs[index].file = null
       }
-    },
-    updateSongCount () {
-      const songCount = this.album.songCount
-      if (songCount > this.album.songs.length) {
-        for (let i = this.album.songs.length; i < songCount; i++) {
-          this.album.songs.push({ title: '', artist: '', file: null })
-        }
-      } else {
-        this.album.songs.splice(songCount)
-      }
-    },
-    removeSong (index) {
-      this.album.songs.splice(index, 1)
-      this.album.songCount = this.album.songs.length
     },
     handleImageChange (event) {
       const file = event.target.files[0]
-      if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+      if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
         this.song.cover = file
       } else {
-        alert('Por favor selecciona una imagen en formato PNG o JPEG.')
-        this.song.cover = null
+        alert('Por favor selecciona una imagen JPEG o PNG.')
       }
     },
-    submitSong () {
-      if (this.isAlbumUpload) {
-        if (this.album.songs.every(song => song.file)) {
-          console.log('Álbum subido:', this.album)
-          this.album = { title: '', songCount: 1, songs: [{ title: '', artist: '', file: null }] }
-          alert('¡Álbum subido exitosamente!')
-        } else {
-          alert('Por favor selecciona un archivo para cada canción.')
-        }
-      } else if (this.song.file) {
-        console.log('Canción subida:', this.song)
-        this.song = { title: '', artist: '', album: '', file: null, cover: null }
-        alert('¡Canción subida exitosamente!')
+    handleAlbumCoverChange (event) {
+      const file = event.target.files[0]
+      if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+        this.album.cover = file
       } else {
-        alert('Por favor selecciona un archivo de canción.')
+        alert('Por favor selecciona una imagen JPEG o PNG.')
+      }
+    },
+    adjustSongCount (delta) {
+      this.album.songCount = Math.max(1, this.album.songCount + delta)
+      this.initializeAlbumSongs()
+    },
+    submitSong () {
+      // Aquí iría la lógica para enviar el formulario según el tipo de contenido
+      if (this.isAlbumUpload) {
+        console.log('Subiendo álbum completo:', this.album)
+      } else if (this.isAlbum) {
+        console.log('Subiendo canción en un álbum:', this.song)
+      } else {
+        console.log('Subiendo single:', this.song)
       }
     }
   }
@@ -370,17 +426,31 @@ input[type='text']::placeholder {
 .song-entry .form-group {
   margin-bottom: 1rem;
 }
-.btn-remove {
-  background-color: #e64a19;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1rem;
+/* Botones "+" y "-" */
+.song-counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.btn-remove:hover {
-  background-color: #d43f00;
+.btn-counter {
+  background-color: #ff3d00;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-counter:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.song-count {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
 }
 </style>
