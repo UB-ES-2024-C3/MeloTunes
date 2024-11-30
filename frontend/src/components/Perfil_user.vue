@@ -1,7 +1,8 @@
 <template>
   <div class="perfil">
-    <!-- Encabezado del perfil con fondo -->
-    <button @click="goHome">Ir a Inicio</button>
+    <router-link to="/home" class="logo-link">
+      <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
+    </router-link>
     <header class="perfil-header">
       <div class="avatar-container">
         <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
@@ -13,9 +14,14 @@
         <div v-if="this.user_logged.isArtist">
           <p v-if="expandedBio" class="bio">{{ bio }}</p>
           <p v-else class="bio-short">{{ shortBio }}</p>
-          <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+          <button class="btn-toggle-bio" @click="toggleBio">
+            {{ expandedBio ? 'Ver menos' : 'Ver más' }}
+          </button>
         </div>
-        <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
+        <div class="btn-group">
+          <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
+          <router-link to="/addsong" class="btn-upload-song"><span>Subir canción (+)</span></router-link>
+        </div>
       </div>
     </header>
 
@@ -60,7 +66,6 @@
             <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.album }} - {{ song.artist }}</li>
           </ul>
         </div>
-
       </div>
     </section>
 
@@ -143,6 +148,9 @@ export default {
       const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
     }
+  },
+  uploadSong () {
+    this.$router.push('/addsong')
   }
 }
 </script>
@@ -199,6 +207,13 @@ export default {
 .bio, .bio-short {
   margin-top: 1rem;
   font-size: 1rem;
+}
+
+/* Botones de Ver mis favoritos y Subir canción */
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .btn-toggle-bio {
@@ -350,7 +365,7 @@ li {
   margin-bottom: 0.5rem;
 }
 
-.btn-favoritos {
+.btn-favoritos, .btn-upload-song {
   background-color: #ff3d00;
   color: white;
   padding: 0.5rem 1rem;
@@ -359,6 +374,12 @@ li {
   margin-top: 2rem;
   display: inline-block;
   font-weight: bold;
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 /* Línea divisoria entre las columnas */
@@ -460,5 +481,22 @@ h2 {
 
 .song-duration {
   color: #ff3d00;
+}
+
+.logo-link {
+  display: inline-block;
+  margin-bottom: 2rem; /* Espacio entre el logo y el contenido */
+}
+
+/* Estilo para el logo */
+.logo {
+  width: 60px;  /* Ajusta el tamaño del logo */
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;  /* Para efecto de hover */
+}
+
+.logo:hover {
+  transform: scale(1.1);  /* Efecto de hover (agranda el logo ligeramente) */
 }
 </style>
