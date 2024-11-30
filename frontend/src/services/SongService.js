@@ -2,7 +2,7 @@ import axios from '../http-common'
 
 class SongService {
   getAll () {
-    return axios.get('/api/v1/songs')
+    return axios.get('/api/v1/songs/')
       .then((res) => {
         return res
       })
