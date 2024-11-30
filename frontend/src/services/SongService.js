@@ -1,14 +1,14 @@
-import http from '../http-common'
+import axios from '../http-common'
 
 class SongService {
   getAll () {
-    return http.get('/api/v1/songs/')
+    return axios.get('/api/v1/songs')
       .then((res) => {
         return res
       })
   }
   get (songId) {
-    return http.get(`/api/v1/songs/${songId}`)
+    return axios.get(`/api/v1/songs/${songId}`)
       .then((res) => {
         return res
       })
