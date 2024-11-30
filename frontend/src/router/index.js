@@ -7,7 +7,7 @@ import IniciarSesion from '@/components/IniciarSesion'
 import PerfilCancion from '@/components/PerfilCancion'
 import TeamSet from '@/components/TeamSet'
 import PerfilUser from '@/components/Perfil_user'
-import AddSong from '@/components/addsong'
+import AddSong from '@/components/AddSong'
 import ArtistProfile from '@/components/ArtistProfile'
 
 Vue.use(Router)
