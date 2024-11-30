@@ -212,6 +212,7 @@ export default {
         .then(() => {
           alert('Registro exitoso!')
           this.$router.push('/login')
+          this.$router.go()
         })
         .catch((error) => {
           console.error(error)

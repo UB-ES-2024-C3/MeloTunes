@@ -56,9 +56,19 @@
 
   <footer>
     <div class="legal">
-      <a href="#">Legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Configuración de cookies</a>
+      <v-flex class="mt-12 mb-3">
+        <popuplegal ref="popuplegal" />
+        <button class="legal" @click="$refs.popuplegal.openPopup()">Legal</button>
+      </v-flex>
+      <v-flex class="mt-12 mb-3">
+        <popuppolitica ref="popuppolitica" />
+        <button class="legal" @click="$refs.popuppolitica.openPopup()">Política de privacidad</button>
+      </v-flex>
+      <v-flex class="mt-12 mb-3">
+        <popupcookies ref="popupcookies" />
+        <button class="legal" @click="$refs.popupcookies.openPopup()">Cookies</button>
+      </v-flex>
+
     </div>
     <div class="social-icons">
       <a href="#"><img src="../assets/facebook.png" alt="Logo de Facebook"></a>
@@ -71,7 +81,11 @@
 
 <script>
 import SongService from '../services/SongService'
+import popuplegal from './popupLegal'
+import popuppolitica from './popupPolitica'
+import popupcookies from './popupCookies'
 export default {
+  components: { popuplegal, popuppolitica, popupcookies },
   name: 'Home',
   computed: {
     isLogedIn () {
@@ -89,6 +103,12 @@ export default {
         if (!this.artists.includes(song.artist)) {
           this.artists.push(song.artist)
         }
+      }
+      const savedSearchQuery = localStorage.getItem('searchQuery')
+      console.log(savedSearchQuery)
+      if (savedSearchQuery !== '') {
+        this.searchQuery = savedSearchQuery
+        this.searchSong()
       }
     })
   },
@@ -112,9 +132,11 @@ export default {
     },
     logOut () {
       this.$router.push('/home')
+      this.$router.go()
     },
     profile () {
       this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.go()
     },
     getYear (timestamp) {
       const date = new Date(timestamp)
@@ -122,6 +144,7 @@ export default {
     },
     handleClick (song) {
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     },
     removeAccents (str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
@@ -144,7 +167,6 @@ export default {
       }
 
       const normalizedSearchQuery = this.removeAccents(this.searchQuery.toLowerCase())
-
       // Filtra las canciones que coinciden parcialmente con el título
       this.songs_list = this.all_songs.filter(song =>
         this.removeAccents(song.title.toLowerCase()).includes(normalizedSearchQuery) ||
@@ -348,8 +370,9 @@ footer {
 footer .legal {
   display: flex;
   flex-direction: column;
-  gap: 1vh;
+  gap: 0.1vh;
   width: 50%;
+  font-size: 1.5rem;
 }
 
 footer .social-icons a {
@@ -359,6 +382,7 @@ footer .social-icons a {
 footer .social-icons img {
   width: 3vw;
   margin-top: 1vh;
+  margin-right: 0.4vw;
 }
 
 footer .legal a {
@@ -390,8 +414,5 @@ footer .legal a {
     font-size: 6vw;
   }
 
-  .footer .legal a {
-    font-size: 1.2rem;
-  }
 }
 </style>

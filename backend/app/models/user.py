@@ -34,6 +34,7 @@ class UserCreateOpen(SQLModel):
     description: str | None = None
 
 
+
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: str | None = None  # type: ignore
@@ -79,3 +80,12 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str
+
+class UserTest(SQLModel):
+    email: str
+    password: str
+    first_name: str
+    second_name: str | None = None
+    description: str | None = None
+    is_superuser: bool = False
+    is_artist: bool = False

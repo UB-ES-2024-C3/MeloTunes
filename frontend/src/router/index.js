@@ -7,6 +7,8 @@ import IniciarSesion from '@/components/IniciarSesion'
 import PerfilCancion from '@/components/PerfilCancion'
 import TeamSet from '@/components/TeamSet'
 import PerfilUser from '@/components/Perfil_user'
+import AddSong from '@/components/AddSong'
+import ArtistProfile from '@/components/ArtistProfile'
 
 Vue.use(Router)
 export default new Router({
@@ -19,9 +21,14 @@ export default new Router({
       component: Welcome
     },
     {
-      path: '/perfil_user',
+      path: '/profile',
       name: 'PerfilUser',
       component: PerfilUser
+    },
+    {
+      path: '/artist_profile',
+      name: 'ArtistProfile',
+      component: ArtistProfile
     },
     {
       path: '/home',
@@ -42,6 +49,11 @@ export default new Router({
       path: '/teams',
       name: 'Teams',
       component: TeamSet
+    },
+    {
+      path: '/addsong',
+      name: 'AddSong',
+      component: AddSong
     },
     {
       path: '/song',

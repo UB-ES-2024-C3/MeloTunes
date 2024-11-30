@@ -5,6 +5,13 @@
       <button @click="goHome" style="border: none; background: none;">
       <img src="../assets/logo2.png" alt="Logo"></button>
     </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
+      <button @click="goHome"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;">
+        Buscar
+      </button>
+    </div>
   </header>
   <div>
     <div class="perfil">
@@ -23,7 +30,11 @@
         <p>{{ getYear(song.timestamp) }}</p>
       </div>
       <div class="favorito">
-        <img src="../assets/me-gusta.png" alt="Favorito">
+        <i
+          :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
+          @click="addFavorites"
+          style="cursor: pointer; font-size: 24px; color: red;"
+        ></i>
       </div>
     </div>
   </div>
@@ -66,6 +77,7 @@
 
 <script>
 import SongService from '../services/SongService'
+import UserService from '../services/UserService'
 export default {
   data () {
     return {
@@ -74,19 +86,8 @@ export default {
       song: {},
       song_id: 0,
       drawer: false, // Estado del drawer
-      items: [
-        { name: 'Llévatelo' },
-        { name: 'No hay más' },
-        { name: 'Pasó' },
-        { name: 'Aire en las espaldas' },
-        { name: 'Y no hay manera' },
-        { name: 'Es mi momento' },
-        { name: 'Un poquito de ti' },
-        { name: 'Yo sé de ti' },
-        { name: 'Ya lo sabes' },
-        { name: 'Un lugar' },
-        { name: 'No vale dormir' }
-      ]
+      isFavorited: false,
+      searchQuery: ''
     }
   },
   mounted () {
@@ -97,6 +98,7 @@ export default {
         this.all_songs = response.data.data
         this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
       })
+      this.checkIfFavorite()
     })
   },
   methods: {
@@ -124,9 +126,33 @@ export default {
         return
       }
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     },
     goHome () {
-      this.$router.push({ path: '/home', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      localStorage.setItem('searchQuery', this.searchQuery)
+      this.$router.push({ path: '/home', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+      this.$router.go()
+    },
+    addFavorites () {
+      if (!this.isFavorited) {
+        UserService.addToFavoriteSongs(this.song_id).then(response => {
+          console.log(response)
+          this.isFavorited = true
+        })
+      } else {
+        UserService.deleteOfFavoriteSongs(this.song_id).then(response => {
+          console.log(response)
+          this.isFavorited = false
+        })
+      }
+    },
+    checkIfFavorite () {
+      UserService.getMyFavouriteSongs().then(response => {
+        const favorites = response // Asumiendo que la API devuelve un arreglo de canciones favoritas
+        console.log(favorites)
+        this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
+        console.log(this.isFavorite)
+      })
     }
   }
 }
