@@ -8,6 +8,7 @@ import PerfilCancion from '@/components/PerfilCancion'
 import TeamSet from '@/components/TeamSet'
 import PerfilUser from '@/components/Perfil_user'
 import AddSong from '@/components/addsong'
+import ArtistProfile from '@/components/ArtistProfile'
 
 Vue.use(Router)
 export default new Router({
@@ -23,6 +24,11 @@ export default new Router({
       path: '/profile',
       name: 'PerfilUser',
       component: PerfilUser
+    },
+    {
+      path: '/artist_profile',
+      name: 'ArtistProfile',
+      component: ArtistProfile
     },
     {
       path: '/home',
