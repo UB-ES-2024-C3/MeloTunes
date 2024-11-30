@@ -3,10 +3,10 @@ name: Run Backend Tests
 on:
   push:
     branches:
-      - Integration_Tests  # Ejecuta los tests en cada commit a la rama Integration_Tests
+      - dev  # Ejecuta los tests en cada commit a la rama Integration_Tests
   pull_request:
     branches:
-      - Integration_Tests  # También en cada PR hacia la rama Integration_Tests
+      - dev  # También en cada PR hacia la rama Integration_Tests
 
 jobs:
   test:
