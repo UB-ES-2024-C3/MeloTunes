@@ -20,7 +20,8 @@
         </div>
         <div class="btn-group">
           <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
-          <router-link to="/addsong" class="btn-upload-song"><span>Subir canción (+)</span></router-link>
+          <router-link to="/addsong" class="btn-upload-song"><span>Subir canción</span></router-link>
+          <button class="btn-modificar-perfil" @click="showEditProfile = true">Modificar perfil</button>
         </div>
       </div>
     </header>
@@ -43,6 +44,29 @@
           </li>
         </ul>
         <p v-else>No tienes favoritos aún.</p>
+      </div>
+    </div>
+
+    <!-- Modal para editar el perfil -->
+    <div v-if="showEditProfile" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="showEditProfile = false">×</button>
+        <h2>Editar Perfil</h2>
+        <form @submit.prevent="saveProfile">
+          <div class="form-group">
+            <label for="firstName">Nombre:</label>
+            <input type="text" id="firstName" v-model="editProfile.first_name" />
+          </div>
+          <div class="form-group">
+            <label for="secondName">Apellido:</label>
+            <input type="text" id="secondName" v-model="editProfile.second_name" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Biografía:</label>
+            <textarea id="bio" v-model="editProfile.bio"></textarea>
+          </div>
+          <button type="submit" class="btn-save">Guardar</button>
+        </form>
       </div>
     </div>
 
@@ -117,6 +141,12 @@ export default {
       shortBio: 'Amante de la música r...',
       expandedBio: false,
       showFavorites: false,
+      showEditProfile: false,
+      editProfile: {
+        first_name: '',
+        second_name: '',
+        bio: ''
+      },
       musicRecommendations: [
         { id: 1, title: 'Vértigo', artist: 'Pablo Alborán', cover: vertigoCover },
         { id: 2, title: 'Lágrimas desordenadas', artist: 'Melendi', cover: lagrimasCover },
@@ -141,7 +171,7 @@ export default {
       this.$router.go()
     },
     removeAccents (str) {
-      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     },
     getAlbumImage (album) {
       console.log(album)
@@ -151,16 +181,27 @@ export default {
   },
   uploadSong () {
     this.$router.push('/addsong')
+  },
+  saveProfile () {
+    Object.assign(this.user_logged, this.editProfile)
+    this.showEditProfile = false
+    alert('Perfil actualizado con éxito')
   }
 }
 </script>
 
 <style scoped>
 .perfil {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   background-color: #121212;
   color: white;
   padding: 2rem;
   min-height: 100vh;
+  overflow-y: auto; /* Permitir desplazamiento vertical */
+  box-sizing: border-box;
 }
 
 .perfil-header {
@@ -168,7 +209,7 @@ export default {
   color: white;
   padding: 2rem;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start; /* Alineamos a la izquierda */
   border-radius: 12px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
@@ -382,13 +423,13 @@ li {
   margin-top: 1rem;
 }
 
-/* Línea divisoria entre las columnas */
 .divider {
   width: 1px;
   background-color: #555; /* Color gris */
   height: auto;
   align-self: stretch; /* Extiende la línea para abarcar la altura completa */
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -400,6 +441,7 @@ li {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: auto; /* Permitir desplazamiento si el contenido del modal es extenso */
 }
 
 .modal-content {
@@ -407,9 +449,10 @@ li {
   color: white;
   padding: 1rem;
   border-radius: 10px;
-  max-width: 400px; /* Tamaño reducido */
-  max-height: 70%; /* Ajustar la altura del modal */
-  overflow: hidden; /* Elimina la barra de desplazamiento */
+  max-width: 400px;
+  max-height: 70%;
+  overflow-y: auto;
+  overflow: hidden;
   position: relative;
 }
 
@@ -498,5 +541,61 @@ h2 {
 
 .logo:hover {
   transform: scale(1.1);  /* Efecto de hover (agranda el logo ligeramente) */
+}
+
+.btn-modificar-perfil {
+  background-color: #ff3d00;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: 2rem;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  color: #ff3d00;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #555;
+  color: white;
+}
+
+.btn-save {
+  background-color: #ff3d00;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .top-columns {
+    flex-direction: column;
+  }
+
+  .recommendation-cover {
+    height: 150px;
+  }
 }
 </style>

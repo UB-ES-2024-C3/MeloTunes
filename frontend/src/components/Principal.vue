@@ -47,7 +47,7 @@
         <img
           :src="getArtistImage(artist)"
           alt="Artista"
-          style="width: 100%; height: 100%;"
+          style="width: 25vw; height: 25vh;"
         >
         <p>{{ artist }}</p>
       </div>
@@ -189,10 +189,11 @@ export default {
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
-  padding: 0;
   background-color: black;
   color: white;
   padding-top: 17vh; /* Ajuste para adaptarse a la altura del header */
+  overflow-y: auto; /* Habilita el scroll */
+
 }
 
 header {
@@ -219,7 +220,7 @@ header .auth-buttons a {
   border-radius: 25px;
   margin-left: 1vw;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 header .auth-buttons a:hover {
@@ -311,7 +312,7 @@ header .auth-buttons a:hover {
 .album-info p {
   margin: 0.2vw;
   color: white;
-  font-size: 1.8rem;
+  font-size: 1rem;
   text-align: left;
 }
 
@@ -371,7 +372,7 @@ footer .legal {
   display: flex;
   flex-direction: column;
   gap: 0.1vh;
-  width: 50%;
+  width: 25vw;
   font-size: 1.5rem;
 }
 
@@ -387,18 +388,17 @@ footer .social-icons img {
 
 footer .legal a {
   color: white;
-  text-decoration: none;
   font-size: 1.5rem;
 }
 
 /* Media Queries para mejorar la adaptabilidad */
-@media (max-width: 768px) {
+
   .hero h1 {
     font-size: 12vw;
   }
 
   .search-bar input[type="text"] {
-    width: 70%;
+    width: 45vw;
   }
 
   .search-bar button {
@@ -406,13 +406,12 @@ footer .legal a {
   }
 
   .album img, .artist img {
-    width: 20vw;
-    height: 20vw;
+    width: 10vw;
+    height: 10vw;
   }
 
   .artist-section h2 {
-    font-size: 6vw;
+    font-size: 5rem;
   }
 
-}
 </style>
