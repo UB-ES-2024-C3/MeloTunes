@@ -30,6 +30,7 @@
   <div class="album-grid">
     <!-- Aquí cambiamos las canciones por un bucle que renderiza cada álbum dinámicamente -->
     <div v-for="(song) in songs_list" :key="song.id" class="album" @click="handleClick(song)">
+      <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
       <div class="album-info">
         <p>{{ song.title }}</p>
         <p>{{ song.artist }}</p>
@@ -43,6 +44,11 @@
     <h2>Artistas Populares</h2>
     <div class="artist-grid">
       <div v-for="artist in artists" :key="artist" class="artist">
+        <img
+          :src="getArtistImage(artist)"
+          alt="Artista"
+          style="width: 100%; height: 100%;"
+        >
         <p>{{ artist }}</p>
       </div>
     </div>
