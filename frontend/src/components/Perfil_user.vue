@@ -192,10 +192,16 @@ export default {
 
 <style scoped>
 .perfil {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   background-color: #121212;
   color: white;
   padding: 2rem;
   min-height: 100vh;
+  overflow-y: auto; /* Permitir desplazamiento vertical */
+  box-sizing: border-box;
 }
 
 .perfil-header {
@@ -203,7 +209,7 @@ export default {
   color: white;
   padding: 2rem;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start; /* Alineamos a la izquierda */
   border-radius: 12px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
@@ -417,13 +423,13 @@ li {
   margin-top: 1rem;
 }
 
-/* Línea divisoria entre las columnas */
 .divider {
   width: 1px;
   background-color: #555; /* Color gris */
   height: auto;
   align-self: stretch; /* Extiende la línea para abarcar la altura completa */
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -435,6 +441,7 @@ li {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: auto; /* Permitir desplazamiento si el contenido del modal es extenso */
 }
 
 .modal-content {
@@ -442,9 +449,10 @@ li {
   color: white;
   padding: 1rem;
   border-radius: 10px;
-  max-width: 400px; /* Tamaño reducido */
-  max-height: 70%; /* Ajustar la altura del modal */
-  overflow: hidden; /* Elimina la barra de desplazamiento */
+  max-width: 400px;
+  max-height: 70%;
+  overflow-y: auto;
+  overflow: hidden;
   position: relative;
 }
 
@@ -546,27 +554,6 @@ h2 {
   font-weight: bold;
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: #333;
-  color: white;
-  padding: 1.5rem;
-  border-radius: 10px;
-  width: 400px;
-}
-
 .form-group {
   margin-bottom: 1rem;
 }
@@ -594,5 +581,21 @@ h2 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .top-columns {
+    flex-direction: column;
+  }
+
+  .recommendation-cover {
+    height: 150px;
+  }
 }
 </style>
