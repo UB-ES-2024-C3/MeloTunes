@@ -89,6 +89,8 @@ def update_user_me(*, session: SessionDep, user_in: UserUpdateMe, current_user: 
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
             )
+        if not current_user.is_artist:
+            user_in.artist_name = None
     user_data = user_in.model_dump(exclude_unset=True)
     current_user.sqlmodel_update(user_data)
     session.add(current_user)
