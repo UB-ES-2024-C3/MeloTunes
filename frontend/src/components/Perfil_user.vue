@@ -200,7 +200,7 @@ export default {
   color: white;
   padding: 3vh 3vw; /* Añadir más espaciado proporcional */
   min-height: 100vh;
-  overflow-y: auto;
+  overflow: auto;
   box-sizing: border-box;
 }
 
@@ -231,7 +231,10 @@ export default {
 
 .user-details {
   flex-grow: 1;
-  max-width: 50vw; /* Aseguramos que no ocupe más de la mitad de la pantalla */
+  max-width: 50vw;
+  max-height: 50vh; /* Limita la altura */
+  overflow-y: auto; /* Permite el scroll si el contenido excede el espacio */
+  padding-right: 10px;
 }
 
 .user-details h1 {
@@ -289,6 +292,8 @@ export default {
   display: flex;
   gap: 2vw;
   flex-wrap: wrap;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .recommendation {
@@ -405,14 +410,13 @@ li {
 }
 
 .modal-content {
-  background-color: #333;
-  color: white;
-  padding: 2vh 2vw;
-  border-radius: 1vw;
-  max-width: 40vw;
-  max-height: 70%;
+  background: white;
+  padding: 2vw;
+  border-radius: 1.5vw;
+  max-width: 80%;
+  max-height: 80%;
   overflow-y: auto;
-  position: relative;
+  color: #333;
 }
 
 .modal-content::-webkit-scrollbar {
@@ -450,9 +454,11 @@ h2 {
 }
 
 .favorites-list {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
-  margin-top: 2vh;
+  margin: 0;
+  max-height: 50vh; /* Limita la altura */
+  overflow-y: auto;
 }
 
 .favorite-item {
