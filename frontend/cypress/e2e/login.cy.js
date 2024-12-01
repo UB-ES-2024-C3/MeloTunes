@@ -16,7 +16,7 @@ describe('Página de inicio de sesión', () => {
 
   it('Inicia sesión correctamente con credenciales válidas', () => {
     cy.get('input[type="email"]').type('usuario@ejemplo.com');
-    cy.get('input[type="password"]').type('contraseñaValida123');
+    cy.get('input[type="password"]').type('contrasenaValida123');
     cy.get('button[type="submit"]').click();
 
     // Asegúrate de que redirige o muestra contenido tras el inicio de sesión
