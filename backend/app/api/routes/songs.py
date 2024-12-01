@@ -18,7 +18,8 @@ from app.models import (
     SongCreateOpen,
     SongOut,
     SongsOut,
-    SongUpdate
+    SongUpdate,
+    Album
 )
 
 router = APIRouter()
@@ -167,3 +168,36 @@ def delete_song(session: SessionDep, current_user: CurrentUser, song_id: int) ->
     session.delete(song)
     session.commit()
     return Message(message="Song deleted successfully")
+
+
+@router.patch(
+    "/song2album/",
+    response_model=SongOut,
+)
+def add_song_to_album(*, session: SessionDep, current_user: CurrentUser, song_id: int, album_id: int, song_in: SongUpdate) -> Any:
+    """
+    Update a song.
+    """
+    db_song = session.get(Song, song_id)
+    db_album = session.get(Album, album_id)
+    if not db_song:
+        raise HTTPException(
+            status_code=404,
+            detail="The song with this id does not exist in the system",
+        )
+    if not db_album:
+        raise HTTPException(
+            status_code=404,
+            detail="The album with this id does not exist in the system",
+        )
+    if current_user.artist_name != db_song.artist:
+        raise HTTPException(
+            status_code=409, detail=db_song.artist
+        )
+    if current_user.artist_name != db_album.artist and current_user.is_superuser == False:
+        raise HTTPException(
+            status_code=409, detail="This album does not belong to you"
+        )
+    db_song.album = db_album.title
+    db_song = crud.song.update_song(session=session, db_song=db_song, song_in=song_in)
+    return db_song
