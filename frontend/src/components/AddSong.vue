@@ -1,8 +1,8 @@
 <template>
   <div class="add-song">
-    <router-link to="/home" class="logo-link">
+    <div class="logo-link" @click="goHome">
       <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
-    </router-link>
+    </div>
 
     <!-- Opciones de formulario -->
     <div class="form-options">
@@ -35,18 +35,8 @@
           <input
             type="text"
             id="songTitle"
-            v-model="song.title"
+            v-model="this.song_title"
             placeholder="Ingresa el título de la canción"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="songArtist">Artista</label>
-          <input
-            type="text"
-            id="songArtist"
-            v-model="song.artist"
-            placeholder="Ingresa el nombre del artista"
             required
           />
         </div>
@@ -78,18 +68,8 @@
           <input
             type="text"
             id="songTitle"
-            v-model="song.title"
+            v-model="song_title"
             placeholder="Ingresa el título de la canción"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="songArtist">Artista</label>
-          <input
-            type="text"
-            id="songArtist"
-            v-model="song.artist"
-            placeholder="Ingresa el nombre del artista"
             required
           />
         </div>
@@ -98,28 +78,8 @@
           <input
             type="text"
             id="songAlbum"
-            v-model="song.album"
+            v-model="song_album"
             placeholder="Ingresa el nombre del álbum"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="songFile">Selecciona la canción</label>
-          <input
-            type="file"
-            id="songFile"
-            @change="handleFileChange"
-            accept="audio/*"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="albumCover">Portada del Álbum (PNG, JPEG)</label>
-          <input
-            type="file"
-            id="albumCover"
-            @change="handleAlbumCoverChange"
-            accept="image/png, image/jpeg"
             required
           />
         </div>
@@ -208,24 +168,29 @@
 </template>
 
 <script>
+import UserService from '../services/UserService'
+import SongService from '../services/SongService'
+
 export default {
   name: 'AddSong',
+  mounted () {
+    UserService.get().then(response => {
+      this.user_logged = response.data
+      console.log(response.data)
+    })
+  },
   data () {
     return {
-      song: {
-        title: '',
-        artist: '',
-        album: '',
-        file: null,
-        cover: null
-      },
+      song_title: '',
+      song_artist: '',
+      song_album: '',
       album: {
         title: '',
         artist: '',
         songCount: 1,
         songs: [{ title: '', file: null }]
       },
-      isAlbum: false,
+      isAlbum: true,
       isAlbumUpload: false
     }
   },
@@ -285,10 +250,24 @@ export default {
       if (this.isAlbumUpload) {
         console.log('Subiendo álbum completo:', this.album)
       } else if (this.isAlbum) {
-        console.log('Subiendo canción en un álbum:', this.song)
+        console.log('Subiendo canción en un álbum:', this.song_title)
+        SongService.createSong(this.song_title, this.user_logged.artist_name, this.song_album)
+          .then(() => {
+            alert('La canción ' + this.song_title + ' con álbum ' + this.song_album + ' se ha subido con éxito.')
+            this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+            this.$router.go()
+          })
+          .catch((error) => {
+            console.error(error)
+            alert('La canción ' + this.song_title + ' ya existe en el sistema.')
+          })
       } else {
         console.log('Subiendo single:', this.song)
       }
+    },
+    goHome () {
+      this.$router.push({ path: '/home', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+      this.$router.go()
     }
   }
 }

@@ -19,6 +19,7 @@ def init() -> None:
         song1 = Song(
             title="Piratas del Bar Caribe", 
             artist="Melendi",
+            album="Curiosa la cara de tu padre", 
             duration=timedelta(minutes=4, seconds=5), 
             timestamp=datetime(2008, 9, 16)
         )
@@ -26,6 +27,7 @@ def init() -> None:
         song2 = Song(
             title="Tu jardín con enanitos", 
             artist="Melendi",
+            album="Lágrimas desordenadas", 
             duration=timedelta(minutes=3, seconds=57), 
             timestamp=datetime(2012, 11, 13)
         )
