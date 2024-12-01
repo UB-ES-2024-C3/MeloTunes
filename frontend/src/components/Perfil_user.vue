@@ -14,14 +14,14 @@
         <div v-if="this.user_logged.isArtist">
           <p v-if="expandedBio" class="bio">{{ bio }}</p>
           <p v-else class="bio-short">{{ shortBio }}</p>
-          <button class="btn-toggle-bio" @click="toggleBio">
+          <button class="btn" @click="toggleBio">
             {{ expandedBio ? 'Ver menos' : 'Ver más' }}
           </button>
         </div>
         <div class="btn-group">
-          <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
-          <router-link to="/addsong" class="btn-upload-song"><span>Subir canción</span></router-link>
-          <button class="btn-modificar-perfil" @click="showEditProfile = true">Modificar perfil</button>
+          <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
+          <router-link to="/addsong" class="btn"><span>Subir canción</span></router-link>
+          <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
         </div>
       </div>
     </header>
@@ -29,7 +29,7 @@
     <!-- Popup modal de favoritos -->
     <div v-if="showFavorites" class="modal-overlay">
       <div class="modal-content">
-        <button class="close-button" @click="showFavorites = false">×</button>
+        <button class="btn close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
         <ul v-if="this.fav_songs && this.fav_songs.length" class="favorites-list">
           <li v-for="favorite in this.fav_songs" :key="favorite.id" class="favorite-item">
@@ -50,7 +50,7 @@
     <!-- Modal para editar el perfil -->
     <div v-if="showEditProfile" class="modal-overlay">
       <div class="modal-content">
-        <button class="close-button" @click="showEditProfile = false">×</button>
+        <button class="btn close-button" @click="showEditProfile = false">×</button>
         <h2>Editar Perfil</h2>
         <form @submit.prevent="saveProfile">
           <div class="form-group">
@@ -65,29 +65,35 @@
             <label for="bio">Biografía:</label>
             <textarea id="bio" v-model="editProfile.bio"></textarea>
           </div>
-          <button type="submit" class="btn-save">Guardar</button>
+          <button type="submit" class="btn">Guardar</button>
         </form>
       </div>
     </div>
 
     <!-- Sección Top Canciones y Álbumes en columnas con línea divisoria -->
     <section class="top-section">
-      <div class="top-columns">
-        <!-- Top 3 Canciones -->
-        <div class="top-songs">
-          <h2>MI TOP 3 CANCIONES</h2>
+      <h2>Mi Top</h2>
+      <div class="recommendations-grid">
+        <!-- Top Canciones -->
+        <div class="recommendation-column">
+          <h3>MI TOP 3 CANCIONES</h3>
           <ul>
-            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.title }} - {{ song.artist }}</li>
+            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">
+              <span>{{ song.title }} - {{ song.artist }}</span>
+            </li>
           </ul>
         </div>
 
         <!-- Línea divisoria -->
         <div class="divider"></div>
-        <!-- Top 3 Álbumes -->
-        <div class="top-albums">
-          <h2>MI TOP 3 ÁLBUMES</h2>
+
+        <!-- Top Álbumes -->
+        <div class="recommendation-column">
+          <h3>MI TOP 3 ÁLBUMES</h3>
           <ul>
-            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.album }} - {{ song.artist }}</li>
+            <li v-for="album in fav_songs.slice(0, 3)" :key="album.id">
+              <span>{{ album.album }} - {{ album.artist }}</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -190,7 +196,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .perfil {
   display: flex;
@@ -215,8 +220,183 @@ export default {
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   margin-bottom: 3vh;
   width: 100%;
+  position: relative;
 }
 
+ .btn {
+   background-color: #bf0000;
+   padding: 1.5vh 2vw;
+   border-radius: 2vw;
+   color: white;
+   font-size: 1.2rem;
+   text-decoration: none;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   cursor: pointer;
+ }
+
+.btn:hover {
+  background-color: #a30000;
+}
+
+.logo-link {
+  position: fixed; /* Fija la posición para que esté siempre visible */
+  top: 2vh;       /* Espaciado desde la parte superior */
+  left: 2vw;      /* Espaciado desde la parte izquierda */
+  z-index: 1000;  /* Asegura que esté encima de otros elementos */
+  cursor: pointer;
+  width: auto;    /* Permite ajustar el tamaño según la imagen */
+}
+
+.logo {
+  width: 8vw;     /* Tamaño moderado (ajustable según preferencias) */
+  max-width: 50px; /* Tamaño máximo en píxeles */
+  height: auto;   /* Mantiene las proporciones de la imagen */
+  transition: transform 0.3s ease; /* Animación al pasar el cursor */
+}
+
+.logo:hover {
+  transform: scale(1.1); /* Aumenta el tamaño un poco al pasar el mouse */
+}
+
+.top-section {
+  margin-top: 3vh;
+  background-color: #1f1f1f;
+  padding: 3vh 3vw;
+  border-radius: 1vw;
+}
+
+.top-section h2 {
+  color: #ff3d00;
+  font-size: 2rem;
+  margin-bottom: 2vh;
+  text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo negro translúcido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #1f1f1f; /* Fondo negro */
+  color: white; /* Texto blanco */
+  padding: 3vh 3vw;
+  border-radius: 1vw;
+  max-width: 40vw;
+  max-height: 70%;
+  overflow-y: auto;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5); /* Sombra para profundidad */
+  position: relative;
+}
+
+.modal-content h2 {
+  color: #ff3d00; /* Color temático */
+  margin-bottom: 2vh;
+}
+
+.modal-content p,
+.modal-content ul,
+.modal-content li {
+  color: white; /* Asegura que el texto sea blanco */
+}
+
+.modal-content button {
+  background-color: #bf0000;
+  color: white;
+  padding: 1.5vh 2vw;
+  border-radius: 2vw;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #ff3d00;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 0.6vw;
+  background-color: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.close-button {
+  position: absolute;
+  top: 1vh;
+  right: 1vh;
+  font-size: 2rem;
+  color: #ff3d00; /* Botón de cierre temático */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.recommendations-grid {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 2vw;
+}
+
+.recommendation-column {
+  flex: 1;
+  background-color: #333;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.recommendation-column h3 {
+  font-size: 1.8rem;
+  color: #ff3d00;
+  margin-bottom: 1.5vh;
+}
+
+.recommendation-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recommendation-column li {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.divider {
+  width: 2px;
+  background-color: #555;
+  margin: 0 1vw;
+}
+
+.close-button {
+  justify-content: flex-end;
+}
 .avatar-container {
   flex-shrink: 0;
   margin-right: 2vw;
@@ -256,15 +436,6 @@ export default {
   display: flex;
   gap: 2vw;
   margin-top: 2vh;
-}
-
-.btn-toggle-bio {
-  background-color: #ff3d00;
-  color: white;
-  padding: 1vh 2vw;
-  border: none;
-  border-radius: 1vw;
-  cursor: pointer;
 }
 
 .music-recommendations,
@@ -383,14 +554,4 @@ li {
   margin: 0 3vw;
 }
 
-.btn-upload-song {
-  background-color: #00bfae;
-  padding: 1.5vh 2vw;
-  border-radius: 2vw;
-  color: white;
-  font-size: 1.2rem;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-}
 </style>
