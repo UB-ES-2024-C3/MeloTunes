@@ -1,9 +1,8 @@
-import http from '../http-common'
-import axios from 'axios'
+import axios from '../http-common'
 
 class UserService {
   getAll () {
-    return http.get('/api/v1/users')
+    return axios.get('/api/v1/users')
       .then((res) => {
         return res
       })
@@ -13,7 +12,7 @@ class UserService {
     if (!token) {
       return Promise.reject(new Error('No token found'))
     }
-    return axios.get('http://localhost:8000/api/v1/users/me', {
+    return axios.get('/api/v1/users/me', {
       headers: {
         Authorization: `Bearer ${token}` // Incluir token en la cabecera
       }
@@ -34,7 +33,7 @@ class UserService {
     if (!token) {
       return Promise.reject(new Error('No token found')) // Rechazar si no hay token
     }
-    return axios.get('http://localhost:8000/api/v1/users/me/my_songs', {
+    return axios.get('/api/v1/users/me/my_songs', {
       headers: {
         Authorization: `Bearer ${token}` // Incluir token en la cabecera
       }
@@ -56,7 +55,7 @@ class UserService {
       return Promise.reject(new Error('No token found')) // Rechazar si no hay token
     }
     const parameters = `song_id=${songId}`
-    return axios.patch(`http://localhost:8000/api/v1/users/me/${songId}`, parameters, {
+    return axios.patch(`/api/v1/users/me/${songId}`, parameters, {
       headers: {
         Authorization: `Bearer ${token}` // Incluir token en la cabecera
       }
@@ -79,7 +78,7 @@ class UserService {
       return Promise.reject(new Error('No token found')) // Rechazar si no hay token
     }
     const parameters = `song_id=${songId}`
-    return axios.patch(`http://localhost:8000/api/v1/users/me/my_songs/${songId}`, parameters, {
+    return axios.patch(`/api/v1/users/me/my_songs/${songId}`, parameters, {
       headers: {
         Authorization: `Bearer ${token}` // Incluir token en la cabecera
       }

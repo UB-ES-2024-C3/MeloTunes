@@ -1,8 +1,8 @@
 <template>
   <div class="perfil">
-    <router-link to="/home" class="logo-link">
+    <div class="logo-link" @click="goHome">
       <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
-    </router-link>
+    </div>
     <header class="perfil-header">
       <div class="avatar-container">
         <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />

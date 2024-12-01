@@ -12,7 +12,7 @@ import ArtistProfile from '@/components/ArtistProfile'
 
 Vue.use(Router)
 export default new Router({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
     {
@@ -21,7 +21,7 @@ export default new Router({
       component: Welcome
     },
     {
-      path: '/profile',
+      path: '/perfil_user',
       name: 'PerfilUser',
       component: PerfilUser
     },
