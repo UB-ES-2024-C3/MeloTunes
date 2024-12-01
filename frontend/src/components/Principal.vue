@@ -97,8 +97,8 @@ export default {
       this.user_name = this.$route.query.email
     }
     SongService.getAll().then(response => {
-      this.all_songs = response.data
-      this.songs_list = response.data.slice(0, 8)
+      this.all_songs = response.data.data
+      this.songs_list = response.data.data.slice(0, 8)
       for (const song of this.songs_list) {
         if (!this.artists.includes(song.artist)) {
           this.artists.push(song.artist)
