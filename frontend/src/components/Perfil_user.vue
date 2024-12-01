@@ -198,7 +198,7 @@ export default {
   align-items: stretch;
   background-color: #121212;
   color: white;
-  padding: 2rem;
+  padding: 2vw;
   min-height: 100vh;
   overflow-y: auto; /* Permitir desplazamiento vertical */
   box-sizing: border-box;
@@ -207,23 +207,23 @@ export default {
 .perfil-header {
   background: #1f1f1f;
   color: white;
-  padding: 2rem;
+  padding: 2vw;
   display: flex;
   align-items: stretch;
   justify-content: flex-start; /* Alineamos a la izquierda */
-  border-radius: 12px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  margin-bottom: 2rem;
+  border-radius: 1vw;
+  box-shadow: 0vw 0.8vh 1.6vh rgba(0, 0, 0, 0.2);
+  margin-bottom: 2vh;
 }
 
 .avatar-container {
   flex-shrink: 0;
-  margin-right: 1.5rem;
+  margin-right: 1.5vw;
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
+  width: 15vw;
+  height: 15vw;
   border-radius: 50%;
   border: 3px solid #ff3d00;
   object-fit: cover;
@@ -231,38 +231,38 @@ export default {
 
 .user-details {
   flex-grow: 1;
-  max-width: 500px;
+  max-width: 50vw;
 }
 
 .user-details h1 {
-  font-size: 2rem;
+  font-size: 2vw;
   margin: 0;
   font-weight: 700;
 }
 
 .location {
   color: #aaa;
-  margin-top: 0.5rem;
+  margin-top: 0.5vw;
 }
 
 .bio, .bio-short {
-  margin-top: 1rem;
-  font-size: 1rem;
+  margin-top: 1vh;
+  font-size: 1.2vw;
 }
 
 /* Botones de Ver mis favoritos y Subir canción */
 .btn-group {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 1vw;
+  margin-top: 1vh;
 }
 
 .btn-toggle-bio {
   background-color: #ff3d00;
   color: white;
-  padding: 0.5rem 1.2rem;
+  padding: 0.5vh 1.2vw;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.5vw;
   cursor: pointer;
 }
 
@@ -270,10 +270,10 @@ export default {
 .top-songs,
 .top-albums,
 .events {
-  margin-top: 2rem;
+  margin-top: 2vh;
   background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 2vw;
+  border-radius:1vw;
 }
 
 .music-recommendations h2,
@@ -281,27 +281,27 @@ export default {
 .top-albums h2,
 .events h2 {
   color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.5vw;
+  margin-bottom: 1vh;
 }
 
 .recommendations-grid {
   display: flex;
-  gap: 1rem;
+  gap: 1vw;
   flex-wrap: wrap;
 }
 
 .recommendation {
   background-color: #333;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 1vw;
+  border-radius: 0.5vw;
   text-align: center;
 }
 
 .recommendation-cover {
   width: 100%;
-  height: 200px;
-  border-radius: 8px;
+  height: 20vh;
+  border-radius: 0.5vw;
 }
 
 .music-stats ul,
@@ -312,7 +312,7 @@ export default {
 }
 
 ul {
-  margin-top: 1rem;
+  margin-top: 1vh;
 }
 
 li {
@@ -323,31 +323,31 @@ li {
 .top-albums ul {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1vh;
 }
 
 .album-info p,
 .song-info p {
-  font-size: 1rem;
+  font-size: 1.2vw;
   color: #ff3d00;
 }
 
 .top-section {
   background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
+  padding: 2vw;
+  border-radius: 1vw;
+  margin-top: 2vh;
 }
 
 .top-section h2 {
   color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.5vw;
+  margin-bottom: 1vh;
 }
 
 .top-columns {
   display: flex;
-  gap: 2rem;
+  gap: 2vw;
 }
 
 .top-songs, .top-albums {
@@ -409,10 +409,10 @@ li {
 .btn-favoritos, .btn-upload-song {
   background-color: #ff3d00;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  padding: 1vh 1vw;
+  border-radius: 0.5vw;
   text-decoration: none;
-  margin-top: 2rem;
+  margin-top: 2vh;
   display: inline-block;
   font-weight: bold;
 }
@@ -424,7 +424,7 @@ li {
 }
 
 .divider {
-  width: 1px;
+  width: 0.1vw;
   background-color: #555; /* Color gris */
   height: auto;
   align-self: stretch; /* Extiende la línea para abarcar la altura completa */
@@ -434,26 +434,24 @@ li {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  overflow: auto; /* Permitir desplazamiento si el contenido del modal es extenso */
+  overflow: auto;
 }
 
 .modal-content {
   background-color: #333;
   color: white;
-  padding: 1rem;
-  border-radius: 10px;
-  max-width: 400px;
-  max-height: 70%;
+  padding: 2vw;
+  border-radius: 1vw;
+  max-width: 40vw;
+  max-height: 70vh;
   overflow-y: auto;
-  overflow: hidden;
-  position: relative;
 }
 
 .modal-content::-webkit-scrollbar {
@@ -477,9 +475,9 @@ li {
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5rem;
+  top: 1vh;
+  right: 1vw;
+  font-size: 2vw;
   color: #ff3d00;
   background: none;
   border: none;
@@ -493,29 +491,29 @@ h2 {
 .favorites-list {
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
+  margin-top: 1vh;
 }
 
 .favorite-item {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 1vw;
   background-color: #333;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  border-radius: 1vw;
+  margin-bottom: 1vh;
 }
 
 .favorite-cover {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 8vw;
+  height: 8vw;
+  border-radius: 0.5vw;
   object-fit: cover;
-  margin-right: 1rem;
+  margin-right: 1vw;
 }
 
 .favorite-details h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.5vw;
 }
 
 .favorite-details p, .song-duration {
@@ -533,7 +531,7 @@ h2 {
 
 /* Estilo para el logo */
 .logo {
-  width: 60px;  /* Ajusta el tamaño del logo */
+  width: 6vw;  /* Ajusta el tamaño del logo */
   height: auto;
   cursor: pointer;
   transition: transform 0.3s ease;  /* Para efecto de hover */
@@ -546,10 +544,10 @@ h2 {
 .btn-modificar-perfil {
   background-color: #ff3d00;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  padding: 1vh 1vw;
+  border-radius: 0.5vw;
   text-decoration: none;
-  margin-top: 2rem;
+  margin-top: 2vh;
   display: inline-block;
   font-weight: bold;
 }
