@@ -190,15 +190,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<<style scoped>
 .perfil {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: stretch;
+  align-items: center;
   background-color: #121212;
   color: white;
-  padding: 5vh;
+  padding: 3vh 3vw; /* Añadir más espaciado proporcional */
   min-height: 100vh;
   overflow-y: auto;
   box-sizing: border-box;
@@ -207,35 +207,35 @@ export default {
 .perfil-header {
   background: #1f1f1f;
   color: white;
-  padding: 5vh;
+  padding: 3vh 3vw;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: flex-start;
-  border-radius: 2vw;
-  box-shadow: 0 0.8vw 1.6vw rgba(0, 0, 0, 0.2);
-  margin-bottom: 5vh;
+  border-radius: 1.2vw;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  margin-bottom: 3vh;
 }
 
 .avatar-container {
   flex-shrink: 0;
-  margin-right: 3vw;
+  margin-right: 2vw;
 }
 
 .avatar {
   width: 15vw;
   height: 15vw;
-  border-radius: 50vh;
+  border-radius: 50%;
   border: 0.3vw solid #ff3d00;
   object-fit: cover;
 }
 
 .user-details {
   flex-grow: 1;
-  max-width: 50vw;
+  max-width: 50vw; /* Aseguramos que no ocupe más de la mitad de la pantalla */
 }
 
 .user-details h1 {
-  font-size: 4vw;
+  font-size: 2.5rem;
   margin: 0;
   font-weight: 700;
 }
@@ -247,7 +247,8 @@ export default {
 
 .bio, .bio-short {
   margin-top: 2vh;
-  font-size: 2vw;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .btn-group {
@@ -269,10 +270,10 @@ export default {
 .top-songs,
 .top-albums,
 .events {
-  margin-top: 5vh;
+  margin-top: 3vh;
   background-color: #1f1f1f;
-  padding: 5vh;
-  border-radius: 2vw;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
 }
 
 .music-recommendations h2,
@@ -280,8 +281,8 @@ export default {
 .top-albums h2,
 .events h2 {
   color: #ff3d00;
-  font-size: 3vw;
-  margin-bottom: 2vh;
+  font-size: 2rem;
+  margin-bottom: 1.5vh;
 }
 
 .recommendations-grid {
@@ -292,14 +293,14 @@ export default {
 
 .recommendation {
   background-color: #333;
-  padding: 2vh;
+  padding: 1vh;
   border-radius: 1vw;
   text-align: center;
 }
 
 .recommendation-cover {
-  width: 100vh;
-  height: 20vh;
+  width: 100%;
+  height: 15vw;
   border-radius: 1vw;
 }
 
@@ -311,42 +312,43 @@ export default {
 }
 
 ul {
-  margin-top: 2vh;
+  margin-top: 1.5vh;
 }
 
 li {
   color: #ddd;
+  font-size: 1.2rem;
 }
 
 .top-songs ul,
 .top-albums ul {
   display: flex;
   flex-direction: column;
-  gap: 2vh;
+  gap: 1.5vh;
 }
 
 .album-info p,
 .song-info p {
-  font-size: 2vw;
+  font-size: 1rem;
   color: #ff3d00;
 }
 
 .top-section {
   background-color: #1f1f1f;
-  padding: 5vh;
-  border-radius: 2vw;
-  margin-top: 5vh;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  margin-top: 3vh;
 }
 
 .top-section h2 {
   color: #ff3d00;
-  font-size: 3vw;
-  margin-bottom: 2vh;
+  font-size: 2rem;
+  margin-bottom: 1.5vh;
 }
 
 .top-columns {
   display: flex;
-  gap: 5vw;
+  gap: 2vw;
 }
 
 .top-songs, .top-albums {
@@ -367,10 +369,10 @@ li {
 .btn-favoritos, .btn-upload-song {
   background-color: #ff3d00;
   color: white;
-  padding: 2vh 2vw;
+  padding: 1vh 2vw;
   border-radius: 1vw;
   text-decoration: none;
-  margin-top: 2vh;
+  margin-top: 3vh;
   display: inline-block;
   font-weight: bold;
 }
@@ -382,9 +384,9 @@ li {
 }
 
 .divider {
-  width: 0.5vw;
+  width: 1px;
   background-color: #555;
-  height: auto;
+  height: 100%;
   align-self: stretch;
 }
 
@@ -392,8 +394,8 @@ li {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
@@ -405,21 +407,22 @@ li {
 .modal-content {
   background-color: #333;
   color: white;
-  padding: 5vh;
-  border-radius: 2vw;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
   max-width: 40vw;
-  max-height: 70vh;
+  max-height: 70%;
   overflow-y: auto;
+  position: relative;
 }
 
 .modal-content::-webkit-scrollbar {
-  width: 0.5vw;
+  width: 0.6vw;
   background-color: transparent;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
   background-color: #333;
-  border-radius: 1vw;
+  border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-track {
@@ -433,9 +436,9 @@ li {
 
 .close-button {
   position: absolute;
-  top: 2vh;
-  right: 2vw;
-  font-size: 2vw;
+  top: 1vh;
+  right: 1vh;
+  font-size: 2rem;
   color: #ff3d00;
   background: none;
   border: none;
@@ -455,15 +458,15 @@ h2 {
 .favorite-item {
   display: flex;
   align-items: center;
-  padding: 2vh;
+  padding: 2vh 2vw;
   background-color: #333;
   border-radius: 1vw;
   margin-bottom: 2vh;
 }
 
 .favorite-cover {
-  width: 10vw;
-  height: 10vw;
+  width: 12vw;
+  height: 12vw;
   border-radius: 1vw;
   object-fit: cover;
   margin-right: 2vw;
@@ -471,7 +474,7 @@ h2 {
 
 .favorite-details h3 {
   margin: 0;
-  font-size: 3vw;
+  font-size: 1.5rem;
 }
 
 .favorite-details p, .song-duration {
@@ -484,7 +487,7 @@ h2 {
 
 .logo-link {
   display: inline-block;
-  margin-bottom: 5vh;
+  margin-bottom: 3vh;
 }
 
 .logo {
@@ -501,10 +504,10 @@ h2 {
 .btn-modificar-perfil {
   background-color: #ff3d00;
   color: white;
-  padding: 2vh 2vw;
+  padding: 1vh 2vw;
   border-radius: 1vw;
   text-decoration: none;
-  margin-top: 2vh;
+  margin-top: 3vh;
   display: inline-block;
   font-weight: bold;
 }
@@ -521,8 +524,8 @@ h2 {
 
 .form-group input,
 .form-group textarea {
-  width: 100vh;
-  padding: 2vh;
+  width: 100%;
+  padding: 1vh;
   border-radius: 1vw;
   border: none;
   background-color: #555;
@@ -539,18 +542,18 @@ h2 {
 }
 
 @media (max-width: 768px) {
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+  }
+
   .perfil-header {
     flex-direction: column;
     align-items: center;
-    text-align: center;
   }
 
-  .top-columns {
-    flex-direction: column;
-  }
-
-  .recommendation-cover {
-    height: 15vw;
+  .user-details {
+    max-width: 80vw;
   }
 }
 </style>
