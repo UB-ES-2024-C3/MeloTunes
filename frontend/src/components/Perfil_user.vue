@@ -190,17 +190,17 @@ export default {
 }
 </script>
 
+
 <style scoped>
 .perfil {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   background-color: #121212;
   color: white;
-  padding: 3vh 3vw; /* Añadir más espaciado proporcional */
+  padding: 3vh 3vw;
   min-height: 100vh;
-  overflow: auto;
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
@@ -214,6 +214,7 @@ export default {
   border-radius: 1.2vw;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   margin-bottom: 3vh;
+  width: 100%;
 }
 
 .avatar-container {
@@ -232,9 +233,6 @@ export default {
 .user-details {
   flex-grow: 1;
   max-width: 50vw;
-  max-height: 50vh; /* Limita la altura */
-  overflow-y: auto; /* Permite el scroll si el contenido excede el espacio */
-  padding-right: 10px;
 }
 
 .user-details h1 {
@@ -277,6 +275,7 @@ export default {
   background-color: #1f1f1f;
   padding: 2vh 2vw;
   border-radius: 1vw;
+  width: 100%;
 }
 
 .music-recommendations h2,
@@ -292,8 +291,6 @@ export default {
   display: flex;
   gap: 2vw;
   flex-wrap: wrap;
-  max-height: 50vh;
-  overflow-y: auto;
 }
 
 .recommendation {
@@ -322,244 +319,78 @@ ul {
 
 li {
   color: #ddd;
-  font-size: 1.2rem;
-}
-
-.top-songs ul,
-.top-albums ul {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5vh;
-}
-
-.album-info p,
-.song-info p {
   font-size: 1rem;
-  color: #ff3d00;
-}
-
-.top-section {
-  background-color: #1f1f1f;
-  padding: 2vh 2vw;
-  border-radius: 1vw;
-  margin-top: 3vh;
-}
-
-.top-section h2 {
-  color: #ff3d00;
-  font-size: 2rem;
-  margin-bottom: 1.5vh;
-}
-
-.top-columns {
-  display: flex;
-  gap: 2vw;
-}
-
-.top-songs, .top-albums {
-  flex: 1;
-}
-
-.top-songs ul, .top-albums ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 0;
-}
-
-li {
-  color: #ddd;
   margin-bottom: 1vh;
-}
-
-.btn-favoritos, .btn-upload-song {
-  background-color: #ff3d00;
-  color: white;
-  padding: 1vh 2vw;
-  border-radius: 1vw;
-  text-decoration: none;
-  margin-top: 3vh;
-  display: inline-block;
-  font-weight: bold;
-}
-
-.btn-group {
-  display: flex;
-  gap: 2vw;
-  margin-top: 2vh;
-}
-
-.divider {
-  width: 1px;
-  background-color: #555;
-  height: 100%;
-  align-self: stretch;
 }
 
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  overflow: auto;
+  z-index: 10;
 }
 
 .modal-content {
-  background: white;
-  padding: 2vw;
-  border-radius: 1.5vw;
-  max-width: 80%;
-  max-height: 80%;
-  overflow-y: auto;
-  color: #333;
-}
-
-.modal-content::-webkit-scrollbar {
-  width: 0.6vw;
-  background-color: transparent;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-  background-color: #333;
-  border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-.modal-content {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  background-color: white;
+  color: black;
+  padding: 2vh 3vw;
+  border-radius: 1vw;
+  width: 80vw;
+  max-width: 600px;
+  box-sizing: border-box;
 }
 
 .close-button {
   position: absolute;
-  top: 1vh;
-  right: 1vh;
+  top: 1vw;
+  right: 1vw;
   font-size: 2rem;
-  color: #ff3d00;
-  background: none;
-  border: none;
   cursor: pointer;
 }
 
-h2 {
-  color: #ff3d00;
-}
-
 .favorites-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  max-height: 50vh; /* Limita la altura */
+  max-height: 40vh;
   overflow-y: auto;
 }
 
 .favorite-item {
   display: flex;
-  align-items: center;
-  padding: 2vh 2vw;
-  background-color: #333;
-  border-radius: 1vw;
-  margin-bottom: 2vh;
+  justify-content: space-between;
+  margin: 1vh 0;
 }
 
 .favorite-cover {
-  width: 12vw;
-  height: 12vw;
-  border-radius: 1vw;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  margin-right: 2vw;
 }
 
-.favorite-details h3 {
-  margin: 0;
-  font-size: 1.5rem;
+.favorite-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.favorite-details p, .song-duration {
-  color: #aaa;
-}
-
-.song-duration {
-  color: #ff3d00;
-}
-
-.logo-link {
-  display: inline-block;
-  margin-bottom: 3vh;
-}
-
-.logo {
-  width: 10vw;
-  height: auto;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.logo:hover {
-  transform: scale(1.1);
-}
-
-.btn-modificar-perfil {
+.divider {
+  width: 1px;
   background-color: #ff3d00;
+  margin: 0 3vw;
+}
+
+.btn-upload-song {
+  background-color: #00bfae;
+  padding: 1.5vh 2vw;
+  border-radius: 2vw;
   color: white;
-  padding: 1vh 2vw;
-  border-radius: 1vw;
+  font-size: 1.2rem;
   text-decoration: none;
-  margin-top: 3vh;
-  display: inline-block;
-  font-weight: bold;
-}
-
-.form-group {
-  margin-bottom: 2vh;
-}
-
-.form-group label {
-  display: block;
-  color: #ff3d00;
-  margin-bottom: 1vh;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 1vh;
-  border-radius: 1vw;
-  border: none;
-  background-color: #555;
-  color: white;
-}
-
-.btn-save {
-  background-color: #ff3d00;
-  color: white;
-  padding: 1vh 2vw;
-  border: none;
-  border-radius: 1vw;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .avatar {
-    width: 30vw;
-    height: 30vw;
-  }
-
-  .perfil-header {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .user-details {
-    max-width: 80vw;
-  }
+  display: flex;
+  align-items: center;
 }
 </style>
