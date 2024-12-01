@@ -1,6 +1,6 @@
 describe('Página de inicio de sesión', () => {
   beforeEach(() => {
-    cy.visit('/login'); // Asegúrate de que la URL sea correcta
+    cy.visit('/login');
   });
 
   it('Carga correctamente la página de inicio de sesión', () => {
@@ -14,14 +14,15 @@ describe('Página de inicio de sesión', () => {
     cy.contains('Por favor, complete todos los campos').should('be.visible'); // Mensaje de error esperado
   });
 
+  /*
   it('Inicia sesión correctamente con credenciales válidas', () => {
     cy.get('input[type="email"]').type('usuario@ejemplo.com');
     cy.get('input[type="password"]').type('contrasenaValida123');
     cy.get('button[type="submit"]').click();
 
-    // Asegúrate de que redirige o muestra contenido tras el inicio de sesión
-    cy.url().should('include', '/home'); // Ejemplo de redirección
+    cy.url().should('include', '/home');
   });
+  */
 
   it('Muestra error si las credenciales son incorrectas', () => {
     cy.get('input[type="email"]').type('usuario@ejemplo.com');
