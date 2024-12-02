@@ -72,10 +72,10 @@
 
     <!-- Sección Top Canciones y Álbumes en columnas con línea divisoria -->
     <section class="top-section">
-      <div class="recommendations-grid">
-        <!-- Top Canciones -->
-        <div class="recommendation top-songs">
-          <h3>CANCIONES</h3>
+      <div class="top-columns">
+        <!-- Top 3 Canciones -->
+        <div class="top-songs">
+          <h2>MI TOP 3 CANCIONES</h2>
           <ul>
             <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.title }} - {{ song.artist }}</li>
           </ul>
@@ -84,9 +84,9 @@
         <!-- Línea divisoria -->
         <div class="divider"></div>
 
-        <!-- Top Álbumes -->
-        <div class="recommendation top-albums">
-          <h3>ÁLBUMES</h3>
+        <!-- Top 3 Álbumes -->
+        <div class="top-albums">
+          <h2>MI TOP 3 ÁLBUMES</h2>
           <ul>
             <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.album }} - {{ song.artist }}</li>
           </ul>
@@ -268,57 +268,99 @@ section {
 }
 
 .top-section {
-  background-color: #1f1f1f; /* Fondo oscuro */
+  background-color: #1f1f1f;
   padding: 2vh 2vw;
   border-radius: 1vw;
   margin-top: 3vh;
-  width: 100%; /* Ocupa todo el ancho disponible */
+  width: 100%;
+}
+
+.top-columns {
+  display: flex;
+  gap: 2vw;
+  justify-content: space-between; /* Espacio entre los dos bloques */
+}
+
+.top-songs, .top-albums {
+  flex: 1; /* Ambos bloques ocupan el mismo espacio */
+  padding: 1vh 1vw;
+  background-color: #333;
+  border-radius: 1vw;
+  color: white;
   box-sizing: border-box;
 }
 
-.top-section h2 {
-  color: #ff3d00; /* Título en el color temático */
+.top-songs h2, .top-albums h2 {
+  color: #ff3d00;
   font-size: 2rem;
   margin-bottom: 1.5vh;
-  text-align: center; /* Centrar título */
 }
 
-.recommendations-grid {
-  display: flex;
-  gap: 2vw;
-  flex-wrap: wrap; /* Permite que los elementos se reorganicen en pantallas pequeñas */
-  width: 100%; /* Asegura que ocupe todo el ancho */
-}
-
-.recommendation {
-  flex: 1 1 45%; /* Cada columna ocupa aproximadamente el 45% del ancho */
-  background-color: #333;
-  padding: 2vh;
-  border-radius: 1vw;
-  text-align: left;
-}
-
-.recommendation h3 {
-  color: #ff3d00; /* Subtítulo en color temático */
-  margin-bottom: 1vh;
-  font-size: 1.5rem;
-}
-
-.recommendation ul {
+.top-songs ul, .top-albums ul {
   list-style: none;
   padding: 0;
 }
 
-.recommendation ul li {
-  color: white;
-  font-size: 1.2rem;
+.top-songs li, .top-albums li {
+  color: #ddd;
   margin-bottom: 1vh;
 }
 
 .divider {
   width: 1px;
   background-color: #555;
-  align-self: stretch;
+  height: 100%;
+  align-self: stretch; /* Hace que la barra divisora ocupe todo el alto */
+}
+
+.top-section h2 {
+  color: #ff3d00;
+  font-size: 2rem;
+  margin-bottom: 2vh;
+  text-align: center;
+}
+
+.recommendations-grid {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 2vw;
+}
+
+.recommendation-column {
+  flex: 1;
+  background-color: #333;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.recommendation-column h3 {
+  font-size: 1.8rem;
+  color: #ff3d00;
+  margin-bottom: 1.5vh;
+}
+
+.recommendation-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recommendation-column li {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.divider {
+  width: 2px;
+  background-color: #555;
   margin: 0 1vw;
 }
 
@@ -337,7 +379,7 @@ section {
 
 .modal-content {
   background-color: #1f1f1f; /* Fondo negro */
-  color: white; /* Texto blanco */
+  color: #ff0000;
   padding: 3vh 3vw;
   border-radius: 1vw;
   max-width: 40vw;
@@ -355,12 +397,12 @@ section {
 .modal-content p,
 .modal-content ul,
 .modal-content li {
-  color: white; /* Asegura que el texto sea blanco */
+  color: #ff1e1e; /* Asegura que el texto sea blanco */
 }
 
 .modal-content button {
   background-color: #bf0000;
-  color: white;
+  color: #ff1e1e;
   padding: 1.5vh 2vw;
   border-radius: 2vw;
   font-size: 1.2rem;
@@ -426,7 +468,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #1f1f1f; /* Fondo oscuro unificado */
-  color: white;
+  color: #f63b3b;
   font-family: 'Arial', sans-serif;
   min-height: 100vh; /* Asegura que ocupe toda la altura */
   overflow-x: hidden; /* Elimina el desplazamiento horizontal si es innecesario */
