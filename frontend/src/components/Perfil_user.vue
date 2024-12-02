@@ -245,7 +245,6 @@ export default {
   cursor: pointer;
 }
 
-
 .logo {
   width: 8vw;
   max-width: 50px;
