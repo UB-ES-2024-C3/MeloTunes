@@ -16,20 +16,23 @@
     <div>
       <div class="perfil">
         <div class="album">
-          <img :src="getAlbumImage(song.album)" alt="Album Cover">
+          <img :src="getAlbumImage(song.album)" alt="Album Cover" class="album-img">
 
-          <div class="song-info">
+          <!-- Contenedor para el título y el autor -->
+          <div class="details">
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
-            <img src="../assets/reo.png">
           </div>
+        </div>
+
+        <!-- Información del álbum -->
+        <div class="information">
+          <p class="album-info">{{ song.album }}</p>
+          <p class="album-info">{{ getYear(song.timestamp) }}</p>
         </div>
       </div>
       <div class="information">
-        <div class="texto">
-          <p>{{ song.album }}</p>
-          <p>{{ getYear(song.timestamp) }}</p>
-        </div>
+
         <div class="favorito">
           <i
             :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
@@ -61,7 +64,7 @@
         <v-main>
           <v-container>
             <!-- Botón con imagen a la derecha y centrado verticalmente -->
-            <v-btn color=transparent  @click="toggleDrawer" class="floating-btn" :class="{'move-left': drawer}">
+            <v-btn color=transparent  @click="toggleDrawer" class="floating-btn" :class="{'move-left': drawer}" :style="{ transform: drawer ? `translateX(-${drawerWidth})` : 'translateX(0)', transition: 'transform 0.3s ease'}">
               <img
                 src="../assets/avance-rapido.png"
                 alt="Botón Imagen"
@@ -126,12 +129,23 @@ export default {
       if (currentSongId === targetSongId) {
         return
       }
-      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.push({
+        path: '/song',
+        query: {
+          email: this.$route.query.email,
+          logged: this.$route.query.logged,
+          token: this.$route.query.token,
+          song: song.id
+        }
+      })
       this.$router.go()
     },
     goHome () {
       localStorage.setItem('searchQuery', this.searchQuery)
-      this.$router.push({ path: '/home', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+      this.$router.push({
+        path: '/home',
+        query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token}
+      })
       this.$router.go()
     },
     addFavorites () {
@@ -169,6 +183,7 @@ export default {
   padding-top: 15vh;
 
 }
+
 .v-navigation-drawer .v-list-item {
   color: #000000;
 }
@@ -190,20 +205,19 @@ export default {
 }
 
 /* Estilo para mover el botón hacia la izquierda cuando el drawer está abierto */
-.floating-btn.move-left {
-  transform:  translateX(-1vw); /* Mueve el botón hacia la izquierda cuando el drawer está abierto */
-}
 .floating-btn:hover, .floating-btn:focus {
   box-shadow: none;
   outline: none;
   background: transparent;
 }
+
 .floating-btn:active {
   outline: none;
   box-shadow: none;
   background-color: transparent;
   transform: none;
 }
+
 body {
   background-color: #000000;
   height: 100vh;
@@ -247,7 +261,7 @@ header {
 
 .search-bar button {
   width: 10vw;
-  font-size: 1.1rem;
+  font-size: 1rem;
   background-color: #e53935;
   color: white;
   border: none;
@@ -270,12 +284,22 @@ header {
   margin-top: 1vh;
   margin-left: 1vw;
 }
+
 .perfil {
   height: 80vh;
   display: flex;
   padding: 2vw;
   margin-top: 1vh;
   flex-direction: column;
+  align-items: flex-start;
+}
+
+.album {
+  display: flex;
+  flex-direction: row; /* Imagen a la izquierda, texto a la derecha */
+  align-items: flex-start; /* Alinea verticalmente al inicio */
+  gap: 2vw; /* Espaciado entre la imagen y el texto */
+  margin-bottom: 2vh; /* Espacio debajo de la sección de detalles */
 }
 
 .album img {
@@ -284,12 +308,15 @@ header {
   object-fit: cover;
   border-radius: 10px;
 }
+.album-info {
+  margin: 0;
+}
 
-.song-info {
+.details {
   display: flex;
   flex-direction: column;
-  margin: 0 3vw;
-  width: 70vw;
+  justify-content: center; /* Centrar verticalmente */
+
 }
 
 .song-info p {
@@ -304,26 +331,28 @@ header {
 
 .song-title {
   font-weight: bold;
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   color: white;
+  margin: 0;
 }
 
 .song-author {
   color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  margin: 0;
 }
 
 /* Estilos de la información del álbum */
 .information {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   padding: 0 2vw;
   color: white;
-}
+  flex-direction: column;
+  gap: 0.5vh;
+  font-size: 1.5rem;
 
-.texto {
-  font-size: 1.3rem;
 }
 
 .favorito img {
@@ -347,6 +376,7 @@ header {
   margin-left: 0.1vw;
 
 }
+
 .item img:hover {
   transform: scale(1.1);
 
@@ -365,9 +395,9 @@ header {
   align-items: center;
   width: 24vw;
   text-align: center;
-  padding: -0.9vw;
   background-color: #1f1f1f;
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 </style>
