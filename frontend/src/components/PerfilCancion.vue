@@ -31,15 +31,12 @@
           <p class="album-info">{{ getYear(song.timestamp) }}</p>
         </div>
       </div>
-      <div class="information">
-
-        <div class="favorito">
-          <i
-            :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
-            @click="addFavorites"
-            style="cursor: pointer; font-size: 24px; color: red;"
-          ></i>
-        </div>
+      <div class="favorito">
+        <i
+          :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
+          @click="addFavorites"
+          style="cursor: pointer; font-size: 24px; color: red;"
+        ></i>
       </div>
     </div>
     <div>
@@ -64,7 +61,7 @@
         <v-main>
           <v-container>
             <!-- Botón con imagen a la derecha y centrado verticalmente -->
-            <v-btn color=transparent  @click="toggleDrawer" class="floating-btn" :class="{'move-left': drawer}" :style="{ transform: drawer ? `translateX(-${drawerWidth})` : 'translateX(0)', transition: 'transform 0.3s ease'}">
+            <v-btn color=transparent  @click="toggleDrawer" class="floating-btn" :style="{ transform: drawer ? `translateX(-${drawerWidth})` : 'translateX(-50%)', transition: 'transform 0.3s ease'}">
               <img
                 src="../assets/avance-rapido.png"
                 alt="Botón Imagen"
@@ -345,7 +342,7 @@ header {
 /* Estilos de la información del álbum */
 .information {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 0 2vw;
   color: white;
@@ -354,12 +351,16 @@ header {
   font-size: 1.5rem;
 
 }
+.favorito {
+  margin-left: 5vw;
+}
 
 .favorito img {
   width: 2.7vw;
   height: 5vh;
   cursor: pointer;
   margin-right: 25vw;
+  justify-content: flex-end;
 }
 
 .item:hover {
