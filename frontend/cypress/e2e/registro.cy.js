@@ -66,4 +66,22 @@ describe('Página de registro', () => {
     cy.get('input[type="submit"]').click();
     cy.contains('El apellido solo puede contener letras.').should('exist');
   });
+
+  it('Muestra un error si el usuario ya está registrado', () => {
+    // Datos de un usuario ya registrado
+    cy.get('#email').type('registrado@ejemplo.com');
+    cy.get('#password').type('Password123');
+    cy.get('#confirm_password').type('Password123');
+    cy.get('#nombre').type('Usuario');
+    cy.get('#apellido').type('Registrado');
+    cy.get('#fecha_nacimiento').type('2000-01-01');
+    cy.get('input[type="submit"]').click();
+
+    // Verificar que aparece el mensaje de error
+    cy.on('window:alert', (text) => {
+      expect(text).to.equal(
+        'El usuario con email usuario@ejemplo.com ya está registrado en el sistema.'
+      );
+    });
+  });
 });
