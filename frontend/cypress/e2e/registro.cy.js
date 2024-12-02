@@ -22,4 +22,10 @@ describe('Página de registro', () => {
     cy.contains('Debes ingresar tu fecha de nacimiento.').should('exist');
   });
 
+  it('Valida el formato del correo electrónico', () => {
+    cy.get('#email').type('correo_incorrecto');
+    cy.get('input[type="submit"]').click();
+    cy.contains('El formato del correo electrónico no es válido.').should('exist');
+  });
+
 });
