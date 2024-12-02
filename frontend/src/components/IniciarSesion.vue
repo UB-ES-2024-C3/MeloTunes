@@ -8,7 +8,7 @@
       <img src="../assets/Im_logo.png" alt="Logo"><br>
       <h1>Inicia sesión en MeloTunes</h1>
 
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" novalidate>
         <label for="email">Email</label><br>
         <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input"><br>
 
@@ -68,7 +68,7 @@ export default {
         })
         .catch((error) => {
           console.error(error)
-          alert('Correo o contraseña incorrectos')
+          this.error = 'Correo o contraseña incorrectos'
         })
     },
     togglePassword () {
@@ -233,7 +233,8 @@ body, html {
 }
 
 .error {
-  color: red;
+  color: yellow;
   font-size: 14px;
+  font-weight: bold;
 }
 </style>
