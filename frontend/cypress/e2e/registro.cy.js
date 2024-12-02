@@ -55,4 +55,15 @@ describe('Página de registro', () => {
     cy.contains('Debes tener al menos 16 años para registrarte.').should('be.visible');
   });
 
+  it('Muestra error si el nombre contiene caracteres no válidos', () => {
+    cy.get('#nombre').type('<script>alert("hack")</script>');
+    cy.get('input[type="submit"]').click();
+    cy.contains('El nombre solo puede contener letras.').should('exist');
+  });
+
+  it('Muestra error si el apellido contiene caracteres no válidos', () => {
+    cy.get('#apellido').type('<script>alert("hack")</script>');
+    cy.get('input[type="submit"]').click();
+    cy.contains('El apellido solo puede contener letras.').should('exist');
+  });
 });
