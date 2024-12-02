@@ -28,16 +28,26 @@
         <!-- Información del álbum -->
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
-          <p class="album-info">{{ getYear(song.timestamp) }}</p>
+          <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
+          <v-app class="main-container">
+            <v-btn color="black"  @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
+            <img
+              src="../assets/avance-rapido.png"
+              alt="Botón Imagen"
+              height=40
+              width="40"
+            />
+          </v-btn>
+          </v-app>
+        <div class="favorite-btn-container">
+          <i
+            :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
+            @click="addFavorites"
+            style="cursor: pointer; font-size: 24px; color: #ff0000;"
+          ></i>
         </div>
       </div>
-      <div class="favorito">
-        <i
-          :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
-          @click="addFavorites"
-          style="cursor: pointer; font-size: 24px; color: red;"
-        ></i>
-      </div>
+
     </div>
     <div>
       <v-app class="main-container">
@@ -58,19 +68,6 @@
             </v-list-item>
           </v-list>
         </v-navigation-drawer>
-        <v-main>
-          <v-container>
-            <!-- Botón con imagen a la derecha y centrado verticalmente -->
-            <v-btn color=transparent  @click="toggleDrawer" class="floating-btn" :style="{ transform: drawer ? `translateX(-${drawerWidth})` : 'translateX(-50%)', transition: 'transform 0.3s ease'}">
-              <img
-                src="../assets/avance-rapido.png"
-                alt="Botón Imagen"
-                height=40
-                width="40"
-              />
-            </v-btn>
-          </v-container>
-        </v-main>
       </v-app>
     </div>
   </div>
@@ -171,26 +168,30 @@ export default {
 </script>
 
 <style>
+
+.v-app {
+  background-color: black !important;
+}
+
+.v-navigation-drawer {
+  background-color: black !important;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
 
 .main-container {
-  background-color: black;
-  padding-top: 15vh;
+  background-color: black !important;
 
 }
 
 .v-navigation-drawer .v-list-item {
-  color: #000000;
+  color: #000000 !important;
 }
 
 /* Estilo para el botón flotante */
 .floating-btn {
-  position: absolute; /* Posiciona el botón de manera absoluta */
-  top: -40vh; /* Centra verticalmente */
-  right: -1vw; /* Coloca el botón a la derecha */
-  transform: translateY(-50%); /* Ajusta el botón para centrarlo verticalmente */
   border: none;
   box-shadow: none;
   cursor: pointer;
@@ -199,6 +200,14 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: transparent;
+  transform: scaleX(1);
+  transition: transform 0.3s ease;
+  margin-top: 5vh;
+}
+.floating-btn img {
+  transform: scaleX(1); /* Estado inicial de la imagen */
+  transition: transform 0.3s ease; /* Asegura la transición al volver */
 }
 
 /* Estilo para mover el botón hacia la izquierda cuando el drawer está abierto */
@@ -212,7 +221,6 @@ export default {
   outline: none;
   box-shadow: none;
   background-color: transparent;
-  transform: none;
 }
 
 body {
@@ -233,6 +241,7 @@ header {
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
   transition: top 0.3s;
   z-index: 1000;
+
 }
 
 /* Estilos de la barra de búsqueda */
@@ -279,14 +288,14 @@ header {
 .logo img {
   width: 5vw;
   margin-top: 1vh;
-  margin-left: 1vw;
+  margin-left: 1.0vw;
 }
 
 .perfil {
   height: 80vh;
   display: flex;
   padding: 2vw;
-  margin-top: 1vh;
+  margin-top: 15vh;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -344,23 +353,28 @@ header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 0 2vw;
-  color: white;
+  padding: 0 0.5vw;
+  color: #ffffff;
   flex-direction: column;
   gap: 0.5vh;
   font-size: 1.5rem;
-
 }
-.favorito {
-  margin-left: 5vw;
+.information v-btn {
+  background-color: black;
+  color: black;
 }
 
-.favorito img {
-  width: 2.7vw;
-  height: 5vh;
+.favorite-btn-container {
+  position: fixed;
+  bottom: 30px; /* Distancia desde la parte inferior de la pantalla */
+  right: 30px;  /* Distancia desde el lado derecho de la pantalla */
+  //z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
+}
+
+.favorite-btn-container i {
+  font-size: 3rem; /* Puedes ajustar el tamaño del icono */
+  color: #ff0000; /* Color del icono */
   cursor: pointer;
-  margin-right: 25vw;
-  justify-content: flex-end;
 }
 
 .item:hover {
@@ -399,6 +413,10 @@ header {
   background-color: #1f1f1f;
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.mirrored {
+  transform: rotate(180deg); /* Rota la imagen 180 grados */
+  transition: transform 0.3s ease;
 }
 
 </style>
