@@ -40,4 +40,13 @@ describe('Página de registro', () => {
     cy.contains('Las contraseñas no coinciden.').should('be.visible');
   });
 
+  it('Muestra/oculta la contraseña correctamente', () => {
+    cy.get('#password').type('MiContraseña123');
+    cy.get('.password-container img').first().click(); // Haz clic en el ícono
+    cy.get('#password').should('have.attr', 'type', 'text'); // Verifica que se muestra el texto
+
+    cy.get('.password-container img').first().click(); // Haz clic en el ícono de nuevo
+    cy.get('#password').should('have.attr', 'type', 'password'); // Verifica que se oculta la contraseña
+  });
+
 });
