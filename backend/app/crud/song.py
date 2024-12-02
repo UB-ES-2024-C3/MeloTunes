@@ -39,6 +39,6 @@ def get_song_by_title(*, session: Session, title: str) -> list[Song] | None:
     return session_song
 
 def get_song_by_artist(*, session: Session, artist: str) -> list[Song] | None:
-    statement = select(Song).where(func.lower(Song.artist).contains(artist.lower()))
+    statement = select(Song).where(Song.artist == artist)
     session_song = session.exec(statement).all()
     return session_song
