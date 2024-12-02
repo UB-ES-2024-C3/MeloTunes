@@ -1,5 +1,3 @@
-'''
-
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 from app.main import app
@@ -21,31 +19,6 @@ def test_read_songs() -> None:
     assert "data" in data
     assert "count" in data
 
-
-def test_read_song_by_id() -> None:
-    """
-    Test to retrieve a song by its ID.
-    """
-    song_id_to_find = 1 
-    response = client.get(f"{settings.API_V1_STR}/songs/{song_id_to_find}")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["id"] == song_id_to_find
-
-
-def test_read_song_by_title() -> None:
-    """
-    Test to retrieve songs by their title.
-    """
-    song_title_to_find = "Tu jardín con enanitos" 
-    response = client.get(f"{settings.API_V1_STR}/songs/songs/{song_title_to_find}")
-    assert response.status_code == 200
-    data = response.json()
-    assert "data" in data
-    assert len(data["data"]) > 0
-    assert data["data"][0]["title"] == song_title_to_find
-
-
 from datetime import datetime, timedelta
 
 def test_create_song(client):
@@ -65,6 +38,28 @@ def test_create_song(client):
 
     expected_duration = f"PT{song_data['duration'] // 60}M"
     assert data["duration"] == expected_duration
+
+def test_read_song_by_id() -> None:
+    """
+    Test to retrieve a song by its ID.
+    """
+    song_id_to_find = 1 
+    response = client.get(f"{settings.API_V1_STR}/songs/{song_id_to_find}")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == song_id_to_find
+
+def test_read_song_by_title() -> None:
+    """
+    Test to retrieve songs by their title.
+    """
+    song_title_to_find = "Test Song" 
+    response = client.get(f"{settings.API_V1_STR}/songs/songs/{song_title_to_find}")
+    assert response.status_code == 200
+    data = response.json()
+    assert "data" in data
+    assert len(data["data"]) > 0
+    assert data["data"][0]["title"] == song_title_to_find
 
 
 def test_update_song(client, superuser_token_headers: dict[str, str]) -> None:
@@ -121,7 +116,7 @@ def test_delete_song_super_user(
     # Usamos el token generado para el nuevo usuario
     user_token_headers = {"Authorization": f"Bearer {access_token}"}
     
-    title = "Test Song"
+    title = "New Song"
     try:
         # Intentar obtener la canción de la base de datos
         song = db.query(Song).filter(Song.title == title).first() 
@@ -141,6 +136,3 @@ def test_delete_song_super_user(
     assert r.status_code == 200
     deleted_song = r.json()
     assert deleted_song["message"] == "Song deleted successfully"
-
-
-'''
