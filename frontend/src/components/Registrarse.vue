@@ -8,7 +8,7 @@
       <br>
       <h1>Completa tu Registro</h1>
 
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" novalidate>
         <!-- Campo del correo electrónico -->
         <label for="email">Email</label><br>
         <input
