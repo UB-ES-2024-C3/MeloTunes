@@ -29,8 +29,8 @@
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
           <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
-          <v-app class="main-container">
-            <v-btn color="black"  @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
+        <v-app class="main-container">
+          <v-btn color="black"  @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
             <img
               src="../assets/avance-rapido.png"
               alt="Botón Imagen"
@@ -38,7 +38,7 @@
               width="40"
             />
           </v-btn>
-          </v-app>
+        </v-app>
         <div class="favorite-btn-container">
           <i
             :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
