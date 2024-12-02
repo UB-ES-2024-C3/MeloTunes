@@ -11,6 +11,7 @@ class UserBase(SQLModel):
     is_superuser: bool = False
     first_name: str | None = None
     second_name: str | None = None
+    artist_name: str | None = None
     description: str | None = None
     is_artist: bool = False
 
@@ -46,6 +47,7 @@ class UserUpdate(UserBase):
 class UserUpdateMe(SQLModel):
     first_name: str | None = None
     second_name: str | None = None
+    artist_name: str | None = None
     email: str | None = None
     description: str | None = None
 

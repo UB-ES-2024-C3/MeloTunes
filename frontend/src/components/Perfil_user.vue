@@ -5,26 +5,56 @@
     </div>
     <header class="perfil-header">
       <div class="avatar-container">
-        <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
+        <div v-if="this.user_logged.is_artist">
+          <img :src="getArtistImage(this.user_logged.artist_name)" alt="Avatar del usuario" class="avatar" />
+        </div>
+        <div v-if="!this.user_logged.is_artist">
+          <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
+        </div>
       </div>
       <div class="user-details">
-        <h1>{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
-        <h4>{{ this.user_logged.email }}</h4>
+        <h1 v-if="!this.user_logged.is_artist">{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
+        <h4 v-if="!this.user_logged.is_artist">{{ this.user_logged.email }}</h4>
+        <h1 v-if="this.user_logged.is_artist">{{ this.user_logged.artist_name }}</h1>
         <p class="location" v-if="this.user_logged.isArtist">{{ location }}</p>
-        <div v-if="this.user_logged.isArtist">
-          <p v-if="expandedBio" class="bio">{{ bio }}</p>
-          <p v-else class="bio-short">{{ shortBio }}</p>
-          <button class="btn" @click="toggleBio">
+        <div v-if="this.user_logged.is_artist">
+          <p v-if="expandedBio" class="bio">{{ this.user_logged.description }}</p>
+          <p v-else class="bio-short">{{ truncatedDescription }}</p>
+          <button class="btn-toggle-bio" @click="toggleBio">
             {{ expandedBio ? 'Ver menos' : 'Ver más' }}
           </button>
         </div>
         <div class="btn-group">
-          <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
-          <router-link to="/addsong" class="btn"><span>Subir canción</span></router-link>
-          <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
+          <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
+          <button class="btn-favoritos" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
+          <button v-if="this.user_logged.is_artist" class="btn-upload-song" @click="uploadSong">
+            Subir canción
+          </button>
+          <button class="btn-modificar-perfil" @click="showEditProfile = true">Modificar perfil</button>
         </div>
       </div>
     </header>
+
+    <!-- Popup modal de canciones -->
+    <div v-if="showSongs" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="showSongs = false">×</button>
+        <h2>Mis Canciones</h2>
+        <ul v-if="this.my_songs && this.my_songs.length" class="favorites-list">
+          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item">
+            <a :href="uploaded_song.cover" target="_blank" rel="noopener noreferrer">
+              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" />
+            </a>
+            <div class="favorite-details">
+              <h3>{{ uploaded_song.title }}</h3>
+              <p>{{ uploaded_song.artist }}</p>
+              <span class="song-duration">{{ getYear(uploaded_song.timestamp) }}</span>
+            </div>
+          </li>
+        </ul>
+        <p v-else>No tienes favoritos aún.</p>
+      </div>
+    </div>
 
     <!-- Popup modal de favoritos -->
     <div v-if="showFavorites" class="modal-overlay">
@@ -52,20 +82,20 @@
       <div class="modal-content">
         <button class="close-button" @click="showEditProfile = false">×</button>
         <h2>Editar Perfil</h2>
-        <form @submit.prevent="saveProfile">
+        <form>
           <div class="form-group">
             <label for="firstName">Nombre:</label>
-            <input type="text" id="firstName" v-model="editProfile.first_name" />
+            <input type="text" id="firstName" v-model="editProfile.firstName" />
           </div>
           <div class="form-group">
             <label for="secondName">Apellido:</label>
-            <input type="text" id="secondName" v-model="editProfile.second_name" />
+            <input type="text" id="secondName" v-model="editProfile.secondName" />
           </div>
           <div class="form-group">
             <label for="bio">Biografía:</label>
             <textarea id="bio" v-model="editProfile.bio"></textarea>
           </div>
-          <button type="submit">Guardar</button>
+          <button class="btn-save" @click="enviarModificacion">Guardar</button>
         </form>
       </div>
     </div>
@@ -120,28 +150,40 @@ import UserService from '../services/UserService'
 import vertigoCover from '../assets/facebook.png'
 import lagrimasCover from '../assets/instagram.png'
 import sinFronterasCover from '../assets/twitter.png'
+import SongService from '../services/SongService'
 
 export default {
   name: 'Perfil_user',
   mounted () {
     UserService.get().then(response => {
       this.user_logged = response.data
-      console.log(response.data)
+      UserService.getMyFavouriteSongs().then(response => {
+        this.fav_songs = response
+        if (this.user_logged.artist_name) {
+          SongService.getAllArtist(this.user_logged.artist_name).then(response => {
+            this.my_songs = response.data.data
+            console.log(this.my_songs)
+          })
+        }
+      })
     })
-    UserService.getMyFavouriteSongs().then(response => {
-      this.fav_songs = response
-      console.log(response)
-    })
+  },
+  computed: {
+    truncatedDescription () {
+      return this.user_logged.description.length > 20
+        ? this.user_logged.description.substring(0, 20) + '...'
+        : this.user_logged.description
+    }
   },
   data () {
     return {
       user_logged: {},
       fav_songs: [],
+      my_songs: [],
       location: 'Barcelona',
-      bio: 'Amante de la música rock y pop. ...',
-      shortBio: 'Amante de la música r...',
       expandedBio: false,
       showFavorites: false,
+      showSongs: false,
       showEditProfile: false,
       editProfile: {
         first_name: '',
@@ -178,15 +220,28 @@ export default {
       console.log(album)
       const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
+    },
+    uploadSong () {
+      this.$router.push({ path: '/addsong', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+      this.$router.go()
+    },
+    saveProfile () {
+      Object.assign(this.user_logged, this.editProfile)
+      this.showEditProfile = false
+      alert('Perfil actualizado con éxito')
+    },
+    getArtistImage (artist) {
+      const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
+    },
+    enviarModificacion () {
+      this.showEditProfile = false
+      UserService.updateUser(this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+        .catch((error) => {
+          console.error(error)
+          alert('Algo ha fallado')
+        })
     }
-  },
-  uploadSong () {
-    this.$router.push('/addsong')
-  },
-  saveProfile () {
-    Object.assign(this.user_logged, this.editProfile)
-    this.showEditProfile = false
-    alert('Perfil actualizado con éxito')
   }
 }
 </script>

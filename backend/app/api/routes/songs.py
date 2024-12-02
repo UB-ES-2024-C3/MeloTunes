@@ -18,7 +18,8 @@ from app.models import (
     SongCreateOpen,
     SongOut,
     SongsOut,
-    SongUpdate
+    SongUpdate,
+    Album,
 )
 
 router = APIRouter()
@@ -128,6 +129,27 @@ def read_song_by_title(song_title: str, session: SessionDep) -> Any:
     return SongsOut(data=songs, count=len(songs))
 
 
+@router.get("/songs/artist/{songs_artist}", response_model=SongsOut)
+def read_songs_by_artist(songs_artist: str, session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+    """
+    Get a specific song by artist.
+    """
+    print("Iniciando consulta...")
+    
+    # Define el statement antes de usarlo
+    statement = select(Song).offset(skip).limit(limit).where(Song.artist.contains(songs_artist.lower()))
+    print(f"Consulta generada: {statement}")
+
+    # Ejecuta el statement después de definirlo
+    songs = session.exec(statement).all()
+    print(f"Resultados obtenidos: {songs}")
+
+    count_statement = select(func.count()).select_from(Song)
+    count = session.exec(count_statement).one()
+    
+    return SongsOut(data=songs, count=count)
+
+
 @router.patch(
     "/{song_id}",
     response_model=SongOut,
@@ -167,3 +189,36 @@ def delete_song(session: SessionDep, current_user: CurrentUser, song_id: int) ->
     session.delete(song)
     session.commit()
     return Message(message="Song deleted successfully")
+
+
+@router.patch(
+    "/song2album/",
+    response_model=SongOut,
+)
+def add_song_to_album(*, session: SessionDep, current_user: CurrentUser, song_id: int, album_id: int, song_in: SongUpdate) -> Any:
+    """
+    Update a song.
+    """
+    db_song = session.get(Song, song_id)
+    db_album = session.get(Album, album_id)
+    if not db_song:
+        raise HTTPException(
+            status_code=404,
+            detail="The song with this id does not exist in the system",
+        )
+    if not db_album:
+        raise HTTPException(
+            status_code=404,
+            detail="The album with this id does not exist in the system",
+        )
+    if current_user.artist_name != db_song.artist:
+        raise HTTPException(
+            status_code=409, detail=db_song.artist
+        )
+    if current_user.artist_name != db_album.artist and current_user.is_superuser == False:
+        raise HTTPException(
+            status_code=409, detail="This album does not belong to you"
+        )
+    db_song.album = db_album.title
+    db_song = crud.song.update_song(session=session, db_song=db_song, song_in=song_in)
+    return db_song
