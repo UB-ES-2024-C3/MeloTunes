@@ -28,4 +28,16 @@ describe('Página de registro', () => {
     cy.contains('El formato del correo electrónico no es válido.').should('exist');
   });
 
+  it('Valida las contraseñas correctamente', () => {
+    cy.get('#password').type('corta');
+    cy.get('input[type="submit"]').click();
+    cy.contains('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.')
+      .should('be.visible');
+
+    cy.get('#password').clear().type('Correcta123');
+    cy.get('#confirm_password').type('Incorrecta123');
+    cy.get('input[type="submit"]').click();
+    cy.contains('Las contraseñas no coinciden.').should('be.visible');
+  });
+
 });
