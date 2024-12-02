@@ -95,6 +95,26 @@ class UserService {
         throw error // Lanzar otros errores
       })
   }
+  updateUser (strNombre, strApellido, strBiografia) {
+    const token = localStorage.getItem('accessToken') // Recuperar token
+    if (!token) {
+      return Promise.reject(new Error('No token found')) // Rechazar si no hay token
+    }
+    return axios.patch('/api/v1/users/me', {
+      first_name: strNombre,
+      second_name: strApellido,
+      description: strBiografia
+    }, {headers: {
+      Authorization: `Bearer ${token}` // Incluir token en la cabecera
+    }})
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('No disponible')
+      })
+  }
 }
 
 export default new UserService()
