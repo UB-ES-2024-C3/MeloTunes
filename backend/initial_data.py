@@ -27,7 +27,7 @@ def init() -> None:
         song2 = Song(
             title="Tu jardín con enanitos", 
             artist="Melendi",
-            album="Lágrimas desordenadas",
+            album="Lágrimas desordenadas", 
             duration=timedelta(minutes=3, seconds=57), 
             timestamp=datetime(2012, 11, 13)
         )
@@ -83,7 +83,7 @@ def init() -> None:
         song9 = Song(
             title="Un violinista en tu tejado", 
             artist="Melendi",
-            album="Curiosa la cara de tu padre",
+            album="Curiosa la cara de tu padre", 
             duration=timedelta(minutes=3, seconds=41), 
             timestamp=datetime(2008, 9, 16)
         )
@@ -91,7 +91,7 @@ def init() -> None:
         song10 = Song(
             title="Lágrimas desordenadas", 
             artist="Melendi",
-            album="Lágrimas desordenadas",
+            album="Lágrimas desordenadas", 
             duration=timedelta(minutes=3, seconds=49), 
             timestamp=datetime(2012, 11, 13)
         )

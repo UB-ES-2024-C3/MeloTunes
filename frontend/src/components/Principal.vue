@@ -173,6 +173,8 @@ export default {
         this.removeAccents(song.artist.toLowerCase()).includes(normalizedSearchQuery) ||
         this.removeAccents(song.album.toLowerCase()).includes(normalizedSearchQuery)
       ).slice(0, 8)
+      
+      localStorage.removeItem('searchQuery')
     }
   }
 }
