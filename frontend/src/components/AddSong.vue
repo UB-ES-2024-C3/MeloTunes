@@ -288,19 +288,23 @@ input[type='text']::placeholder {
   width: 100%;
   margin-top: 1.5rem;
 }
+
 .btn-submit:hover {
   background-color: #e64a19;
 }
+
 .logo-link {
   display: inline-block;
   margin-bottom: 2rem;
 }
+
 .logo {
   width: 60px;
   height: auto;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
+
 .logo:hover {
   transform: scale(1.1);
 }

@@ -199,7 +199,7 @@ export default {
   align-items: center;
   background-color: #121212;
   color: white;
-  padding: calc(2vh + 10vw) 3vw 3vh;;
+  padding: calc(2vh + 6vw) 3vw 3vh; //modificar aqui
   min-height: 100vh;
   overflow-y: auto;
   box-sizing: border-box;
@@ -238,28 +238,28 @@ export default {
 }
 
 .logo-link {
-  top: 2vh;       /* Espaciado desde la parte superior */
-  left: 2vw;      /* Espaciado desde la parte izquierda */
-  z-index: 1000;  /* Asegura que esté encima de otros elementos */
+  position: fixed;
+  top: 2vh;
+  left: 2vw;
+  z-index: 10000;
   cursor: pointer;
-  width: auto;    /* Permite ajustar el tamaño según la imagen */
-  position: absolute; /* Lo posicionamos fijo en la esquina superior izquierda */
 }
 
+
 .logo {
-  width: 8vw;     /* Tamaño moderado (ajustable según preferencias) */
-  max-width: 50px; /* Tamaño máximo en píxeles */
-  height: auto;   /* Mantiene las proporciones de la imagen */
-  transition: transform 0.3s ease; /* Animación al pasar el cursor */
+  width: 8vw;
+  max-width: 50px;
+  height: auto;
+  transition: transform 0.3s ease;
   cursor: pointer;
 }
 
 .logo:hover {
-  transform: scale(1.1); /* Aumenta el tamaño un poco al pasar el mouse */
+  transform: scale(1.1);
 }
 
 section {
-  margin-top: 2vh; /* Espaciado entre secciones */
+  margin-top: 2vh;
   width: 100%;
   background-color: #1f1f1f;
   padding: 2vh 2vw;
