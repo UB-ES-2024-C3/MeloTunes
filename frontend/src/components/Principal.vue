@@ -43,7 +43,7 @@
   <div v-if="!searchQuery" class="artist-section">
     <h2>Artistas Populares</h2>
     <div class="artist-grid">
-      <div v-for="artist in artists" :key="artist" class="artist">
+      <div v-for="artist in artists" :key="artist" class="artist" @click="goArtist(artist)">
         <img
           :src="getArtistImage(artist)"
           alt="Artista"
@@ -136,6 +136,10 @@ export default {
     },
     profile () {
       this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.go()
+    },
+    goArtist (artist) {
+      this.$router.push({ path: '/artist_profile', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, artist: artist } })
       this.$router.go()
     },
     getYear (timestamp) {

@@ -26,6 +26,7 @@
         </div>
         <div class="btn-group">
           <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
+          <button class="btn-favoritos" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
           <button v-if="this.user_logged.is_artist" class="btn-upload-song" @click="uploadSong">
             Subir canción
           </button>
@@ -33,6 +34,27 @@
         </div>
       </div>
     </header>
+
+    <!-- Popup modal de canciones -->
+    <div v-if="showSongs" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="showSongs = false">×</button>
+        <h2>Mis Canciones</h2>
+        <ul v-if="this.my_songs && this.my_songs.length" class="favorites-list">
+          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item">
+            <a :href="uploaded_song.cover" target="_blank" rel="noopener noreferrer">
+              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" />
+            </a>
+            <div class="favorite-details">
+              <h3>{{ uploaded_song.title }}</h3>
+              <p>{{ uploaded_song.artist }}</p>
+              <span class="song-duration">{{ getYear(uploaded_song.timestamp) }}</span>
+            </div>
+          </li>
+        </ul>
+        <p v-else>No tienes favoritos aún.</p>
+      </div>
+    </div>
 
     <!-- Popup modal de favoritos -->
     <div v-if="showFavorites" class="modal-overlay">
@@ -127,16 +149,21 @@ import UserService from '../services/UserService'
 import vertigoCover from '../assets/facebook.png'
 import lagrimasCover from '../assets/instagram.png'
 import sinFronterasCover from '../assets/twitter.png'
+import SongService from '../services/SongService'
 
 export default {
   name: 'Perfil_user',
   mounted () {
     UserService.get().then(response => {
       this.user_logged = response.data
-      console.log(response.data)
       UserService.getMyFavouriteSongs().then(response => {
         this.fav_songs = response
-        console.log(response)
+        if (this.user_logged.artist_name) {
+          SongService.getAllArtist(this.user_logged.artist_name).then(response => {
+            this.my_songs = response.data.data
+            console.log(this.my_songs)
+          })
+        }
       })
     })
   },
@@ -151,9 +178,11 @@ export default {
     return {
       user_logged: {},
       fav_songs: [],
+      my_songs: [],
       location: 'Barcelona',
       expandedBio: false,
       showFavorites: false,
+      showSongs: false,
       showEditProfile: false,
       editProfile: {
         first_name: '',

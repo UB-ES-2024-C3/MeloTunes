@@ -115,6 +115,12 @@ class UserService {
         throw new Error('No disponible')
       })
   }
+  getbyArtist (artistName) {
+    return axios.get(`/api/v1/users/artist/${artistName}`)
+      .then((res) => {
+        return res
+      })
+  }
 }
 
 export default new UserService()

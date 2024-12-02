@@ -36,3 +36,8 @@ def get_album_by_title(*, session: Session, title: str) -> list[Album] | None:
     statement = select(Album).where(Album.title.contains(title.lower()))
     session_album = session.exec(statement).all()
     return session_album
+
+def get_album_by_artist(*, session: Session, artist: str) -> Album | None:
+    statement = select(Album).where(Album.artist.contains(artist.lower()))
+    session_album = session.exec(statement)
+    return session_album
