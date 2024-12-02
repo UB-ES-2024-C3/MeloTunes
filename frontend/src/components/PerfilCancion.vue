@@ -1,4 +1,4 @@
-<template>
+<template class="main">
   <div class="main-container">
     <header>
       <div class="logo">
@@ -169,19 +169,11 @@ export default {
 
 <style>
 
-.v-app {
-  background-color: black !important;
-}
-
-.v-navigation-drawer {
-  background-color: black !important;
-}
-
 ::-webkit-scrollbar {
   display: none;
 }
 
-.main-container {
+.main-container, main {
   background-color: black !important;
 
 }
@@ -366,8 +358,8 @@ header {
 
 .favorite-btn-container {
   position: fixed;
-  bottom: 30px; /* Distancia desde la parte inferior de la pantalla */
-  right: 30px;  /* Distancia desde el lado derecho de la pantalla */
+  bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
+  right: 5vw;/* Distancia desde el lado derecho de la pantalla */
   //z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
