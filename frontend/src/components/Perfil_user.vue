@@ -203,7 +203,6 @@ export default {
     getArtistImage (artist) {
       const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
-
     },
     enviarModificacion () {
       this.showEditProfile = false
