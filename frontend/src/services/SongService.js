@@ -14,8 +14,8 @@ class SongService {
       })
   }
   createSong (title, artist, album) {
-    const now = new Date(); // Fecha y hora actual
-    const timestamp = now.toISOString(); // Formato ISO 8601
+    const now = new Date()
+    const timestamp = now.toISOString()
     return axios.post('/api/v1/songs/', {
       title: title,
       artist: artist,

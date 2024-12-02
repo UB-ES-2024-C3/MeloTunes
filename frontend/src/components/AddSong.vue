@@ -211,7 +211,7 @@ export default {
       },
       isAlbum: false,
       isAlbumUpload: false,
-      showAlbum:false
+      showAlbum: false
     }
   },
   methods: {
@@ -283,7 +283,7 @@ export default {
           })
       } else {
         console.log('Subiendo single:', this.song_title)
-        SongService.createSong(this.song_title, this.user_logged.artist_name, "Single")
+        SongService.createSong(this.song_title, this.user_logged.artist_name, 'Single')
           .then(() => {
             alert('La canción ' + this.song_title + ' se ha subido con éxito.')
             this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
