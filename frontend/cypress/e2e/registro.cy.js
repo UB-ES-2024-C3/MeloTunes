@@ -10,4 +10,16 @@ describe('Página de registro', () => {
     cy.get('input[type="password"]').should('have.length', 2); // Contraseña y Confirmar Contraseña
     cy.get('input[type="date"]').should('exist'); // Fecha de nacimiento
   });
+
+  it('Muestra error si los campos están vacíos al enviar', () => {
+    cy.get('input[type="submit"]').click();
+
+    // Verificar mensajes de error específicos
+    cy.contains('El campo de correo electrónico no puede estar vacío.').should('exist');
+    cy.contains('La contraseña no puede estar vacía.').should('exist');
+    cy.contains('El nombre solo puede contener letras.').should('exist');
+    cy.contains('El apellido solo puede contener letras.').should('exist');
+    cy.contains('Debes ingresar tu fecha de nacimiento.').should('exist');
+  });
+
 });
