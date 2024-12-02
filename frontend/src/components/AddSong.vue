@@ -18,7 +18,7 @@
       >
         Subir Canción en un Álbum
       </div>
-      <div
+      <div v-if="this.showAlbum"
         :class="['form-option', { active: isAlbumUpload }]"
         @click="setOption('uploadAlbum')"
       >
@@ -35,12 +35,12 @@
           <input
             type="text"
             id="songTitle"
-            v-model="this.song_title"
+            v-model="song_title"
             placeholder="Ingresa el título de la canción"
             required
           />
         </div>
-        <div class="form-group">
+        <div class="form-group" v-if="this.showAlbum">
           <label for="songFile">Selecciona la canción</label>
           <input
             type="file"
@@ -50,7 +50,7 @@
             required
           />
         </div>
-        <div class="form-group">
+        <div class="form-group" v-if="this.showAlbum">
           <label for="albumCover">Portada del Single (PNG, JPEG)</label>
           <input
             type="file"
@@ -81,6 +81,25 @@
             v-model="song_album"
             placeholder="Ingresa el nombre del álbum"
             required
+          />
+        </div>
+        <div class="form-group" v-if="this.showAlbum">
+          <label for="songFile">Selecciona la canción</label>
+          <input
+            type="file"
+            id="songFile"
+            @change="handleFileChange"
+            accept="audio/*"
+            required
+          />
+        </div>
+        <div class="form-group" v-if="this.showAlbum">
+          <label for="albumCover">Portada del Single (PNG, JPEG)</label>
+          <input
+            type="file"
+            id="albumCover"
+            @change="handleImageChange"
+            accept="image/png, image/jpeg"
           />
         </div>
       </div>
@@ -190,8 +209,9 @@ export default {
         songCount: 1,
         songs: [{ title: '', file: null }]
       },
-      isAlbum: true,
-      isAlbumUpload: false
+      isAlbum: false,
+      isAlbumUpload: false,
+      showAlbum:false
     }
   },
   methods: {
@@ -262,7 +282,17 @@ export default {
             alert('La canción ' + this.song_title + ' ya existe en el sistema.')
           })
       } else {
-        console.log('Subiendo single:', this.song)
+        console.log('Subiendo single:', this.song_title)
+        SongService.createSong(this.song_title, this.user_logged.artist_name, "Single")
+          .then(() => {
+            alert('La canción ' + this.song_title + ' se ha subido con éxito.')
+            this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+            this.$router.go()
+          })
+          .catch((error) => {
+            console.error(error)
+            alert('La canción ' + this.song_title + ' ya existe en el sistema.')
+          })
       }
     },
     goHome () {

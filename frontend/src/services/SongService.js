@@ -14,12 +14,14 @@ class SongService {
       })
   }
   createSong (title, artist, album) {
+    const now = new Date(); // Fecha y hora actual
+    const timestamp = now.toISOString(); // Formato ISO 8601
     return axios.post('/api/v1/songs/', {
       title: title,
       artist: artist,
       album: album,
       duration: '00:04:05', // Duración como cadena
-      timestamp: '2008-09-16T00:00:00Z' // Formato ISO 8601
+      timestamp: timestamp
     })
       .then((res) => {
         return res
