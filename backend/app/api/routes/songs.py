@@ -19,7 +19,7 @@ from app.models import (
     SongOut,
     SongsOut,
     SongUpdate,
-    Album
+    Album,
 )
 
 router = APIRouter()
@@ -127,6 +127,27 @@ def read_song_by_title(song_title: str, session: SessionDep) -> Any:
     """
     songs = crud.song.get_song_by_title(session=session, title=song_title)
     return SongsOut(data=songs, count=len(songs))
+
+
+@router.get("/songs/artist/{songs_artist}", response_model=SongsOut)
+def read_songs_by_artist(songs_artist: str, session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+    """
+    Get a specific song by artist.
+    """
+    print("Iniciando consulta...")
+    
+    # Define el statement antes de usarlo
+    statement = select(Song).offset(skip).limit(limit).where(Song.artist.contains(songs_artist.lower()))
+    print(f"Consulta generada: {statement}")
+
+    # Ejecuta el statement después de definirlo
+    songs = session.exec(statement).all()
+    print(f"Resultados obtenidos: {songs}")
+
+    count_statement = select(func.count()).select_from(Song)
+    count = session.exec(count_statement).one()
+    
+    return SongsOut(data=songs, count=count)
 
 
 @router.patch(

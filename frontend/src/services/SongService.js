@@ -13,6 +13,12 @@ class SongService {
         return res
       })
   }
+  getAllArtist (songsArtist) {
+    return axios.get(`/api/v1/songs/songs/artist/${songsArtist}`)
+      .then((res) => {
+        return res
+      })
+  }
   createSong (title, artist, album) {
     const now = new Date()
     const timestamp = now.toISOString()

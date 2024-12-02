@@ -161,6 +161,13 @@ def read_user_by_id(user_id: int, session: SessionDep, current_user: CurrentUser
         )
     return user
 
+@router.get("/artist/{artist_name}", response_model=UserOut)
+def read_user_by_artist_name(session: SessionDep, artist_name: str) -> Any:
+    """
+    Get a specific user by artist name.
+    """
+    user = crud.user.get_user_by_artist_name(session=session, artist_name=artist_name)
+    return user
 
 @router.patch(
     "/{user_id}",
