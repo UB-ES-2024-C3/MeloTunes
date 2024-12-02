@@ -84,4 +84,20 @@ describe('Página de registro', () => {
       );
     });
   });
+  it('Completa el registro exitosamente con datos válidos', () => {
+    cy.get('#email').type('noregistrado@gmail.com');
+    cy.get('#password').type('Valida123');
+    cy.get('#confirm_password').type('Valida123');
+    cy.get('#nombre').type('Usuario');
+    cy.get('#apellido').type('Nuevo');
+    cy.get('#fecha_nacimiento').type('2000-01-01');
+    cy.get('input[type="submit"]').click();
+
+    cy.on('window:alert', (text) => {
+      expect(text).to.equal(
+        'El usuario con email usuario@ejemplo.com ya está registrado en el sistema.'
+      );
+    cy.url().should('include', '/login'); // Redirige a la página de inicio de sesión
+  });
+  });
 });
