@@ -61,8 +61,8 @@
       <div class="modal-content">
         <button class="close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
-        <ul v-if="this.fav_songs && this.fav_songs.length" class="favorites-list">
-          <li v-for="favorite in this.fav_songs" :key="favorite.id" class="favorite-item">
+        <ul v-if="fav_songs && fav_songs.length" class="favorites-list">
+          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
               <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" />
             </a>
@@ -113,6 +113,7 @@
 
         <!-- Línea divisoria -->
         <div class="divider"></div>
+
         <!-- Top 3 Álbumes -->
         <div class="top-albums">
           <h2>MI TOP 3 ÁLBUMES</h2>
@@ -250,85 +251,352 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: stretch;
+  align-items: center;
   background-color: #121212;
   color: white;
-  padding: 2rem;
+  padding: calc(2vh + 6vw) 3vw 3vh;
   min-height: 100vh;
-  overflow-y: auto; /* Permitir desplazamiento vertical */
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
 .perfil-header {
   background: #1f1f1f;
   color: white;
-  padding: 2rem;
+  padding: 3vh 3vw;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 1.2vw;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  margin-bottom: 3vh;
+  width: 100%;
+  position: relative;
+}
+
+ .btn {
+   background-color: #bf0000;
+   padding: 1.5vh 2vw;
+   border-radius: 2vw;
+   color: white;
+   font-size: 1.2rem;
+   text-decoration: none;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   cursor: pointer;
+ }
+
+.btn:hover {
+  background-color: #a30000;
+}
+
+.logo-link {
+  position: fixed;
+  top: 2vh;
+  left: 2vw;
+  z-index: 10000;
+  cursor: pointer;
+}
+
+.logo {
+  width: 8vw;
+  max-width: 50px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+section {
+  margin-top: 2vh;
+  width: 100%;
+  background-color: #1f1f1f;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  box-sizing: border-box;
+}
+
+.top-section {
+  background-color: #1f1f1f;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  margin-top: 3vh;
+  width: 100%;
+}
+
+.top-columns {
+  display: flex;
+  gap: 2vw;
+  justify-content: space-between; /* Espacio entre los dos bloques */
+}
+
+.top-songs, .top-albums {
+  flex: 1; /* Ambos bloques ocupan el mismo espacio */
+  padding: 1vh 1vw;
+  background-color: #333;
+  border-radius: 1vw;
+  color: white;
+  box-sizing: border-box;
+}
+
+.top-songs h2, .top-albums h2 {
+  color: #ff3d00;
+  font-size: 2rem;
+  margin-bottom: 1.5vh;
+}
+
+.top-songs ul, .top-albums ul {
+  list-style: none;
+  padding: 0;
+}
+
+.top-songs li, .top-albums li {
+  color: #ddd;
+  margin-bottom: 1vh;
+}
+
+.divider {
+  width: 1px;
+  background-color: #555;
+  height: 100%;
+  align-self: stretch; /* Hace que la barra divisora ocupe todo el alto */
+}
+
+.top-section h2 {
+  color: #ff3d00;
+  font-size: 2rem;
+  margin-bottom: 2vh;
+  text-align: center;
+}
+
+.recommendations-grid {
   display: flex;
   align-items: stretch;
-  justify-content: flex-start; /* Alineamos a la izquierda */
-  border-radius: 12px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  margin-bottom: 2rem;
+  justify-content: space-between;
+  gap: 2vw;
+}
+
+.recommendation-column h3 {
+  font-size: 1.8rem;
+  color: #ff3d00;
+  margin-bottom: 1.5vh;
+}
+
+.recommendation-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recommendation-column li {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.divider {
+  width: 2px;
+  background-color: #555;
+  margin: 0 1vw;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo translúcido oscuro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Asegura que esté encima de todo */
+}
+
+.modal-content {
+  background-color: #1f1f1f; /* Fondo gris oscuro */
+  color: #ffffff; /* Texto blanco */
+  padding: 3vh 3vw;
+  border-radius: 1vw;
+  width: 90%;
+  max-width: 500px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh; /* Espaciado entre elementos */
+}
+
+.modal-content h2 {
+  color: #ff3d00; /* Título en color destacado */
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.modal-content .form-group label {
+  color: #ff3d00;
+  font-size: 1.2rem;
+}
+
+.modal-content .form-group input,
+.modal-content .form-group textarea {
+  background-color: #333; /* Fondo gris oscuro */
+  color: #ffffff; /* Texto blanco */
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5vw;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.modal-content button {
+  background-color: #bf0000;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5vw;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #ff3d00;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 0.6vw;
+  background-color: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.recommendation-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recommendation-column li {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.close-button {
+  justify-content: flex-end;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilo base del body */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1f1f1f; /* Fondo oscuro unificado */
+  color: #f63b3b;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh; /* Asegura que ocupe toda la altura */
+  overflow-x: hidden; /* Elimina el desplazamiento horizontal si es innecesario */
+}
+
+section {
+  background-color: #1f1f1f; /* Fondo consistente con el body */
+  padding: 2vh 2vw;
+  width: 100%;
+}
+
+header, nav, footer {
+  margin: 0;
+  padding: 0;
+  background-color: transparent; /* Elimina fondos que puedan causar problemas */
 }
 
 .avatar-container {
   flex-shrink: 0;
-  margin-right: 1.5rem;
+  margin-right: 2vw;
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
+  width: 15vw;
+  height: 15vw;
   border-radius: 50%;
-  border: 3px solid #ff3d00;
+  border: 0.3vw solid #ff3d00;
   object-fit: cover;
 }
 
 .user-details {
   flex-grow: 1;
-  max-width: 500px;
+  max-width: 50vw;
 }
 
 .user-details h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin: 0;
   font-weight: 700;
 }
 
 .location {
   color: #aaa;
-  margin-top: 0.5rem;
+  margin-top: 1vh;
 }
 
 .bio, .bio-short {
-  margin-top: 1rem;
+  margin-top: 2vh;
   font-size: 1rem;
+  line-height: 1.5;
 }
 
-/* Botones de Ver mis favoritos y Subir canción */
 .btn-group {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.btn-toggle-bio {
-  background-color: #ff3d00;
-  color: white;
-  padding: 0.5rem 1.2rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  gap: 2vw;
+  margin-top: 2vh;
 }
 
 .music-recommendations,
 .top-songs,
 .top-albums,
 .events {
-  margin-top: 2rem;
+  margin-top: 3vh;
   background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  width: 100%;
 }
 
 .music-recommendations h2,
@@ -336,27 +604,27 @@ export default {
 .top-albums h2,
 .events h2 {
   color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  margin-bottom: 1.5vh;
 }
 
 .recommendations-grid {
   display: flex;
-  gap: 1rem;
+  gap: 2vw;
   flex-wrap: wrap;
 }
 
 .recommendation {
   background-color: #333;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 1vh;
+  border-radius: 1vw;
   text-align: center;
 }
 
 .recommendation-cover {
   width: 100%;
-  height: 200px;
-  border-radius: 8px;
+  height: 15vw;
+  border-radius: 1vw;
 }
 
 .music-stats ul,
@@ -367,290 +635,42 @@ export default {
 }
 
 ul {
-  margin-top: 1rem;
+  margin-top: 1.5vh;
 }
 
 li {
   color: #ddd;
-}
-
-.top-songs ul,
-.top-albums ul {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.album-info p,
-.song-info p {
   font-size: 1rem;
-  color: #ff3d00;
-}
-
-.top-section {
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
-}
-
-.top-section h2 {
-  color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.top-columns {
-  display: flex;
-  gap: 2rem;
-}
-
-.top-songs, .top-albums {
-  flex: 1;
-}
-
-.top-songs ul, .top-albums ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 0;
-}
-
-li {
-  color: #ddd;
-  margin-bottom: 0.5rem;
-}
-
-/* Estilos para Top Canciones y Álbumes en columnas con línea divisoria */
-.top-section {
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
-}
-
-.top-section h2 {
-  color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.top-columns {
-  display: flex;
-  align-items: stretch; /* Asegura que las columnas tengan la misma altura */
-  gap: 1rem;
-}
-
-.top-songs, .top-albums {
-  flex: 1;
-}
-
-.top-songs h3, .top-albums h3 {
-  color: #ff3d00;
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-}
-
-.top-songs ul, .top-albums ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-li {
-  color: #ddd;
-  margin-bottom: 0.5rem;
-}
-
-.btn-favoritos, .btn-upload-song {
-  background-color: #ff3d00;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  text-decoration: none;
-  margin-top: 2rem;
-  display: inline-block;
-  font-weight: bold;
-}
-
-.btn-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.divider {
-  width: 1px;
-  background-color: #555; /* Color gris */
-  height: auto;
-  align-self: stretch; /* Extiende la línea para abarcar la altura completa */
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow: auto; /* Permitir desplazamiento si el contenido del modal es extenso */
-}
-
-.modal-content {
-  background-color: #333;
-  color: white;
-  padding: 1rem;
-  border-radius: 10px;
-  max-width: 400px;
-  max-height: 70%;
-  overflow-y: auto;
-  overflow: hidden;
-  position: relative;
-}
-
-.modal-content::-webkit-scrollbar {
-  width: 6px; /* Ajusta el tamaño de la barra */
-  background-color: transparent; /* Fondo transparente */
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-  background-color: #333; /* Barra de desplazamiento negra */
-  border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-  background-color: transparent; /* Fondo transparente del track */
-}
-
-.modal-content {
-  overflow-y: auto; /* Habilita el desplazamiento vertical */
-  -webkit-overflow-scrolling: touch; /* Desplazamiento suave */
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5rem;
-  color: #ff3d00;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-h2 {
-  color: #ff3d00;
+  margin-bottom: 1vh;
 }
 
 .favorites-list {
-  list-style: none;
-  padding: 0;
-  margin-top: 1rem;
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
 .favorite-item {
   display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: #333;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin: 1vh 0;
 }
 
 .favorite-cover {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  margin-right: 1rem;
 }
 
-.favorite-details h3 {
-  margin: 0;
-  font-size: 1.2rem;
+.favorite-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.favorite-details p, .song-duration {
-  color: #aaa;
-}
-
-.song-duration {
-  color: #ff3d00;
-}
-
-.logo-link {
-  display: inline-block;
-  margin-bottom: 2rem; /* Espacio entre el logo y el contenido */
-}
-
-/* Estilo para el logo */
-.logo {
-  width: 60px;  /* Ajusta el tamaño del logo */
-  height: auto;
-  cursor: pointer;
-  transition: transform 0.3s ease;  /* Para efecto de hover */
-}
-
-.logo:hover {
-  transform: scale(1.1);  /* Efecto de hover (agranda el logo ligeramente) */
-}
-
-.btn-modificar-perfil {
+.divider {
+  width: 1px;
   background-color: #ff3d00;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  text-decoration: none;
-  margin-top: 2rem;
-  display: inline-block;
-  font-weight: bold;
+  margin: 0 3vw;
 }
 
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  color: #ff3d00;
-  margin-bottom: 0.5rem;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: none;
-  background-color: #555;
-  color: white;
-}
-
-.btn-save {
-  background-color: #ff3d00;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .perfil-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .top-columns {
-    flex-direction: column;
-  }
-
-  .recommendation-cover {
-    height: 150px;
-  }
-}
 </style>
