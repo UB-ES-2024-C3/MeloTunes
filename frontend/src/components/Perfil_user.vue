@@ -199,7 +199,7 @@ export default {
   align-items: center;
   background-color: #121212;
   color: white;
-  padding: calc(2vh + 6vw) 3vw 3vh; //modificar aqui
+  padding: calc(2vh + 6vw) 3vw 3vh;
   min-height: 100vh;
   overflow-y: auto;
   box-sizing: border-box;
@@ -238,11 +238,9 @@ export default {
 }
 
 .logo-link {
-  position: fixed;
   top: 2vh;
   left: 2vw;
   z-index: 10000;
-  cursor: pointer;
 }
 
 .logo {
@@ -250,7 +248,6 @@ export default {
   max-width: 50px;
   height: auto;
   transition: transform 0.3s ease;
-  cursor: pointer;
 }
 
 .logo:hover {
@@ -324,17 +321,6 @@ section {
   align-items: stretch;
   justify-content: space-between;
   gap: 2vw;
-}
-
-.recommendation-column {
-  flex: 1;
-  background-color: #333;
-  padding: 2vh 2vw;
-  border-radius: 1vw;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
 }
 
 .recommendation-column h3 {
