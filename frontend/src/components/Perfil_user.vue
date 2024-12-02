@@ -238,9 +238,11 @@ export default {
 }
 
 .logo-link {
+  position: fixed;
   top: 2vh;
   left: 2vw;
   z-index: 10000;
+  cursor: pointer;
 }
 
 .logo {
