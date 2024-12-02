@@ -53,7 +53,7 @@ def test_read_song_by_title() -> None:
     """
     Test to retrieve songs by their title.
     """
-    song_title_to_find = "Tu jardín con enanitos" 
+    song_title_to_find = "Test Song" 
     response = client.get(f"{settings.API_V1_STR}/songs/songs/{song_title_to_find}")
     assert response.status_code == 200
     data = response.json()
@@ -116,7 +116,7 @@ def test_delete_song_super_user(
     # Usamos el token generado para el nuevo usuario
     user_token_headers = {"Authorization": f"Bearer {access_token}"}
     
-    title = "Test Song"
+    title = "New Song"
     try:
         # Intentar obtener la canción de la base de datos
         song = db.query(Song).filter(Song.title == title).first() 
