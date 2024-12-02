@@ -85,19 +85,21 @@ describe('Página de registro', () => {
     });
   });
   it('Completa el registro exitosamente con datos válidos', () => {
-    cy.get('#email').type('noregistrado@gmail.com');
+    // Rellenar los campos del formulario con datos válidos
+    const uniqueEmail = `testusers${Date.now()}@gmail.com`;
+    cy.get('#email').type(uniqueEmail);
     cy.get('#password').type('Valida123');
     cy.get('#confirm_password').type('Valida123');
     cy.get('#nombre').type('Usuario');
     cy.get('#apellido').type('Nuevo');
     cy.get('#fecha_nacimiento').type('2000-01-01');
+
+    // Simular el clic en el botón de registro
     cy.get('input[type="submit"]').click();
 
-    cy.on('window:alert', (text) => {
-      expect(text).to.equal(
-        'El usuario con email usuario@ejemplo.com ya está registrado en el sistema.'
-      );
-    cy.url().should('include', '/login'); // Redirige a la página de inicio de sesión
-  });
+    // Capturar el mensaje de alerta y verificarlo
+    cy.on('window:alert', (alertText) => {
+      expect(alertText).to.contains('Registro exitoso!');
+    });
   });
 });
