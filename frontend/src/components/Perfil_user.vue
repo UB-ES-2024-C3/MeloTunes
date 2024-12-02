@@ -72,15 +72,12 @@
 
     <!-- Sección Top Canciones y Álbumes en columnas con línea divisoria -->
     <section class="top-section">
-      <h2>Mi Top</h2>
       <div class="recommendations-grid">
         <!-- Top Canciones -->
-        <div class="recommendation-column">
-          <h3>MI TOP 3 CANCIONES</h3>
+        <div class="recommendation top-songs">
+          <h3>CANCIONES</h3>
           <ul>
-            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">
-              <span>{{ song.title }} - {{ song.artist }}</span>
-            </li>
+            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.title }} - {{ song.artist }}</li>
           </ul>
         </div>
 
@@ -88,12 +85,10 @@
         <div class="divider"></div>
 
         <!-- Top Álbumes -->
-        <div class="recommendation-column">
-          <h3>MI TOP 3 ÁLBUMES</h3>
+        <div class="recommendation top-albums">
+          <h3>ÁLBUMES</h3>
           <ul>
-            <li v-for="album in fav_songs.slice(0, 3)" :key="album.id">
-              <span>{{ album.album }} - {{ album.artist }}</span>
-            </li>
+            <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.album }} - {{ song.artist }}</li>
           </ul>
         </div>
       </div>
@@ -200,10 +195,11 @@ export default {
 .perfil {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   background-color: #121212;
   color: white;
-  padding: 3vh 3vw;
+  padding: calc(2vh + 10vw) 3vw 3vh;;
   min-height: 100vh;
   overflow-y: auto;
   box-sizing: border-box;
@@ -242,12 +238,12 @@ export default {
 }
 
 .logo-link {
-  position: fixed; /* Fija la posición para que esté siempre visible */
   top: 2vh;       /* Espaciado desde la parte superior */
   left: 2vw;      /* Espaciado desde la parte izquierda */
   z-index: 1000;  /* Asegura que esté encima de otros elementos */
   cursor: pointer;
   width: auto;    /* Permite ajustar el tamaño según la imagen */
+  position: absolute; /* Lo posicionamos fijo en la esquina superior izquierda */
 }
 
 .logo {
@@ -255,24 +251,75 @@ export default {
   max-width: 50px; /* Tamaño máximo en píxeles */
   height: auto;   /* Mantiene las proporciones de la imagen */
   transition: transform 0.3s ease; /* Animación al pasar el cursor */
+  cursor: pointer;
 }
 
 .logo:hover {
   transform: scale(1.1); /* Aumenta el tamaño un poco al pasar el mouse */
 }
 
-.top-section {
-  margin-top: 3vh;
+section {
+  margin-top: 2vh; /* Espaciado entre secciones */
+  width: 100%;
   background-color: #1f1f1f;
-  padding: 3vh 3vw;
+  padding: 2vh 2vw;
   border-radius: 1vw;
+  box-sizing: border-box;
+}
+
+.top-section {
+  background-color: #1f1f1f; /* Fondo oscuro */
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  margin-top: 3vh;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  box-sizing: border-box;
 }
 
 .top-section h2 {
-  color: #ff3d00;
+  color: #ff3d00; /* Título en el color temático */
   font-size: 2rem;
-  margin-bottom: 2vh;
-  text-align: center;
+  margin-bottom: 1.5vh;
+  text-align: center; /* Centrar título */
+}
+
+.recommendations-grid {
+  display: flex;
+  gap: 2vw;
+  flex-wrap: wrap; /* Permite que los elementos se reorganicen en pantallas pequeñas */
+  width: 100%; /* Asegura que ocupe todo el ancho */
+}
+
+.recommendation {
+  flex: 1 1 45%; /* Cada columna ocupa aproximadamente el 45% del ancho */
+  background-color: #333;
+  padding: 2vh;
+  border-radius: 1vw;
+  text-align: left;
+}
+
+.recommendation h3 {
+  color: #ff3d00; /* Subtítulo en color temático */
+  margin-bottom: 1vh;
+  font-size: 1.5rem;
+}
+
+.recommendation ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendation ul li {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 1vh;
+}
+
+.divider {
+  width: 1px;
+  background-color: #555;
+  align-self: stretch;
+  margin: 0 1vw;
 }
 
 .modal-overlay {
@@ -350,30 +397,6 @@ export default {
   cursor: pointer;
 }
 
-.recommendations-grid {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 2vw;
-}
-
-.recommendation-column {
-  flex: 1;
-  background-color: #333;
-  padding: 2vh 2vw;
-  border-radius: 1vw;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-
-.recommendation-column h3 {
-  font-size: 1.8rem;
-  color: #ff3d00;
-  margin-bottom: 1.5vh;
-}
-
 .recommendation-column ul {
   list-style: none;
   padding: 0;
@@ -388,15 +411,39 @@ export default {
   color: #ddd;
 }
 
-.divider {
-  width: 2px;
-  background-color: #555;
-  margin: 0 1vw;
-}
-
 .close-button {
   justify-content: flex-end;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilo base del body */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1f1f1f; /* Fondo oscuro unificado */
+  color: white;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh; /* Asegura que ocupe toda la altura */
+  overflow-x: hidden; /* Elimina el desplazamiento horizontal si es innecesario */
+}
+
+section {
+  background-color: #1f1f1f; /* Fondo consistente con el body */
+  padding: 2vh 2vw;
+  width: 100%;
+}
+
+header, nav, footer {
+  margin: 0;
+  padding: 0;
+  background-color: transparent; /* Elimina fondos que puedan causar problemas */
+}
+
 .avatar-container {
   flex-shrink: 0;
   margin-right: 2vw;
