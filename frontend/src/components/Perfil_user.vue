@@ -29,10 +29,10 @@
     <!-- Popup modal de favoritos -->
     <div v-if="showFavorites" class="modal-overlay">
       <div class="modal-content">
-        <button class="btn close-button" @click="showFavorites = false">×</button>
+        <button class="close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
-        <ul v-if="this.fav_songs && this.fav_songs.length" class="favorites-list">
-          <li v-for="favorite in this.fav_songs" :key="favorite.id" class="favorite-item">
+        <ul v-if="fav_songs && fav_songs.length" class="favorites-list">
+          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
               <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" />
             </a>
@@ -50,7 +50,7 @@
     <!-- Modal para editar el perfil -->
     <div v-if="showEditProfile" class="modal-overlay">
       <div class="modal-content">
-        <button class="btn close-button" @click="showEditProfile = false">×</button>
+        <button class="close-button" @click="showEditProfile = false">×</button>
         <h2>Editar Perfil</h2>
         <form @submit.prevent="saveProfile">
           <div class="form-group">
@@ -65,7 +65,7 @@
             <label for="bio">Biografía:</label>
             <textarea id="bio" v-model="editProfile.bio"></textarea>
           </div>
-          <button type="submit" class="btn">Guardar</button>
+          <button type="submit">Guardar</button>
         </form>
       </div>
     </div>
@@ -370,41 +370,60 @@ section {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Fondo negro translúcido */
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo translúcido oscuro */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999; /* Asegura que esté encima de todo */
 }
 
 .modal-content {
-  background-color: #1f1f1f; /* Fondo negro */
-  color: #ff0000;
+  background-color: #1f1f1f; /* Fondo gris oscuro */
+  color: #ffffff; /* Texto blanco */
   padding: 3vh 3vw;
   border-radius: 1vw;
-  max-width: 40vw;
-  max-height: 70%;
-  overflow-y: auto;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5); /* Sombra para profundidad */
+  width: 90%;
+  max-width: 500px;
+  box-sizing: border-box;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh; /* Espaciado entre elementos */
 }
 
 .modal-content h2 {
-  color: #ff3d00; /* Color temático */
-  margin-bottom: 2vh;
+  color: #ff3d00; /* Título en color destacado */
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
 }
 
-.modal-content p,
-.modal-content ul,
-.modal-content li {
-  color: #ff1e1e; /* Asegura que el texto sea blanco */
+.modal-content .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.modal-content .form-group label {
+  color: #ff3d00;
+  font-size: 1.2rem;
+}
+
+.modal-content .form-group input,
+.modal-content .form-group textarea {
+  background-color: #333; /* Fondo gris oscuro */
+  color: #ffffff; /* Texto blanco */
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5vw;
+  font-size: 1rem;
+  width: 100%;
 }
 
 .modal-content button {
   background-color: #bf0000;
-  color: #ff1e1e;
-  padding: 1.5vh 2vw;
-  border-radius: 2vw;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5vw;
   font-size: 1.2rem;
   border: none;
   cursor: pointer;
@@ -412,6 +431,17 @@ section {
 
 .modal-content button:hover {
   background-color: #ff3d00;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .modal-content::-webkit-scrollbar {
@@ -426,17 +456,6 @@ section {
 
 .modal-content::-webkit-scrollbar-track {
   background-color: transparent;
-}
-
-.close-button {
-  position: absolute;
-  top: 1vh;
-  right: 1vh;
-  font-size: 2rem;
-  color: #ff3d00; /* Botón de cierre temático */
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
 .recommendation-column ul {
@@ -581,37 +600,6 @@ li {
   color: #ddd;
   font-size: 1rem;
   margin-bottom: 1vh;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.modal-content {
-  background-color: white;
-  color: black;
-  padding: 2vh 3vw;
-  border-radius: 1vw;
-  width: 80vw;
-  max-width: 600px;
-  box-sizing: border-box;
-}
-
-.close-button {
-  position: absolute;
-  top: 1vw;
-  right: 1vw;
-  font-size: 2rem;
-  cursor: pointer;
 }
 
 .favorites-list {
