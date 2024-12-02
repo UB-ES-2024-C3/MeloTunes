@@ -67,8 +67,13 @@ jobs:
         working-directory: ./frontend
         run: |
           npm install
+      
+      # 10. Instala wait-on
+      - name: Install wait-on
+        run: |
+          npm install -g wait-on
 
-      # 10. Inicia el servidor del frontend
+      # 11. Inicia el servidor del frontend
       - name: Start frontend server
         working-directory: ./frontend
         run: |
@@ -76,12 +81,12 @@ jobs:
         env:
           CI: true
 
-      # 11. Espera a que el servidor esté listo
+      # 12. Espera a que el servidor esté listo
       - name: Wait for server to be ready
         run: |
           npx wait-on http://localhost:8080
 
-      # 12. Ejecuta los tests de Cypress
+      # 13. Ejecuta los tests de Cypress
       - name: Run Cypress tests
         working-directory: ./frontend
         run: |
