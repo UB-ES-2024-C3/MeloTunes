@@ -49,4 +49,10 @@ describe('Página de registro', () => {
     cy.get('#password').should('have.attr', 'type', 'password'); // Verifica que se oculta la contraseña
   });
 
+  it('Valida la fecha de nacimiento', () => {
+    cy.get('#fecha_nacimiento').type('2020-01-01'); // Fecha menor a 16 años
+    cy.get('input[type="submit"]').click();
+    cy.contains('Debes tener al menos 16 años para registrarte.').should('be.visible');
+  });
+
 });
