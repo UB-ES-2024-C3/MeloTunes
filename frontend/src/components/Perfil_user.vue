@@ -60,20 +60,20 @@
       <div class="modal-content">
         <button class="close-button" @click="showEditProfile = false">×</button>
         <h2>Editar Perfil</h2>
-        <form @submit.prevent="saveProfile">
+        <form>
           <div class="form-group">
             <label for="firstName">Nombre:</label>
-            <input type="text" id="firstName" v-model="editProfile.first_name" />
+            <input type="text" id="firstName" v-model="editProfile.firstName" />
           </div>
           <div class="form-group">
             <label for="secondName">Apellido:</label>
-            <input type="text" id="secondName" v-model="editProfile.second_name" />
+            <input type="text" id="secondName" v-model="editProfile.secondName" />
           </div>
           <div class="form-group">
             <label for="bio">Biografía:</label>
             <textarea id="bio" v-model="editProfile.bio"></textarea>
           </div>
-          <button type="submit" class="btn-save">Guardar</button>
+          <button class="btn-save" @click="enviarModificacion">Guardar</button>
         </form>
       </div>
     </div>
@@ -203,6 +203,15 @@ export default {
     getArtistImage (artist) {
       const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
+
+    },
+    enviarModificacion () {
+      this.showEditProfile = false
+      UserService.updateUser(this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+        .catch((error) => {
+          console.error(error)
+          alert('Algo ha fallado')
+        })
     }
   }
 }
