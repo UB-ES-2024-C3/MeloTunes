@@ -9,7 +9,7 @@
           <img :src="getArtistImage(this.user_logged.artist_name)" alt="Avatar del usuario" class="avatar" />
         </div>
         <div v-if="!this.user_logged.is_artist">
-          <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
+          <img src="../assets/user.png" alt="Avatar del usuario" class="avatar" />
         </div>
       </div>
       <div class="user-details">
@@ -147,9 +147,9 @@
 
 <script>
 import UserService from '../services/UserService'
-import vertigoCover from '../assets/facebook.png'
-import lagrimasCover from '../assets/instagram.png'
-import sinFronterasCover from '../assets/twitter.png'
+import vertigoCover from '../assets/albumes/antesdequecuentediez.jpeg'
+import lagrimasCover from '../assets/albumes/lagrimasdesordenadas.jpeg'
+import sinFronterasCover from '../assets/albumes/estopa1.jpeg'
 import SongService from '../services/SongService'
 
 export default {
@@ -191,9 +191,9 @@ export default {
         bio: ''
       },
       musicRecommendations: [
-        { id: 1, title: 'Vértigo', artist: 'Pablo Alborán', cover: vertigoCover },
+        { id: 1, title: 'Antes de que cuente 10', artist: 'Fito y Fitipaldis', cover: vertigoCover },
         { id: 2, title: 'Lágrimas desordenadas', artist: 'Melendi', cover: lagrimasCover },
-        { id: 3, title: 'Sin fronteras', artist: 'Luis Fonsi', cover: sinFronterasCover }
+        { id: 3, title: 'Paseo', artist: 'Estopa', cover: sinFronterasCover }
       ],
       upcomingEvents: [
         { id: 1, name: 'Concierto de Melendi', date: '15 de diciembre', location: 'Girona' },
