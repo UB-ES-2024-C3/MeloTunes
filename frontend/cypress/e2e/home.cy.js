@@ -21,4 +21,12 @@ it('Debe mostrar el logo correctamente', () => {
     // Verificamos que el título "Artistas Populares" esté presente
     cy.contains('Artistas Populares').should('be.visible');
   });
+
+  it('Debe mostrar los botones de "Legal", "Política de privacidad" y "Cookies" en el footer', () => {
+    // Verificamos que los enlaces de los términos y condiciones estén visibles
+    cy.contains('Legal').should('be.visible');
+    cy.contains('Política de privacidad').should('be.visible');
+    cy.contains('Cookies').should('be.visible');
+  });
+
 });
