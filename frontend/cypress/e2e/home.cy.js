@@ -29,4 +29,11 @@ it('Debe mostrar el logo correctamente', () => {
     cy.contains('Cookies').should('be.visible');
   });
 
+  it('Debe mostrar los botones sociales (Facebook, Instagram, Twitter) en el footer', () => {
+    cy.get('footer .social-icons a').should('have.length', 3); // Verificamos que haya 3 botones sociales
+    cy.get('footer .social-icons a').eq(0).should('be.visible'); // Verificamos que el botón de Facebook esté visible
+    cy.get('footer .social-icons a').eq(1).should('be.visible'); // Verificamos que el botón de Instagram esté visible
+    cy.get('footer .social-icons a').eq(2).should('be.visible'); // Verificamos que el botón de Twitter esté visible
+  });
+
 });
