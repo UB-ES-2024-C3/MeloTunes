@@ -1,6 +1,6 @@
 describe('Página principal', () => {
   beforeEach(() => {
-    cy.visit('/home');  // Asegúrate de usar la URL correcta
+    cy.visit('/home');
   });
 it('Debe mostrar el logo correctamente', () => {
     // Verificamos que el logo esté visible
@@ -14,6 +14,11 @@ it('Debe mostrar el logo correctamente', () => {
 
   it('Debe tener los botones de autenticación cuando no está logueado', () => {
     // Verificamos que los botones de login y registro estén presentes
-    cy.get('.auth-buttons a').should('have.length', 2);  // Dos botones: "Iniciar sesión" y "Registrarse"
+    cy.get('.auth-buttons a').should('have.length', 2);
+  });
+
+  it('Debe mostrar "Artistas Populares" en la página', () => {
+    // Verificamos que el título "Artistas Populares" esté presente
+    cy.contains('Artistas Populares').should('be.visible');
   });
 });
