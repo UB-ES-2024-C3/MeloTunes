@@ -2,7 +2,7 @@ import http from '../http-common'
 
 class TeamService {
   getAll () {
-    return http.get('/api/v1/users/')
+    return http.get('/api/v1/songs/')
       .then((res) => {
         return res.data
       })

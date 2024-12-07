@@ -8,7 +8,7 @@
       <img src="../assets/Im_logo.png" alt="Logo"><br>
       <h1>Inicia sesión en MeloTunes</h1>
 
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" novalidate>
         <label for="email">Email</label><br>
         <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input"><br>
 
@@ -55,7 +55,8 @@ export default {
   },
   methods: {
     cerrarPopup () {
-      this.$router.push('/home') // Cambia la ruta de Vue Router
+      this.$router.push('/home')
+      this.$router.go()
     },
     login () {
       AuthService.login(this.email, this.password)
@@ -63,10 +64,11 @@ export default {
           this.is_authenticated = true
           this.token = response.data.access_token
           this.$router.push({ path: '/home', query: { email: this.email, logged: this.is_authenticated, token: this.token } })
+          this.$router.go()
         })
         .catch((error) => {
           console.error(error)
-          alert('Correo o contraseña incorrectos')
+          this.error = 'Correo o contraseña incorrectos'
         })
     },
     togglePassword () {
@@ -231,7 +233,8 @@ body, html {
 }
 
 .error {
-  color: red;
+  color: yellow;
   font-size: 14px;
+  font-weight: bold;
 }
 </style>

@@ -8,7 +8,7 @@
       <br>
       <h1>Completa tu Registro</h1>
 
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" novalidate>
         <!-- Campo del correo electrónico -->
         <label for="email">Email</label><br>
         <input
@@ -212,6 +212,7 @@ export default {
         .then(() => {
           alert('Registro exitoso!')
           this.$router.push('/login')
+          this.$router.go()
         })
         .catch((error) => {
           console.error(error)

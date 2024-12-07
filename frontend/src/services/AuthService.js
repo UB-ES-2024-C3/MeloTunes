@@ -4,12 +4,14 @@ class AuthService {
   login (username, password) {
     console.log('Datos enviados:', { username, password })
     const parameters = `username=${username}&password=${password}`
+
+    console.log(parameters)
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    const path = 'http://localhost:8000/api/v1/login/access-token'
+    const path = `${process.env.API_URL}/api/v1/login/access-token`
     return axios.post(path, parameters, config)
       .then((res) => {
         const token = res.data.access_token // Asegúrate de que el backend devuelva el token aquí

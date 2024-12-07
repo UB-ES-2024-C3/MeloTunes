@@ -153,9 +153,10 @@ def test_retrieve_users(
 def test_update_user_me(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
-    full_name = "Updated Name"
+    first_name = "Updated First Name"
+    second_name = "Upadated Second Name"
     email = random_email()
-    data = {"full_name": full_name, "email": email}
+    data = {"first_name": first_name, "second_name": second_name, "email": email}
     r = client.patch(
         f"{settings.API_V1_STR}/users/me",
         headers=normal_user_token_headers,
@@ -164,7 +165,8 @@ def test_update_user_me(
     assert r.status_code == 200
     updated_user = r.json()
     assert updated_user["email"] == email
-    assert updated_user["full_name"] == full_name
+    assert updated_user["first_name"] == first_name
+    assert updated_user["second_name"] == second_name
 
 
 def test_update_password_me(
@@ -253,8 +255,9 @@ def test_create_user_open(client: TestClient) -> None:
     with patch("app.core.config.settings.USERS_OPEN_REGISTRATION", True):
         username = random_email()
         password = random_lower_string()
-        full_name = random_lower_string()
-        data = {"email": username, "password": password, "full_name": full_name}
+        first_name = random_lower_string()
+        second_name = random_lower_string()
+        data = {"email": username, "password": password, "first_name": first_name, "second_name": second_name}
         r = client.post(
             f"{settings.API_V1_STR}/users/open",
             json=data,
@@ -262,15 +265,18 @@ def test_create_user_open(client: TestClient) -> None:
         assert r.status_code == 200
         created_user = r.json()
         assert created_user["email"] == username
-        assert created_user["full_name"] == full_name
+        assert created_user["first_name"] == first_name
+        assert created_user["second_name"] == second_name
+
 
 
 def test_create_user_open_forbidden_error(client: TestClient) -> None:
     with patch("app.core.config.settings.USERS_OPEN_REGISTRATION", False):
         username = random_email()
         password = random_lower_string()
-        full_name = random_lower_string()
-        data = {"email": username, "password": password, "full_name": full_name}
+        first_name = random_lower_string()
+        second_name = random_lower_string()
+        data = {"email": username, "password": password, "first_name": first_name, "second_name": second_name}
         r = client.post(
             f"{settings.API_V1_STR}/users/open",
             json=data,
@@ -284,11 +290,13 @@ def test_create_user_open_forbidden_error(client: TestClient) -> None:
 def test_create_user_open_already_exists_error(client: TestClient) -> None:
     with patch("app.core.config.settings.USERS_OPEN_REGISTRATION", True):
         password = random_lower_string()
-        full_name = random_lower_string()
+        first_name = random_lower_string()
+        second_name = random_lower_string()
         data = {
             "email": settings.FIRST_SUPERUSER,
             "password": password,
-            "full_name": full_name,
+            "first_name": first_name, 
+            "second_name": second_name
         }
         r = client.post(
             f"{settings.API_V1_STR}/users/open",
@@ -309,7 +317,7 @@ def test_update_user(
     user_in = UserCreate(email=username, password=password)
     user = crud.user.create_user(session=db, user_create=user_in)
 
-    data = {"full_name": "Updated_full_name"}
+    data = {"email": "Updated_email"}
     r = client.patch(
         f"{settings.API_V1_STR}/users/{user.id}",
         headers=superuser_token_headers,
@@ -317,7 +325,7 @@ def test_update_user(
     )
     assert r.status_code == 200
     updated_user = r.json()
-    assert updated_user["full_name"] == "Updated_full_name"
+    assert updated_user["email"] == "Updated_email"
 
 
 def test_update_user_not_exists(

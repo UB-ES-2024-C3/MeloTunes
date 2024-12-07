@@ -89,6 +89,8 @@ def update_user_me(*, session: SessionDep, user_in: UserUpdateMe, current_user: 
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
             )
+        if not current_user.is_artist:
+            user_in.artist_name = None
     user_data = user_in.model_dump(exclude_unset=True)
     current_user.sqlmodel_update(user_data)
     session.add(current_user)
@@ -139,7 +141,7 @@ def create_user_open(session: SessionDep, user_in: UserCreateOpen) -> Any:
             status_code=400,
             detail="The user with this email already exists in the system",
         )
-    user_create = UserCreate.from_orm(user_in)
+    user_create = UserCreate.model_validate(user_in)
     user = crud.user.create_user(session=session, user_create=user_create)
     return user
 
@@ -159,6 +161,13 @@ def read_user_by_id(user_id: int, session: SessionDep, current_user: CurrentUser
         )
     return user
 
+@router.get("/artist/{artist_name}", response_model=UserOut)
+def read_user_by_artist_name(session: SessionDep, artist_name: str) -> Any:
+    """
+    Get a specific user by artist name.
+    """
+    user = crud.user.get_user_by_artist_name(session=session, artist_name=artist_name)
+    return user
 
 @router.patch(
     "/{user_id}",

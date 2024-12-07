@@ -29,7 +29,7 @@
 
   <div class="album-grid">
     <!-- Aquí cambiamos las canciones por un bucle que renderiza cada álbum dinámicamente -->
-    <div v-for="song in songs_list" :key="song.id" class="album" @click="handleClick(song)">
+    <div v-for="(song) in songs_list" :key="song.id" class="album" @click="handleClick(song)">
       <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
       <div class="album-info">
         <p>{{ song.title }}</p>
@@ -43,11 +43,11 @@
   <div v-if="!searchQuery" class="artist-section">
     <h2>Artistas Populares</h2>
     <div class="artist-grid">
-      <div v-for="artist in artists" :key="artist" class="artist">
+      <div v-for="artist in artists" :key="artist" class="artist" @click="goArtist(artist)">
         <img
           :src="getArtistImage(artist)"
           alt="Artista"
-          style="width: 100%; height: 100%;"
+          style="width: 25vw; height: 25vh;"
         >
         <p>{{ artist }}</p>
       </div>
@@ -56,9 +56,19 @@
 
   <footer>
     <div class="legal">
-      <a href="#">Legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Configuración de cookies</a>
+      <v-flex class="mt-12 mb-3">
+        <popuplegal ref="popuplegal" />
+        <button class="legal" @click="$refs.popuplegal.openPopup()">Legal</button>
+      </v-flex>
+      <v-flex class="mt-12 mb-3">
+        <popuppolitica ref="popuppolitica" />
+        <button class="legal" @click="$refs.popuppolitica.openPopup()">Política de privacidad</button>
+      </v-flex>
+      <v-flex class="mt-12 mb-3">
+        <popupcookies ref="popupcookies" />
+        <button class="legal" @click="$refs.popupcookies.openPopup()">Cookies</button>
+      </v-flex>
+
     </div>
     <div class="social-icons">
       <a href="#"><img src="../assets/facebook.png" alt="Logo de Facebook"></a>
@@ -71,7 +81,11 @@
 
 <script>
 import SongService from '../services/SongService'
+import popuplegal from './popupLegal'
+import popuppolitica from './popupPolitica'
+import popupcookies from './popupCookies'
 export default {
+  components: { popuplegal, popuppolitica, popupcookies },
   name: 'Home',
   computed: {
     isLogedIn () {
@@ -89,6 +103,12 @@ export default {
         if (!this.artists.includes(song.artist)) {
           this.artists.push(song.artist)
         }
+      }
+      const savedSearchQuery = localStorage.getItem('searchQuery')
+      console.log(savedSearchQuery)
+      if (savedSearchQuery !== '') {
+        this.searchQuery = savedSearchQuery
+        this.searchSong()
       }
     })
   },
@@ -112,9 +132,15 @@ export default {
     },
     logOut () {
       this.$router.push('/home')
+      this.$router.go()
     },
     profile () {
       this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+      this.$router.go()
+    },
+    goArtist (artist) {
+      this.$router.push({ path: '/artist_profile', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, artist: artist } })
+      this.$router.go()
     },
     getYear (timestamp) {
       const date = new Date(timestamp)
@@ -122,6 +148,7 @@ export default {
     },
     handleClick (song) {
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     },
     removeAccents (str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
@@ -144,13 +171,13 @@ export default {
       }
 
       const normalizedSearchQuery = this.removeAccents(this.searchQuery.toLowerCase())
-
       // Filtra las canciones que coinciden parcialmente con el título
       this.songs_list = this.all_songs.filter(song =>
         this.removeAccents(song.title.toLowerCase()).includes(normalizedSearchQuery) ||
         this.removeAccents(song.artist.toLowerCase()).includes(normalizedSearchQuery) ||
         this.removeAccents(song.album.toLowerCase()).includes(normalizedSearchQuery)
       ).slice(0, 8)
+      localStorage.removeItem('searchQuery')
     }
   }
 }
@@ -167,10 +194,11 @@ export default {
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
-  padding: 0;
   background-color: black;
   color: white;
   padding-top: 17vh; /* Ajuste para adaptarse a la altura del header */
+  overflow-y: auto; /* Habilita el scroll */
+
 }
 
 header {
@@ -197,7 +225,7 @@ header .auth-buttons a {
   border-radius: 25px;
   margin-left: 1vw;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 header .auth-buttons a:hover {
@@ -289,7 +317,7 @@ header .auth-buttons a:hover {
 .album-info p {
   margin: 0.2vw;
   color: white;
-  font-size: 1.8rem;
+  font-size: 1rem;
   text-align: left;
 }
 
@@ -348,8 +376,9 @@ footer {
 footer .legal {
   display: flex;
   flex-direction: column;
-  gap: 1vh;
-  width: 50%;
+  gap: 0.1vh;
+  width: 25vw;
+  font-size: 1.5rem;
 }
 
 footer .social-icons a {
@@ -359,22 +388,22 @@ footer .social-icons a {
 footer .social-icons img {
   width: 3vw;
   margin-top: 1vh;
+  margin-right: 0.4vw;
 }
 
 footer .legal a {
   color: white;
-  text-decoration: none;
   font-size: 1.5rem;
 }
 
 /* Media Queries para mejorar la adaptabilidad */
-@media (max-width: 768px) {
+
   .hero h1 {
     font-size: 12vw;
   }
 
   .search-bar input[type="text"] {
-    width: 70%;
+    width: 45vw;
   }
 
   .search-bar button {
@@ -382,16 +411,12 @@ footer .legal a {
   }
 
   .album img, .artist img {
-    width: 20vw;
-    height: 20vw;
+    width: 10vw;
+    height: 10vw;
   }
 
   .artist-section h2 {
-    font-size: 6vw;
+    font-size: 5rem;
   }
 
-  .footer .legal a {
-    font-size: 1.2rem;
-  }
-}
 </style>
