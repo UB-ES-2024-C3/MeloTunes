@@ -60,7 +60,7 @@ jobs:
       - name: Run tests with coverage
         working-directory: ./backend
         run: |
-          poetry run pytest --disable-warnings --cov=./ --cov-report=xml
+          poetry run pytest --disable-warnings --cov=./ --cov-report=term
 
       # 9. Sube el reporte de cobertura (opcional)
       - name: Upload coverage report
