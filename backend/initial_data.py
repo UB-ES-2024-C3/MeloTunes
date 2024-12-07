@@ -4,7 +4,7 @@ import logging
 from sqlmodel import Session
 
 from app.core.db import engine, init_db
-from app.models import Song
+from app.models import Song, userSongLink, User
 from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO)
@@ -16,6 +16,8 @@ def init() -> None:
         init_db(session)
 
         session.query(Song).delete()
+        session.query(User).delete()
+        session.query(userSongLink).delete() 
         song1 = Song(
             title="Piratas del Bar Caribe", 
             artist="Melendi",

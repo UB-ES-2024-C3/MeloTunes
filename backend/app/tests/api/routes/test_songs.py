@@ -9,7 +9,6 @@ from app.tests.utils.utils import random_lower_string, random_email
 client = TestClient(app)
 song_id = 0
 
-
 def test_read_songs() -> None:
     """
     Test to retrieve all songs.
