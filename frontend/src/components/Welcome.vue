@@ -1,13 +1,13 @@
 <template>
-    <body>
-      <div id="logo-container">
-          <img id="logo" src="~@/assets/Im_logo.png" alt="Melotunes Logo">
-      </div>
-    </body>
+  <div class="app-container"> <!-- Contenedor raíz único -->
+    <div class="background-animation"></div> <!-- Fondo animado -->
+    <div id="logo-container">
+      <img id="logo" src="../assets/logo1.png" alt="Melotunes Logo">
+    </div>
+  </div>
 </template>
 
 <script>
-
 export default {
   data () {
   },
@@ -20,48 +20,69 @@ export default {
     )
   }
 }
-
 </script>
 
 <style scoped>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            background-color: rgb(77, 63, 63);
-            font-family: Arial, sans-serif;
-            color: white;
-        }
+/* Contenedor raíz único */
+.app-container {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
 
-        #logo-container {
-            opacity: 0;
-            animation: fadeInOut 3s forwards;
-        }
+/* Fondo animado */
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../assets/fondo.png'); /* Cambia esta ruta según tu archivo de imagen */
+  background-size: cover;
+  filter: brightness(50%);
+  z-index: 0; /* Fondo detrás */
+}
 
-        #logo {
-            width: 150px;
-            height: 150px;
-        }
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
+  position: relative;
+}
 
-        h1 {
-            margin: 20px 0 0 0;
-            font-size: 24px;
-            opacity: 0;
-            animation: fadeInOutText 3s forwards;
-        }
+/* Contenedor del logo */
+#logo-container {
+  opacity: 0;
+  animation: fadeInOut 3s forwards;
+  z-index: 2; /* Asegura que el logo esté encima del fondo */
+}
 
-        @keyframes fadeInOut {
-            0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
+#logo {
+  width: 150px;
+  height: 150px;
+}
 
-        @keyframes fadeInOutText {
-            0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
+h1 {
+  margin: 20px 0 0 0;
+  font-size: 24px;
+  opacity: 0;
+  animation: fadeInOutText 3s forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes fadeInOutText {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
 </style>

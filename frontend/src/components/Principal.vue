@@ -1,82 +1,79 @@
 <template>
-  <body>
-  <header>
-    <div class="logo">
-      <img src="../assets/logo2.png" alt="Logo">
-    </div>
-    <div></div> <!-- Espacio para alinear botones a la derecha -->
-    <div class="auth-buttons" v-if="!isLogedIn">
-      <a href="#" @click="login">Iniciar sesión</a>
-      <a href="#" @click="register">Registrarse</a>
-    </div>
-    <div class="auth-buttons" v-if="isLogedIn">
-      <a href="#" @click="profile">Ver perfil</a>
-      <a href="#" @click="logOut">Cerrar sesión</a>
-    </div>
-  </header>
-  <div class="hero">
-    <h1>
-      <span translate="no" class="melo">¡MELO</span><span translate="no" class="tunes">TUNES!</span>
-    </h1>
-  </div>
+  <div>
+    <div class="background-image"></div> <!-- Fondo elegante -->
+    <header>
+      <div class="logo">
+        <img src="../assets/logo2.png" alt="Logo">
+      </div>
+      <div></div> <!-- Espacio para alinear botones a la derecha -->
+      <div class="auth-buttons" v-if="!isLogedIn">
+        <a href="#" @click="login">Iniciar sesión</a>
+        <a href="#" @click="register">Registrarse</a>
+      </div>
+      <div class="auth-buttons" v-if="isLogedIn">
+        <a href="#" @click="profile">Ver perfil</a>
+        <a href="#" @click="logOut">Cerrar sesión</a>
+      </div>
+    </header>
 
-  <div class="search-bar">
-    <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
-    <button @click="searchSong"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;">
-      Buscar
-    </button>
-  </div>
+    <div class="hero">
+      <h1>
+        <span translate="no" class="melo">¡MELO</span><span translate="no" class="tunes">TUNES!</span>
+      </h1>
+    </div>
 
-  <div class="album-grid">
-    <!-- Aquí cambiamos las canciones por un bucle que renderiza cada álbum dinámicamente -->
-    <div v-for="(song) in songs_list" :key="song.id" class="album" @click="handleClick(song)">
-      <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
-      <div class="album-info">
-        <p>{{ song.title }}</p>
-        <p>{{ song.artist }}</p>
-        <p>{{ song.album }}</p>
-        <p>{{ getYear(song.timestamp) }}</p>
+    <div class="search-bar">
+      <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
+      <button @click="searchSong">
+        <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;">
+        Buscar
+      </button>
+    </div>
+
+    <div class="album-grid">
+      <div v-for="(song) in songs_list" :key="song.id" class="album" @click="handleClick(song)">
+        <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
+        <div class="album-info">
+          <p>{{ song.title }}</p>
+          <p>{{ song.artist }}</p>
+          <p>{{ song.album }}</p>
+          <p>{{ getYear(song.timestamp) }}</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div v-if="!searchQuery" class="artist-section">
-    <h2>Artistas Populares</h2>
-    <div class="artist-grid">
-      <div v-for="artist in artists" :key="artist" class="artist" @click="goArtist(artist)">
-        <img
-          :src="getArtistImage(artist)"
-          alt="Artista"
-          style="width: 25vw; height: 25vh;"
-        >
-        <p>{{ artist }}</p>
+    <div v-if="!searchQuery" class="artist-section">
+      <h2>Artistas Populares</h2>
+      <div class="artist-grid">
+        <div v-for="artist in artists" :key="artist" class="artist" @click="goArtist(artist)">
+          <img :src="getArtistImage(artist)" alt="Artista">
+          <p class="artist-name">{{ artist }}</p>
+        </div>
       </div>
     </div>
+
+    <footer>
+      <div class="legal">
+        <v-flex class="mt-12 mb-3">
+          <popuplegal ref="popuplegal" />
+          <button class="legal" @click="$refs.popuplegal.openPopup()">Legal</button>
+        </v-flex>
+        <v-flex class="mt-12 mb-3">
+          <popuppolitica ref="popuppolitica" />
+          <button class="legal" @click="$refs.popuppolitica.openPopup()">Política de privacidad</button>
+        </v-flex>
+        <v-flex class="mt-12 mb-3">
+          <popupcookies ref="popupcookies" />
+          <button class="legal" @click="$refs.popupcookies.openPopup()">Cookies</button>
+        </v-flex>
+      </div>
+      <div class="social-icons">
+        <a href="#"><img src="../assets/facebook.png" alt="Logo de Facebook"></a>
+        <a href="#"><img src="../assets/instagram.png" alt="Logo de Instagram"></a>
+        <a href="#"><img src="../assets/twitter.png" alt="Logo de Twitter"></a>
+      </div>
+    </footer>
   </div>
-
-  <footer>
-    <div class="legal">
-      <v-flex class="mt-12 mb-3">
-        <popuplegal ref="popuplegal" />
-        <button class="legal" @click="$refs.popuplegal.openPopup()">Legal</button>
-      </v-flex>
-      <v-flex class="mt-12 mb-3">
-        <popuppolitica ref="popuppolitica" />
-        <button class="legal" @click="$refs.popuppolitica.openPopup()">Política de privacidad</button>
-      </v-flex>
-      <v-flex class="mt-12 mb-3">
-        <popupcookies ref="popupcookies" />
-        <button class="legal" @click="$refs.popupcookies.openPopup()">Cookies</button>
-      </v-flex>
-
-    </div>
-    <div class="social-icons">
-      <a href="#"><img src="../assets/facebook.png" alt="Logo de Facebook"></a>
-      <a href="#"><img src="../assets/instagram.png" alt="Logo de Instagram"></a>
-      <a href="#"><img src="../assets/twitter.png" alt="Logo de Twitter"></a>
-    </div>
-  </footer>
-  </body>
 </template>
 
 <script>
@@ -184,25 +181,38 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos básicos */
-.logo img {
-  width: 3.5vw; /* Adaptable */
-  margin-top: -2vh;
-  margin-left: -1vw;
-}
-
+/* Estilos generales del body */
 body {
-  font-family: 'Poppins', sans-serif;
   margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
   background-color: black;
   color: white;
-  padding-top: 17vh; /* Ajuste para adaptarse a la altura del header */
-  overflow-y: auto; /* Habilita el scroll */
-
+  position: relative;
+  min-height: 100vh; /* Asegura que el cuerpo ocupe al menos la altura de la ventana */
+  display: flex;
+  flex-direction: column;
 }
 
-header {
+div {
+  flex-grow: 1; /* Permite que los contenidos de la página se estiren si el contenido es mayor que la ventana */
+}
 
+/* Fondo elegante con gradiente y foto */
+.background-image {
+  background: url('../assets/fondo.png') no-repeat center center fixed; /* Imagen de fondo centrada */
+  background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+  position: fixed; /* Mantiene el fondo fijo mientras haces scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Se asegura de cubrir toda la altura de la ventana */
+  z-index: -1; /* Mantiene el fondo detrás de todo el contenido */
+  filter: brightness(0.7); /* Oscurece la imagen */
+}
+
+/* Estilo para el header y los textos */
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -211,10 +221,26 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to bottom, #e53935, #000);
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
-  transition: top 0.3s;
   z-index: 1000;
+}
+
+/* Aseguramos que el logo se mantenga fijo y no se mueva */
+.logo img {
+  width: 3.5vw; /* Adaptable */
+  margin-top: -2vh;
+  margin-left: -1vw;
+}
+
+/* Aseguramos que los botones de autenticación estén en línea y en la parte superior derecha */
+header .auth-buttons {
+  display: flex; /* Cambiado a flex para alinear los botones en línea */
+  gap: 1vw; /* Espacio entre los botones */
+  position: absolute; /* Posición absoluta dentro del header */
+  top: 50%; /* Centrado verticalmente */
+  right: 2vw; /* Se mantiene a 2vw del borde derecho */
+  transform: translateY(-50%); /* Para ajustar y centrar el bloque de botones */
 }
 
 header .auth-buttons a {
@@ -223,14 +249,13 @@ header .auth-buttons a {
   padding: 1.5vh 1vw;
   border: 1px solid white;
   border-radius: 25px;
-  margin-left: 1vw;
   transition: background-color 0.3s ease, color 0.3s ease;
   font-size: 1rem;
 }
 
 header .auth-buttons a:hover {
   background-color: white;
-  color: #e53935;
+  color: black;
 }
 
 .hero {
@@ -239,184 +264,214 @@ header .auth-buttons a:hover {
 }
 
 .hero h1 {
-  font-size: 6vw;
+  font-size: 6vw; /* Mantiene el tamaño grande del texto */
   color: white;
   letter-spacing: 0.5vw;
   margin-bottom: 15vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con opacidad para hacer que el texto resalte */
+  display: inline-block;
+  padding: 0.5em;
+  border-radius: 10px;
+  margin-top: 8vh; /* Baja el título un poco */
 }
 
 .hero h1 .melo {
   color: #e53935;
 }
 
+.hero h1 .tunes {
+  color: #ffffff;
+}
+
+/* Fondo para los botones y la barra de búsqueda */
 .search-bar {
   display: flex;
   justify-content: center;
-  margin: 10vh 10vh 30vh;
-  color: white;
+  align-items: center;
+  margin-top: 10vh; /* Reducido un poco el margen superior */
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+  padding: 1.5em;
+  border-radius: 10px;
 }
 
-.search-bar input[type="text"] {
-  width: 60vw;
-  padding: 1.2vw;
-  font-size: 1.5rem;
+.search-bar input {
+  width: 40vw;
+  padding: 1.5vh;
+  font-size: 1.2rem;
+  border-radius: 25px;
   border: none;
-  border-radius: 30px;
-  margin-right: 1vw;
-  outline: none;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  background-color: white;
+  color: white; /* Cambia el color del texto a blanco */
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro para que el texto sea legible */
 }
 
 .search-bar button {
-  padding: 1vh;
-  font-size: 1.5rem;
-  background-color: #e53935;
-  color: white;
+  padding: 1.5vh 2vw;
+  background-color: #f32121;
   border: none;
-  border-radius: 30px;
+  color: white;
+  border-radius: 25px;
+  margin-left: 1vw;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 10vw;
-
 }
 
 .search-bar button:hover {
-  background-color: #c62828;
+  background-color: #f32121;
 }
 
+/* Estilo para la sección de los álbumes */
 .album-grid {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5vw;
-  margin: 1vh  0.15vw 1vh;
-
-}
-.album:hover {
-  transform: scale(1.1);
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 5vw 5vw;
+  margin-top: 10vh;
 }
 
-.album img {
-  width: 8vw;
-  height: 8vw;
-  border-radius: 10px;
-  margin-right: 0.3vw;
-  object-fit: cover;
-}
-.album img:hover {
-  transform: scale(1.1);
-
-}
-.album-info {
+/* Estilo individual para cada tarjeta de álbum */
+.album {
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente para resaltar */
+  border-radius: 15px; /* Bordes suaves */
+  overflow: hidden; /* Asegura que las imágenes se ajusten dentro de la tarjeta */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+  cursor: pointer;
   display: flex;
   flex-direction: column;
+  justify-content: space-between; /* Asegura que los elementos estén alineados dentro de la tarjeta */
+}
+
+.album:hover {
+  transform: translateY(-5px); /* Efecto de hover que mueve la tarjeta hacia arriba */
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.7); /* Sombra más pronunciada al pasar el mouse */
+}
+
+/* Estilo para la imagen del álbum */
+.album-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* Mantiene la proporción de la imagen */
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* Línea sutil debajo de la imagen */
+}
+
+/* Estilo para la información de la canción */
+.album-info {
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro para resaltar el texto */
+  border-radius: 0 0 15px 15px;
 }
 
 .album-info p {
-  margin: 0.2vw;
-  color: white;
+  margin: 0;
+  color: white; /* Color del texto blanco */
+  font-size: 1.2rem;
+  text-align: center; /* Centra el texto */
+}
+
+/* Estilos específicos para cada tipo de texto */
+.album-title {
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+.album-artist, .album-album, .album-year {
   font-size: 1rem;
-  text-align: left;
+  color: rgba(255, 255, 255, 0.8); /* Texto menos opaco para diferenciarlo */
 }
 
-.album {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 24vw;
-  text-align: center;
-  padding: 0.5vh 0.1vw;
-  background-color: #1f1f1f;
-  border-radius: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Efectos de hover en los textos */
+.album-info p:hover {
+  color: #f32121; /* Color rojo al pasar el ratón */
 }
 
-.artist-section h2 {
-  font-size: 5vw;
-  text-align: center;
-  margin: 5vh 0 5vh;
-  color: #e53935;
+/* Fondo para los artistas */
+.artist-section {
+  margin-top: 10vh;
+  padding: 5vw;
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+  border-radius: 10px;
+  text-align: center; /* Asegura que el texto esté centrado en la sección */
 }
 
+/* Ajustar la cuadrícula de los artistas */
 .artist-grid {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 2vw;
-  margin-bottom: 5vh;
+  gap: 20px;
+  justify-content: center; /* Centra los elementos de la cuadrícula */
+  align-items: center; /* Asegura que los elementos estén alineados verticalmente */
 }
 
+/* Estilo para cada bloque de artista */
 .artist {
-  text-align: center;
-  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column; /* Hace que la imagen y el nombre se alineen verticalmente */
+  align-items: center; /* Centra los elementos dentro de cada bloque */
+  justify-content: center; /* Asegura que los elementos estén centrados */
 }
 
+/* Ajustes a las imágenes de los artistas */
 .artist img {
-  width: 12vw;
-  height: 12vw;
-  border-radius: 50%;
-  border: 3px solid #e53935;
+  width: 25vw;
+  height: 25vh;
+  object-fit: cover;
+  border-radius: 10px;
   transition: transform 0.3s ease;
+  margin-bottom: 10px; /* Añadido margen inferior para separar imagen del nombre */
 }
 
 .artist img:hover {
-  transform: scale(1.1);
+  transform: scale(1.05); /* Efecto de hover para las imágenes */
 }
 
+/* Estilo para los nombres de los artistas */
+.artist-name {
+  color: white; /* Blanco fuerte */
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente para que el texto resalte */
+  padding: 0.5em;
+  border-radius: 5px;
+}
+
+/* Footer */
 footer {
-  background-color: #1f1f1f;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2vh 2vw;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con algo de transparencia */
+  padding: 3vw;
+  text-align: center;
+  position: relative;
+  bottom: 0;
 }
 
 footer .legal {
+  color: white;
+  font-size: 1rem;
+  padding: 1em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+footer .social-icons {
   display: flex;
-  flex-direction: column;
-  gap: 0.1vh;
-  width: 25vw;
-  font-size: 1.5rem;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 2em;
 }
 
 footer .social-icons a {
-  display: inline-block;
+  text-decoration: none;
 }
 
 footer .social-icons img {
-  width: 3vw;
-  margin-top: 1vh;
-  margin-right: 0.4vw;
+  width: 2.5em;
+  height: 2.5em;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-footer .legal a {
-  color: white;
-  font-size: 1.5rem;
+footer .social-icons img:hover {
+  transform: scale(1.1); /* Efecto de hover para los iconos sociales */
 }
-
-/* Media Queries para mejorar la adaptabilidad */
-
-  .hero h1 {
-    font-size: 12vw;
-  }
-
-  .search-bar input[type="text"] {
-    width: 45vw;
-  }
-
-  .search-bar button {
-    width: 15vw;
-  }
-
-  .album img, .artist img {
-    width: 10vw;
-    height: 10vw;
-  }
-
-  .artist-section h2 {
-    font-size: 5rem;
-  }
 
 </style>

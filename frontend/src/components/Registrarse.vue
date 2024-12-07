@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="background-animation"></div>
+    <div class="background-animation"></div> <!-- Fondo animado -->
 
     <div class="container">
       <button class="close-btn" @click="cerrarPopup">X</button>
@@ -12,7 +12,7 @@
         <!-- Campo del correo electrónico -->
         <label for="email">Email</label><br>
         <input
-          type="text"
+          type="email"
           id="email"
           v-model="email"
           placeholder="name@domain.com"
@@ -243,28 +243,10 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
-  overflow: hidden;
+  background: url('../assets/fondo.png'); /* Asegúrate de usar una textura sutil */
+  background-size: cover;
+  filter: brightness(50%);
   z-index: 1;
-}
-
-.background-animation::before {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background-image: linear-gradient(60deg, rgba(255, 0, 0, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 0, 0, 0.3) 75%);
-  background-size: 30px 30px;
-  animation: move 4s linear infinite;
-}
-
-@keyframes move {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 30px 30px;
-  }
 }
 
 .container {
@@ -274,26 +256,28 @@ body, html {
   transform: translate(-50%, -50%);
   text-align: center;
   justify-content: center;
-  background-color: #717d7e;
   padding: 20px;
   border-radius: 15px;
   width: 700px;
-  height: auto; /* Altura automática según contenido */
-  max-height: 80vh; /* Limitar la altura máxima */
-  overflow-y: auto; /* Permitir desplazamiento interno */
+  height: auto;
+  max-height: 80vh;
+  overflow-y: auto;
   z-index: 2;
-  box-sizing: border-box; /* Asegura que el padding no afecte las dimensiones */
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Sombra suave */
+  color: white; /* Todas las letras blancas */
 }
 
-/* Ocultar barra de desplazamiento en navegadores modernos */
+/* Ocultar barra de desplazamiento */
 .container::-webkit-scrollbar {
-  width: 0; /* Anchura de la barra de desplazamiento */
-  height: 0; /* Altura de la barra de desplazamiento horizontal */
+  width: 0;
+  height: 0;
 }
 
 .container {
-  scrollbar-width: none; /* Firefox: Oculta la barra de desplazamiento */
-  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .password-container {
@@ -317,15 +301,15 @@ body, html {
   margin: 10px 0;
   border: 1px solid #ccc; /* Borde gris claro */
   border-radius: 5px;
-  background-color: white; /* Fondo blanco */
-  color: black; /* Texto negro */
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
+  color: black; /* Texto negro para los campos */
   font-size: 16px;
-  box-sizing: border-box; /* Para evitar desbordamientos */
+  box-sizing: border-box;
 }
 
 .form-input:focus {
-  border-color: #007BFF; /* Color azul al hacer foco */
-  outline: none; /* Elimina el borde predeterminado del navegador */
+  border-color: #007BFF;
+  outline: none;
 }
 
 .submit-btn {
