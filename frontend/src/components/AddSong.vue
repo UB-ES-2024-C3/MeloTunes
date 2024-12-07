@@ -27,7 +27,7 @@
     </div>
 
     <!-- Formulario principal -->
-    <form class="add-song-form" @submit.prevent="submitSong">
+    <form class="add-song-form">
       <!-- Subir Single -->
       <div v-if="!isAlbum">
         <div class="form-group">
@@ -105,7 +105,7 @@
       </div>
 
       <!-- Botón de envío -->
-      <button type="submit" class="btn-submit">
+      <button class="btn-submit" @click.prevent="submitSong">
         {{ isAlbum ? 'Subir Canción' : 'Subir Single' }}
       </button>
     </form>

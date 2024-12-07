@@ -137,7 +137,7 @@ def read_songs_by_artist(songs_artist: str, session: SessionDep, skip: int = 0, 
     print("Iniciando consulta...")
     
     # Define el statement antes de usarlo
-    statement = select(Song).offset(skip).limit(limit).where(Song.artist.contains(songs_artist.lower()))
+    statement = select(Song).offset(skip).limit(limit).where(func.lower(Song.artist).contains(songs_artist.lower()))
     print(f"Consulta generada: {statement}")
 
     # Ejecuta el statement después de definirlo

@@ -3,10 +3,10 @@ name: Run Backend Tests
 on:
   push:
     branches:
-      - '*'  
+      - Auto_tests
   pull_request:
     branches:
-      - '*'  
+      - Auto_tests
 
 jobs:
   test:

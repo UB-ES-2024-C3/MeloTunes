@@ -360,7 +360,7 @@ header {
   position: fixed;
   bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
   right: 5vw;/* Distancia desde el lado derecho de la pantalla */
-  //z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
+  z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
 .favorite-btn-container i {
