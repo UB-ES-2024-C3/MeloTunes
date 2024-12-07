@@ -3,10 +3,10 @@ name: Run Backend Tests
 on:
   push:
     branches:
-      - Auto_tests
+      - IntegrationTests
   pull_request:
     branches:
-      - Auto_tests
+      - IntegrationTests
 
 jobs:
   test:
@@ -50,8 +50,21 @@ jobs:
         run: |
           poetry run alembic upgrade head
 
-      # 7. Ejecuta los tests con pytest
-      - name: Run tests
+      # 7. Instala pytest-cov
+      - name: Install pytest-cov
         working-directory: ./backend
         run: |
-          poetry run pytest --disable-warnings
+          poetry add pytest-cov
+
+      # 8. Ejecuta los tests con cobertura
+      - name: Run tests with coverage
+        working-directory: ./backend
+        run: |
+          poetry run pytest --disable-warnings --cov=./ --cov-report=xml
+
+      # 9. Sube el reporte de cobertura (opcional)
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./backend/coverage.xml
