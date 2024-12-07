@@ -7,6 +7,7 @@ from app import crud
 from app.tests.utils.utils import random_lower_string, random_email
 
 client = TestClient(app)
+song_id = 0
 
 
 def test_read_songs() -> None:
@@ -33,6 +34,8 @@ def test_create_song(client):
     print(response.json())  # Inspecciona el error devuelto por el servidor
     assert response.status_code == 200
     data = response.json()
+    global song_id
+    song_id = data["id"]
     assert data["title"] == song_data["title"]
     assert data["artist"] == song_data["artist"]
 
@@ -43,11 +46,10 @@ def test_read_song_by_id() -> None:
     """
     Test to retrieve a song by its ID.
     """
-    song_id_to_find = 1 
-    response = client.get(f"{settings.API_V1_STR}/songs/{song_id_to_find}")
+    response = client.get(f"{settings.API_V1_STR}/songs/{song_id}")
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == song_id_to_find
+    assert data["id"] == song_id
 
 def test_read_song_by_title() -> None:
     """
@@ -68,7 +70,7 @@ def test_update_song(client, superuser_token_headers: dict[str, str]) -> None:
     """
     #title = "Test Song 2"
     #song_to_update = db.query(Song).filter(Song.title == title).first() 
-    song_to_update = 1
+    song_to_update = song_id
     updated_data = {
         "title": "New Song",
         "artist": "New Artist",
