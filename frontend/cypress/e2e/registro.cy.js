@@ -1,5 +1,6 @@
 describe('Página de registro', () => {
   beforeEach(() => {
+    cy.resetDatabase(); 
     cy.visit('/register');
   });
 
@@ -81,7 +82,7 @@ describe('Página de registro', () => {
     // Verificar que aparece el mensaje de error
     cy.on('window:alert', (text) => {
       expect(text).to.equal(
-        'El usuario con email usuario@ejemplo.com ya está registrado en el sistema.'
+        'El usuario con email registrado@ejemplo.com ya está registrado en el sistema.'
       );
     });
   });
