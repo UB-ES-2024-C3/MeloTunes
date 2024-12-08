@@ -87,23 +87,15 @@ jobs:
         run: |
           nohup npm run dev &
 
-      # 13. Espera a que el backend esté disponible
-      - name: Wait for backend to be available
-        run: |
-          until curl -s http://localhost:8080 > /dev/null; do
-            echo "Waiting for backend to be available..."
-            sleep 2
-          done
-
-      # 14. Espera a que el frontend esté disponible
+      # 13. Espera a que el frontend esté disponible
       - name: Wait for frontend to be available
         run: |
-          until curl -s http://localhost:3000 > /dev/null; do
+          until curl -s http://localhost:8000 > /dev/null; do
             echo "Waiting for frontend to be available..."
             sleep 2
           done
 
-      # 15. Ejecutar Cypress tests
+      # 14. Ejecutar Cypress tests
       - name: Run Cypress tests
         working-directory: ./frontend
         run: |
