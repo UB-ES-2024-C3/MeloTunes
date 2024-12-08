@@ -80,24 +80,3 @@ jobs:
         run: |
           npx cypress run --headless  # Puedes usar '--headless' para evitar abrir la UI
 
-      # 11. Instalar MJML
-      - name: Install MJML
-        run: |
-          npm install mjml
-
-      # 12. Crear el directorio de salida para los archivos HTML generados
-      - name: Create output directory for MJML conversion
-        run: |
-          mkdir -p ./backend/app/email-templates/build
-
-      # 13. Convertir archivos MJML a HTML
-      - name: Convert MJML to HTML
-        run: |
-          mjml ./backend/app/email-templates/src/reset_password.mjml -o ./backend/app/email-templates/build/reset_password.html
-
-      # 14. Sube el reporte de cobertura (opcional)
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: ./backend/coverage.xml

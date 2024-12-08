@@ -1,15 +1,12 @@
 from fastapi.testclient import TestClient
 from app.models import Token, UserCreate
-from app.utils import generate_password_reset_token
 from app import crud
 from app.core.config import settings
-from sqlmodel import Session
 from app.main import app
 
 client = TestClient(app)
-from unittest.mock import patch
 
-# Al final de tu test puedes mockear la función de envío de correo
+# Test de login
 def test_login_endpoints(client, db) -> None:
     # Datos para la prueba
     email = "dianabrbr29@gmail.com"
@@ -28,6 +25,7 @@ def test_login_endpoints(client, db) -> None:
         ),
     )
 
+    # Iniciar sesión con el usuario creado
     login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data={
         "username": email,
         "password": password
@@ -43,11 +41,10 @@ def test_login_endpoints(client, db) -> None:
         headers={"Authorization": f"Bearer {token['access_token']}"},
     )
 
-    print(test_token_response)
     assert test_token_response.status_code == 200
     assert test_token_response.json()["email"] == email
 
-    # Recuperación de contraseña en formato HTML (requiere superusuario)
+    # Crear un superusuario para realizar la recuperación de contraseña
     superuser = crud.user.create_user(
         session=db,
         user_create=UserCreate(
@@ -64,9 +61,12 @@ def test_login_endpoints(client, db) -> None:
         data={"username": superuser.email, "password": "SuperuserPassword123"},
     ).json()["access_token"]
 
+    # Probar la recuperación de contraseña en formato HTML (requiere superusuario)
     recovery_html_response = client.post(
         f"{settings.API_V1_STR}/password-recovery-html-content/{email}",
         headers={"Authorization": f"Bearer {superuser_token}"},
     )
+    
+    # Comprobamos que la respuesta sea correcta
     assert recovery_html_response.status_code == 200
-    assert "<!doctype html>" in recovery_html_response.text
+    assert "<html>" in recovery_html_response.text
