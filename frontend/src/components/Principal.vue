@@ -386,7 +386,7 @@ header .auth-buttons a:hover {
 .artist-section {
   margin-top: 10vh;
   padding: 5vw;
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+  background-color: rgb(147, 134, 134); /* Fondo oscuro semitransparente */
   border-radius: 10px;
   text-align: center; /* Asegura que el texto esté centrado en la sección */
 }

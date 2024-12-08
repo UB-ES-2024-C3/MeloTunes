@@ -1,5 +1,8 @@
 <template>
   <div class="perfil-artist">
+    <!-- Fondo animado -->
+    <div class="background-animation"></div>
+
     <div class="logo-link" @click="goHome">
       <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
     </div>
@@ -88,20 +91,38 @@ export default {
       this.expandedBio = !this.expandedBio
     },
     goHome () {
-      this.$router.push({ path: '/home' })
+      this.$router.push({path: '/home'})
     }
   }
 }
 </script>
 
 <style scoped>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fondo animado */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../assets/fondo.png'); /* Reemplazar con la textura del fondo animado */
+  background-size: cover;
+  filter: brightness(50%);
+  z-index: -1;
+}
 
 .perfil-artist {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: #121212;
   color: white;
   padding: calc(2vh + 4vw) 3vw 3vh;
   min-height: 100vh;
@@ -110,7 +131,7 @@ export default {
 }
 
 .perfil-header {
-  background: #1f1f1f;
+  background: rgba(31, 31, 31, 0.9);
   color: white;
   padding: 3vh 3vw;
   display: flex;
@@ -123,6 +144,7 @@ export default {
   position: relative;
 }
 
+/* Resto de los estilos */
 .logo {
   width: 8vw;
   max-width: 50px;
@@ -179,7 +201,7 @@ export default {
 .top-section {
   margin-top: 2vh;
   width: 100%;
-  background-color: #1f1f1f;
+  background-color: rgba(31, 31, 31, 0.9);
   padding: 2vh 2vw;
   border-radius: 1vw;
 }
@@ -222,15 +244,9 @@ li {
   color: red;
 }
 
-.top-discography h2,
-.top-collaborations h2,
-.events h2 {
-  color: red;
-}
-
 .events {
   margin-top: 2vh;
-  background-color: #1f1f1f;
+  background-color: rgba(31, 31, 31, 0.9);
   padding: 2vh 2vw;
   border-radius: 1vw;
 }
@@ -241,5 +257,4 @@ li {
   margin: 0 auto;
   box-sizing: border-box;
 }
-
 </style>
