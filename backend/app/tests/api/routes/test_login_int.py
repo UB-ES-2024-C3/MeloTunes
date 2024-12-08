@@ -69,4 +69,4 @@ def test_login_endpoints(client, db) -> None:
         headers={"Authorization": f"Bearer {superuser_token}"},
     )
     assert recovery_html_response.status_code == 200
-    assert "<!DOCTYPE html>" in recovery_html_response.text
+    assert "<!doctype html>" in recovery_html_response.text
