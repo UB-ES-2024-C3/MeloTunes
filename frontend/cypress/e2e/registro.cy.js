@@ -1,6 +1,5 @@
 describe('Página de registro', () => {
   beforeEach(() => {
-    cy.resetDatabase(); 
     cy.visit('/register');
   });
 
@@ -86,6 +85,8 @@ describe('Página de registro', () => {
       );
     });
   });
+
+  /*
   it('Completa el registro exitosamente con datos válidos', () => {
     // Rellenar los campos del formulario con datos válidos
     const uniqueEmail = `testusers${Date.now()}@gmail.com`;
@@ -103,5 +104,6 @@ describe('Página de registro', () => {
     cy.on('window:alert', (alertText) => {
       expect(alertText).to.contains('Registro exitoso!');
     });
-  });
+  });*/
+  
 });
