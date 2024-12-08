@@ -1,4 +1,4 @@
-name: Run Backend Tests
+name: Run Backend and Cypress Tests
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           poetry --version
 
       # 4. Instala las dependencias del backend
-      - name: Install dependencies
+      - name: Install backend dependencies
         working-directory: ./backend
         run: |
           poetry install
@@ -56,13 +56,31 @@ jobs:
         run: |
           poetry add pytest-cov
 
-      # 8. Ejecuta los tests con cobertura
-      - name: Run tests with coverage
+      # 8. Ejecuta los tests con cobertura para el backend
+      - name: Run backend tests with coverage
         working-directory: ./backend
         run: |
           poetry run pytest --disable-warnings --cov=./ --cov-report=term
 
-      # 9. Sube el reporte de cobertura (opcional)
+      # 9. Instala Node.js y Cypress
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Cypress dependencies
+        working-directory: ./frontend  # Asumiendo que Cypress está en la carpeta frontend
+        run: |
+          npm install
+          npm install cypress --save-dev
+
+      # 10. Ejecutar Cypress tests
+      - name: Run Cypress tests
+        working-directory: ./frontend
+        run: |
+          npx cypress run --headless  # Puedes usar '--headless' para evitar abrir la UI
+
+      # 11. Sube el reporte de cobertura (opcional)
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:

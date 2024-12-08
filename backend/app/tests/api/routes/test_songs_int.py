@@ -130,3 +130,80 @@ def test_user_create_song_and_delete_integration(client, db):
     delete_response = client.delete(f"{settings.API_V1_STR}/songs/{song_id}", headers=token_headers)
     assert delete_response.status_code == 200
 
+# Trying to delete a song by diferent users
+def test_delete_song_with_multiple_users(client: TestClient, db: Session) -> None:
+    # Crear una canción de prueba
+    song_data = {
+        "title": "Test Song Multiple Users",
+        "artist": "Test Artist",
+        "album": "Test Album",
+        "duration": "00:03:30",
+        "timestamp": "2023-01-01T00:00:00"
+    }
+    create_response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+    assert create_response.status_code == 200
+
+    # Crear tres usuarios con diferentes roles
+    users = [
+        {
+            "email": "test_user1@example.com",
+            "first_name": "Test",
+            "second_name": "User1",
+            "password": random_lower_string(),
+            "is_superuser": False,
+            "is_artist": False
+        },  # No artist, no superuser
+        {
+            "email": "test_user2@example.com",
+            "first_name": "Test",
+            "second_name": "User2",
+            "password": random_lower_string(),
+            "is_superuser": False,
+            "is_artist": True,
+            "artist_name": "Test Artist"
+        },  # Artist, no superuser
+        {
+            "email": "test_user3@example.com",
+            "first_name": "Test",
+            "second_name": "User3",
+            "password": random_lower_string(),
+            "is_superuser": True,
+            "is_artist": False
+        }  # Superuser, no artist
+    ]
+
+    created_users = []
+    for user_data in users:
+        password = user_data["password"]  # Guarda la contraseña generada
+        user_in = UserTest(**user_data)
+        user = crud.user.create_user(session=db, user_create=user_in)
+        created_users.append({"user": user, "password": password})  # Asocia usuario y contraseña
+
+    # Función para obtener el token de un usuario
+    def get_access_token(username: str, password: str) -> str:
+        login_data = {"username": username, "password": password}
+        login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+        # Depurar: imprimir la respuesta del login si falla
+        if login_response.status_code != 200:
+            print("Login failed:", login_response.json())
+        assert login_response.status_code == 200
+        return login_response.json()["access_token"]
+
+    # Intentar eliminar la canción con cada usuario
+    for user_info in created_users:
+        user = user_info["user"]
+        password = user_info["password"]
+        access_token = get_access_token(user.email, password)
+
+        # Enviar la solicitud para eliminar la canción
+        delete_response = client.delete(
+            f"{settings.API_V1_STR}/songs/{create_response.json()['id']}",
+            headers={"Authorization": f"Bearer {access_token}"}
+        )
+        
+        # Validar el resultado según los roles
+        if user.is_superuser or (user.is_artist and user.artist_name == song_data["artist"]):
+            assert delete_response.status_code == 200  # Superuser o artista asociado puede eliminar
+        else:
+            assert delete_response.status_code == 403  # Otros usuarios no autorizados deben recibir 403
+
