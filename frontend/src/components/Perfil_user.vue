@@ -25,12 +25,12 @@
           </button>
         </div>
         <div class="btn-group">
-          <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
-          <button class="btn-favoritos" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
+          <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
+          <button class="btn" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
           <button v-if="this.user_logged.is_artist" class="btn-upload-song" @click="uploadSong">
             Subir canción
           </button>
-          <button class="btn-modificar-perfil" @click="showEditProfile = true">Modificar perfil</button>
+          <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
         </div>
       </div>
     </header>
@@ -286,6 +286,7 @@ export default {
    justify-content: center;
    border: none;
    cursor: pointer;
+   transition: all 0.3s ease;
  }
 
 .btn:hover {
