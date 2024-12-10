@@ -23,8 +23,7 @@
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
             <button class="play-button" @click="playAudio">
-              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')"
-                   style="width:10vw; height:10vh; object-fit: contain;">
+              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')" style="width:10vw; height:10vh; object-fit: contain;">
             </button>
           </div>
 
@@ -105,7 +104,7 @@ export default {
       })
       this.checkIfFavorite()
     })
-    this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
+    this.audio = new Audio(require(`@/assets/canciones/${this.artist.toLowerCase()}_${this.song.title.toLowerCase()}.mp3`))
     this.audio.addEventListener('ended', () => {
       this.isPlaying = false
     })
