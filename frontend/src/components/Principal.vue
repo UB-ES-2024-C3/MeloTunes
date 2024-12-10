@@ -282,7 +282,6 @@ header .auth-buttons a:hover {
 .hero h1 .melo {
   color: #e53935;
 }
-
 .hero h1 .tunes {
   color: #ffffff;
 }
