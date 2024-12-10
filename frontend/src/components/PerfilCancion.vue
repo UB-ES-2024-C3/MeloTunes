@@ -22,7 +22,10 @@
           <div class="details">
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
+            <button class="play-button" @click="goHome"> <img src="../assets/play.png" style="width:10vw; height:10vh;object-fit: contain;">
+            </button>
           </div>
+
         </div>
 
         <!-- Información del álbum -->
@@ -291,6 +294,21 @@ header {
   flex-direction: column;
   align-items: flex-start;
 }
+.play-button {
+  background: none; /* Sin fondo extra */
+  border: none; /* Sin borde */
+  cursor: pointer; /* Cambia el puntero al pasar el mouse */
+  display: flex; /* Para ajustar alineación interna */
+  align-items: center; /* Centra el contenido verticalmente */
+  justify-content: flex-start; /* Alinea el contenido a la izquierda */
+  padding: 0; /* Sin espacio interno */
+  margin: 0; /* Sin márgenes extra */
+  width: 3000vw;
+}
+.play-button img {
+  margin-top: 5vh;
+  margin-left: -3vw;
+}
 
 .album {
   display: flex;
@@ -360,7 +378,6 @@ header {
   position: fixed;
   bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
   right: 5vw;/* Distancia desde el lado derecho de la pantalla */
-  z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
 .favorite-btn-container i {
