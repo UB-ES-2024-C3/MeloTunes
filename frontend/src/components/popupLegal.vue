@@ -79,8 +79,6 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/fondo.png') no-repeat center center fixed; /* Fondo de la imagen */
-  background-size: cover; /* Hace que la imagen cubra todo el área del popup */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,7 +96,7 @@ export default {
 
 .close-button {
   cursor: pointer;
-  color: #ff1e1e;
+  color: #ffffff;
   transition: color 0.3s ease;
   font-size: 1.5rem;
 }

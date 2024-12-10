@@ -1,3 +1,8 @@
+<head>
+  <!-- Otros enlaces o configuraciones en tu archivo head -->
+  <link href="https://fonts.googleapis.com/css2?family=Freestyle+Script&display=swap" rel="stylesheet">
+</head>
+
 <template>
   <div>
     <div class="background-image"></div> <!-- Fondo elegante -->
@@ -18,14 +23,14 @@
 
     <div class="hero">
       <h1>
-        <span translate="no" class="melo">¡MELO</span><span translate="no" class="tunes">TUNES!</span>
+        <span translate="no" class="melo">MELO</span><span translate="no" class="tunes">TUNES</span>
       </h1>
     </div>
 
     <div class="search-bar">
       <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
       <button @click="searchSong">
-        <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:20%; vertical-align: middle;">
+        <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:3vw;height: 6vh; vertical-align: middle;">
         Buscar
       </button>
     </div>
@@ -200,7 +205,7 @@ div {
 
 /* Fondo elegante con gradiente y foto */
 .background-image {
-  background: url('../assets/fondo.png') no-repeat center center fixed; /* Imagen de fondo centrada */
+  background: url('../assets/fondo.jpg') no-repeat center center fixed; /* Imagen de fondo centrada */
   background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
   position: fixed; /* Mantiene el fondo fijo mientras haces scroll */
   top: 0;
@@ -266,9 +271,8 @@ header .auth-buttons a:hover {
 .hero h1 {
   font-size: 6vw; /* Mantiene el tamaño grande del texto */
   color: white;
-  letter-spacing: 0.5vw;
+  letter-spacing: 2rem;
   margin-bottom: 15vh;
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con opacidad para hacer que el texto resalte */
   display: inline-block;
   padding: 0.5em;
   border-radius: 10px;
@@ -277,10 +281,12 @@ header .auth-buttons a:hover {
 
 .hero h1 .melo {
   color: #e53935;
+  font-family: 'Freestyle Script', cursive;
 }
 
 .hero h1 .tunes {
   color: #ffffff;
+  font-family: 'Freestyle Script', cursive;
 }
 
 /* Fondo para los botones y la barra de búsqueda */
@@ -288,8 +294,7 @@ header .auth-buttons a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10vh; /* Reducido un poco el margen superior */
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+  margin-top: 1vh; /* Reducido un poco el margen superior */
   padding: 1.5em;
   border-radius: 10px;
 }
@@ -305,13 +310,14 @@ header .auth-buttons a:hover {
 }
 
 .search-bar button {
-  padding: 1.5vh 2vw;
   background-color: #f32121;
   border: none;
   color: white;
   border-radius: 25px;
   margin-left: 1vw;
   cursor: pointer;
+  width: 10vw;
+  padding: 1vh;
 }
 
 .search-bar button:hover {
@@ -365,18 +371,6 @@ header .auth-buttons a:hover {
   font-size: 1.2rem;
   text-align: center; /* Centra el texto */
 }
-
-/* Estilos específicos para cada tipo de texto */
-.album-title {
-  font-weight: bold;
-  font-size: 1.4rem;
-}
-
-.album-artist, .album-album, .album-year {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8); /* Texto menos opaco para diferenciarlo */
-}
-
 /* Efectos de hover en los textos */
 .album-info p:hover {
   color: #f32121; /* Color rojo al pasar el ratón */
@@ -386,7 +380,7 @@ header .auth-buttons a:hover {
 .artist-section {
   margin-top: 10vh;
   padding: 5vw;
-  background-color: rgb(147, 134, 134); /* Fondo oscuro semitransparente */
+  background-color: rgba(158, 151, 151, 0.18); /* Fondo oscuro semitransparente */
   border-radius: 10px;
   text-align: center; /* Asegura que el texto esté centrado en la sección */
 }
@@ -399,13 +393,17 @@ header .auth-buttons a:hover {
   justify-content: center; /* Centra los elementos de la cuadrícula */
   align-items: center; /* Asegura que los elementos estén alineados verticalmente */
 }
+.artist-section h2 {
+  color: white;
+  margin-bottom: 5vh;
+}
 
 /* Estilo para cada bloque de artista */
 .artist {
   display: flex;
-  flex-direction: column; /* Hace que la imagen y el nombre se alineen verticalmente */
-  align-items: center; /* Centra los elementos dentro de cada bloque */
-  justify-content: center; /* Asegura que los elementos estén centrados */
+  flex-direction: column; /* Imagen arriba y texto abajo */
+  align-items: center; /* Centrar los elementos horizontalmente */
+  justify-content: center;
 }
 
 /* Ajustes a las imágenes de los artistas */
@@ -424,20 +422,25 @@ header .auth-buttons a:hover {
 
 /* Estilo para los nombres de los artistas */
 .artist-name {
-  color: white; /* Blanco fuerte */
+  color: white;
   font-size: 1.5rem;
-  text-align: center;
   font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente para que el texto resalte */
-  padding: 0.5em;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 5px;
+  display: flex; /* Activar flexbox */
+  justify-content: center; /* Centrar texto horizontalmente */
+  align-items: center; /* Centrar texto verticalmente */
+  width: 25vw; /* Igual que el ancho de la imagen */
+  height: 10vh; /* Igual que la altura de la imagen */
 }
 
-/* Footer */
 footer {
   background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con algo de transparencia */
   padding: 3vw;
-  text-align: center;
+  display: flex; /* Activa Flexbox */
+  justify-content: space-between; /* Distribuye elementos con espacio entre ellos */
+  align-items: center; /* Alinea verticalmente los elementos */
   position: relative;
   bottom: 0;
 }
@@ -445,18 +448,16 @@ footer {
 footer .legal {
   color: white;
   font-size: 1rem;
-  padding: 1em;
+  padding: 0;
   border: none;
   background: none;
   cursor: pointer;
-  text-align: center;
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
 }
 
 footer .social-icons {
   display: flex;
-  justify-content: center;
   gap: 1em;
-  margin-top: 2em;
 }
 
 footer .social-icons a {
@@ -473,5 +474,7 @@ footer .social-icons img {
 footer .social-icons img:hover {
   transform: scale(1.1); /* Efecto de hover para los iconos sociales */
 }
-
+footer .social-icons {
+  margin-right: -70vw; /* Asegura que no haya margen derecho */
+}
 </style>
