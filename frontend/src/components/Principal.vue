@@ -281,12 +281,10 @@ header .auth-buttons a:hover {
 
 .hero h1 .melo {
   color: #e53935;
-  font-family: 'Freestyle Script', cursive;
 }
 
 .hero h1 .tunes {
   color: #ffffff;
-  font-family: 'Freestyle Script', cursive;
 }
 
 /* Fondo para los botones y la barra de búsqueda */
