@@ -213,6 +213,8 @@ export default {
   display: flex;
   flex-direction: column;
   padding-top: 15vh;
+  padding-bottom: 5vh;
+  position: relative;
 }
 
 .v-navigation-drawer .v-list-item {
@@ -394,10 +396,10 @@ header {
 }
 
 .favorite-btn-container {
-  position: fixed;
-  bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
+  position: absolute;
+  bottom: 200vh; /* Distancia desde la parte inferior de la pantalla */
   right: 5vw;/* Distancia desde el lado derecho de la pantalla */
-  z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
+  z-index: 1; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
 .favorite-btn-container i {
@@ -409,6 +411,7 @@ header {
 .comments-section {
   margin-top: 20px;
   color: white;
+  position: relative;
 }
 
 .comment-item {
