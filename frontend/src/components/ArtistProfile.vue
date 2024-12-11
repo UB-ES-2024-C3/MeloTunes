@@ -5,7 +5,7 @@
     </div>
     <header class="perfil-header">
       <div class="avatar-container">
-        <<img :src="getArtistImage(artistStageName)" alt="Avatar del artista" class="avatar" />
+        <img :src="getArtistImage(artistStageName)" alt="Avatar del artista" class="avatar" />
       </div>
       <div class="artist-details">
         <h1>{{ artistStageName }}</h1>
@@ -74,7 +74,7 @@ export default {
       collaborations: [
         { id: 1, title: 'Destino o Casualidad', artist: 'Ha*Ash' },
         { id: 2, title: 'Desde que estamos juntos', artist: 'Alejandro Sanz' }
-        ]
+      ]
     }
   },
   mounted () {
@@ -87,25 +87,25 @@ export default {
     })
   },
   methods: {
-    toggleBio() {
+    toggleBio () {
       this.expandedBio = !this.expandedBio
     },
-    getArtistImage(artist) {
+    getArtistImage (artist) {
       const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
     },
-    removeAccents(str) {
+    removeAccents (str) {
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
     },
-    toggleDrawer() {
+    toggleDrawer () {
       this.drawer = !this.drawer // Alterna el estado del drawer
     },
-    getAlbumImage(album) {
+    getAlbumImage (album) {
       console.log(album)
       const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
     },
-    handleClick(song) {
+    handleClick (song) {
       const currentSongId = this.$route.query.song
       const targetSongId = song.id
       // Si el ID de la canción es el mismo que el actual, no realizamos la navegación
@@ -122,7 +122,7 @@ export default {
       })
       this.$router.go()
     },
-    getYear(timestamp) {
+    getYear (timestamp) {
       const date = new Date(timestamp)
       return date.getFullYear()
     },
