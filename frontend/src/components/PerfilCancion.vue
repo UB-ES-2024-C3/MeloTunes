@@ -227,14 +227,14 @@ export default {
   box-shadow: none;
   cursor: pointer;
   width: 5vw;
-  height: 10vh !important;
+  height: 2vh !important;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   transform: scaleX(1);
   transition: transform 0.3s ease;
-  margin-top: 5vh;
+  margin-top: 1vh;
 }
 .floating-btn img {
   transform: scaleX(1); /* Estado inicial de la imagen */
@@ -397,7 +397,7 @@ header {
 
 .favorite-btn-container {
   position: absolute;
-  bottom: 200vh; /* Distancia desde la parte inferior de la pantalla */
+  top: 80vh; /* Distancia desde la parte inferior de la pantalla */
   right: 5vw;/* Distancia desde el lado derecho de la pantalla */
   z-index: 1; /* Asegúrate de que el botón esté encima de otros elementos */
 }
@@ -433,6 +433,7 @@ header {
   border: none;
   border-radius: 8px;
   margin-bottom: 10px;
+  z-index: 9999;
 }
 
 .comment-input-container button {
@@ -442,6 +443,7 @@ header {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  z-index: 9999;
 }
 
 .comment-input-container button:hover {
