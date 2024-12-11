@@ -34,7 +34,7 @@
         <button type="submit" class="submit-btn">Inicia sesión</button>
       </form>
 
-      <p><a href="#">¿Has olvidado la contraseña?</a></p>
+      <p><a href="/recuperar">¿Has olvidado la contraseña?</a></p>
       <p>¿No tienes una cuenta? <a href="/register">Regístrate gratis</a></p>
     </div>
   </div>
