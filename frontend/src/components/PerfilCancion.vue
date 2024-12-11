@@ -48,28 +48,40 @@
         </div>
       </div>
 
-    </div>
-    <div>
-      <v-app class="main-container">
-        <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
-        <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
-          <v-list>
-            <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
-              <v-list-item-content>
-                <v-list-item-title class="item">
-                  <!-- Muestra la portada del álbum o una imagen por defecto -->
-                  <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
-                  <div class="item-info">
-                    <!-- Muestra el título de la canción y el nombre del artista -->
-                    <p>{{ song.title }}</p>
-                  </div>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
-      </v-app>
-    </div>
+      <!-- Comentarios -->
+      <div v-if="comments.length > 0" class="comments-section">
+        <h3>Comentarios:</h3>
+        <div v-for="comment in comments" :key="comment.id" class="comment-item">
+          <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
+        </div>
+      </div>
+
+      <!-- Botón para comentar -->
+      <div v-if="isLoggedIn" class="comment-input-container">
+        <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
+        <button @click="postComment">Comentar</button>
+      </div>
+      </div>
+
+    <v-app class="main-container">
+      <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
+      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
+        <v-list>
+          <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
+            <v-list-item-content>
+              <v-list-item-title class="item">
+                <!-- Muestra la portada del álbum o una imagen por defecto -->
+                <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
+                <div class="item-info">
+                  <!-- Muestra el título de la canción y el nombre del artista -->
+                  <p>{{ song.title }}</p>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </v-app>
   </div>
 </template>
 
@@ -85,13 +97,17 @@ export default {
       song_id: 0,
       drawer: false, // Estado del drawer
       isFavorited: false,
-      searchQuery: ''
+      searchQuery: '',
+      comments: [], // Lista de comentarios
+      newComment: '', // Texto del nuevo comentario
+      isLoggedIn: false // Variable que indica si el usuario está logueado
     }
   },
   mounted () {
-    this.song_id = this.$route.query.song
+    this.song_id = this.$route.query.song || 1
     SongService.get(this.song_id).then(response => {
       this.song = response.data
+      this.loadComments()
       SongService.getAll().then(response => {
         this.all_songs = response.data.data
         this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
@@ -162,6 +178,24 @@ export default {
         this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
         console.log(this.isFavorite)
       })
+    },
+    loadComments () {
+      // Simulamos la carga de comentarios
+      // Backend: aqui se hace una llamada a la API para obtener los comentarios de la canción
+      this.comments = [
+        { id: 1, user: 'Usuario1', text: 'Me encanta esta canción!' },
+        { id: 2, user: 'Usuario2', text: '¡Increíble ritmo!' },
+        { id: 3, user: 'Usuario3', text: '¡Es tan pegajosa!' }
+      ]
+      // Verificamos si el usuario está logueado
+      this.isLoggedIn = !!this.$route.query.logged
+    },
+    postComment () {
+      if (this.newComment.trim() !== '') {
+        // Agregar comentario al backend
+        this.comments.push({ id: Date.now(), user: 'Usuario', text: this.newComment })
+        this.newComment = '' // Limpiar el campo de comentario después de enviar
+      }
     }
   }
 }
@@ -175,7 +209,10 @@ export default {
 
 .main-container, main {
   background-color: black !important;
-
+  min-height: 100vh; /* Asegura que el contenedor tenga al menos la altura de la ventana */
+  display: flex;
+  flex-direction: column;
+  padding-top: 15vh;
 }
 
 .v-navigation-drawer .v-list-item {
@@ -218,7 +255,6 @@ export default {
 body {
   background-color: #000000;
   height: 100vh;
-  overflow: hidden;
 }
 
 header {
@@ -233,6 +269,7 @@ header {
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
   transition: top 0.3s;
   z-index: 1000;
+  padding: 1vh 2vw;
 
 }
 
@@ -287,7 +324,7 @@ header {
   height: 80vh;
   display: flex;
   padding: 2vw;
-  margin-top: 15vh;
+  margin-top: 5vh;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -367,6 +404,45 @@ header {
   font-size: 3rem; /* Puedes ajustar el tamaño del icono */
   color: #ff0000; /* Color del icono */
   cursor: pointer;
+}
+
+.comments-section {
+  margin-top: 20px;
+  color: white;
+}
+
+.comment-item {
+  background-color: #333;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.comment-input-container {
+  margin-top: 20px;
+}
+
+.comment-input-container textarea {
+  width: 100%;
+  padding: 10px;
+  background-color: #2c2c2c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.comment-input-container button {
+  padding: 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.comment-input-container button:hover {
+  background-color: #f44336;
 }
 
 .item:hover {
