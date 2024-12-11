@@ -22,7 +22,12 @@
           <div class="details">
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
+            <button class="play-button" @click="playAudio">
+              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')"
+                   style="width:10vw; height:10vh; object-fit: contain;">
+            </button>
           </div>
+
         </div>
 
         <!-- Información del álbum -->
@@ -85,7 +90,9 @@ export default {
       song_id: 0,
       drawer: false, // Estado del drawer
       isFavorited: false,
-      searchQuery: ''
+      searchQuery: '',
+      audio: null,
+      isPlaying: false
     }
   },
   mounted () {
@@ -97,6 +104,10 @@ export default {
         this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
       })
       this.checkIfFavorite()
+    })
+    this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
+    this.audio.addEventListener('ended', () => {
+      this.isPlaying = false
     })
   },
   methods: {
@@ -162,6 +173,49 @@ export default {
         this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
         console.log(this.isFavorite)
       })
+    },
+    playAudio () {
+      if (this.audio) {
+        if (this.isPlaying) {
+          // Si ya está reproduciendo, pausa el audio
+          this.audio.pause()
+          this.isPlaying = false
+        } else {
+          // Si está pausado o no ha comenzado, reproduce el audio
+          this.audio.play()
+          this.isPlaying = true
+
+          // Detecta cuándo termina la canción para actualizar el estado
+          this.audio.addEventListener('ended', () => {
+            this.isPlaying = false
+          })
+        }
+      } else {
+        // Carga y reproduce el audio si no existe
+        const sanitizedArtist = this.removeAccents(
+          this.song.artist.toLowerCase().replace(/ /g, '')
+        )
+        const sanitizedTitle = this.removeAccents(
+          this.song.title.toLowerCase().replace(/ /g, '')
+        )
+
+        try {
+          this.audio = new Audio(
+            require(`@/assets/canciones/${sanitizedArtist}_${sanitizedTitle}.mp3`)
+          )
+          this.audio.play()
+          this.isPlaying = true
+
+          // Detecta cuándo termina la canción
+          this.audio.addEventListener('ended', () => {
+            this.isPlaying = false
+          })
+        } catch (e) {
+          console.error('Archivo de audio no encontrado:', e)
+          alert('No se encontró el archivo de audio para esta canción.')
+          this.isPlaying = false
+        }
+      }
     }
   }
 }
@@ -221,19 +275,36 @@ body {
   overflow: hidden;
 }
 
+.background-image {
+  background: url('../assets/fondo.jpg') no-repeat center center fixed; /* Imagen de fondo centrada */
+  background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+  position: fixed; /* Mantiene el fondo fijo mientras haces scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Se asegura de cubrir toda la altura de la ventana */
+  z-index: -1; /* Mantiene el fondo detrás de todo el contenido */
+  filter: brightness(0.7); /* Oscurece la imagen */
+}
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 3vh 2vw;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to bottom, #e53935, #000);
+  background: rgba(0, 0, 0, 0.7);
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
-  transition: top 0.3s;
   z-index: 1000;
+}
 
+/* Aseguramos que el logo se mantenga fijo y no se mueva */
+.logo img {
+  width: 3.5vw; /* Adaptable */
+  margin-top: -2vh;
+  margin-left: -1vw;
 }
 
 /* Estilos de la barra de búsqueda */
@@ -276,13 +347,6 @@ header {
   height: 3.5vh;
 }
 
-/* Estilos de logo */
-.logo img {
-  width: 5vw;
-  margin-top: 1vh;
-  margin-left: 1.0vw;
-}
-
 .perfil {
   height: 80vh;
   display: flex;
@@ -290,6 +354,21 @@ header {
   margin-top: 15vh;
   flex-direction: column;
   align-items: flex-start;
+}
+.play-button {
+  background: none; /* Sin fondo extra */
+  border: none; /* Sin borde */
+  cursor: pointer; /* Cambia el puntero al pasar el mouse */
+  display: flex; /* Para ajustar alineación interna */
+  align-items: center; /* Centra el contenido verticalmente */
+  justify-content: flex-start; /* Alinea el contenido a la izquierda */
+  padding: 0; /* Sin espacio interno */
+  margin: 0; /* Sin márgenes extra */
+  width: 3000vw;
+}
+.play-button img {
+  margin-top: 5vh;
+  margin-left: -3vw;
 }
 
 .album {
@@ -360,7 +439,6 @@ header {
   position: fixed;
   bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
   right: 5vw;/* Distancia desde el lado derecho de la pantalla */
-  z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
 .favorite-btn-container i {
