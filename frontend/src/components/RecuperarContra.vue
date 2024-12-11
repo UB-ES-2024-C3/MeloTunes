@@ -5,7 +5,7 @@
     <h1>Cambia tu contraseña</h1>
     <label class="email" for="email">Email</label><br>
     <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input"><br>
-    <button type="submit" class="submit-btn">Recibir email</button>
+    <button type="submit" class="submit-btn" @click="enviaremail">Recibir email</button>
     <button class="close-btn" @click="cerrarPopup">X</button>
   </div>
   </form>
@@ -13,7 +13,58 @@
 </template>
 
 <script>
+import RegisterService from '../services/RegisterService'
 
+export default {
+  data () {
+    return {
+      email: '',
+      token: null,
+      is_authenticated: false,
+      error: null
+    }
+  },
+  methods: {
+    cerrarPopup () {
+      this.$router.push('/login')
+      this.$router.go()
+    },
+
+    handleSubmit () {
+      // Reinicia errores
+      this.errorEmail = ''
+
+      let hasError = false
+
+      // Validaciones
+      if (!this.email.trim()) {
+        this.errorEmail = 'El campo de correo electrónico no puede estar vacío.'
+        hasError = true
+      } else if (!this.validateEmail(this.email)) {
+        this.errorEmail = 'El formato del correo electrónico no es válido.'
+        hasError = true
+      }
+
+      if (hasError) return
+
+      // Si todo está correcto
+      RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
+        .then(() => {
+          alert('Registro exitoso!')
+          this.$router.push('/login')
+          this.$router.go()
+        })
+        .catch((error) => {
+          console.error(error)
+          alert('El usuario con email ' + this.email + ' ya está registrado en el sistema.')
+        })
+    },
+    validateEmail (email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Regex para validar formato de email
+      return regex.test(email)
+    }
+  }
+}
 </script>
 
 <style scoped>
