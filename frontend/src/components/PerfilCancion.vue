@@ -208,7 +208,7 @@ export default {
 }
 
 .main-container, main {
-  background-color: black !important;
+  background-color: transparent !important;
   min-height: 100vh; /* Asegura que el contenedor tenga al menos la altura de la ventana */
   display: flex;
   flex-direction: column;
