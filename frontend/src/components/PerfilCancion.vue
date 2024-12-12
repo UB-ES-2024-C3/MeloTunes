@@ -53,6 +53,10 @@
         <h3>Comentarios:</h3>
         <div v-for="comment in comments" :key="comment.id" class="comment-item">
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
+          <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
+          <button v-if="comment.user === currentUser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+          Eliminar
+          </button>
         </div>
       </div>
 
@@ -100,7 +104,8 @@ export default {
       searchQuery: '',
       comments: [], // Lista de comentarios
       newComment: '', // Texto del nuevo comentario
-      isLoggedIn: false // Variable que indica si el usuario está logueado
+      isLoggedIn: false, // Variable que indica si el usuario está logueado
+      currentUser: 'Usuario' // DIANA: Cambiar por el usuario, este es para probar
     }
   },
   mounted () {
@@ -181,7 +186,7 @@ export default {
     },
     loadComments () {
       // Simulamos la carga de comentarios
-      // Backend: aqui se hace una llamada a la API para obtener los comentarios de la canción
+      // DIANA: Llamada a la API para obtener los comentarios de la canción
       this.comments = [
         { id: 1, user: 'Usuario1', text: 'Me encanta esta canción!' },
         { id: 2, user: 'Usuario2', text: '¡Increíble ritmo!' },
@@ -195,6 +200,17 @@ export default {
         // Agregar comentario al backend
         this.comments.push({ id: Date.now(), user: 'Usuario', text: this.newComment })
         this.newComment = '' // Limpiar el campo de comentario después de enviar
+      }
+    },
+    deleteComment (commentId) {
+      // Encuentra el índice del comentario
+      const index = this.comments.findIndex((comment) => comment.id === commentId)
+      if (index !== -1) {
+        // Elimina el comentario del estado local
+        this.comments.splice(index, 1)
+        // Simulacion la eliminación
+        console.log(`Comentario con ID ${commentId} eliminado.`)
+        // DIANA: Llamada al backend para eliminar el comentario de la base de datos
       }
     }
   }
