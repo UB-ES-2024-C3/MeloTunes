@@ -127,7 +127,11 @@ export default {
       return date.getFullYear()
     },
     goHome () {
-      this.$router.push({ path: '/home' })
+      this.$router.push({
+        path: '/home',
+        query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token}
+      })
+      this.$router.go()
     }
   }
 }

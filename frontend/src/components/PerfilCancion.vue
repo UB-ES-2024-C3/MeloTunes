@@ -87,6 +87,7 @@ export default {
       all_songs: [],
       artist_songs: [],
       song: {},
+      user_logged: {},
       song_id: 0,
       drawer: false, // Estado del drawer
       isFavorited: false,
@@ -96,18 +97,21 @@ export default {
     }
   },
   mounted () {
-    this.song_id = this.$route.query.song
-    SongService.get(this.song_id).then(response => {
-      this.song = response.data
-      SongService.getAll().then(response => {
-        this.all_songs = response.data.data
-        this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      this.song_id = this.$route.query.song
+      SongService.get(this.song_id).then(response => {
+        this.song = response.data
+        SongService.getAll().then(response => {
+          this.all_songs = response.data.data
+          this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+        })
+        this.checkIfFavorite()
       })
-      this.checkIfFavorite()
-    })
-    this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
-    this.audio.addEventListener('ended', () => {
-      this.isPlaying = false
+      this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
+      this.audio.addEventListener('ended', () => {
+        this.isPlaying = false
+      })
     })
   },
   methods: {
@@ -155,19 +159,21 @@ export default {
     },
     addFavorites () {
       if (!this.isFavorited) {
-        UserService.addToFavoriteSongs(this.song_id).then(response => {
+        UserService.addToFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
           console.log(response)
           this.isFavorited = true
+          alert(response.message); 
         })
       } else {
-        UserService.deleteOfFavoriteSongs(this.song_id).then(response => {
+        UserService.deleteOfFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
           console.log(response)
           this.isFavorited = false
+          alert(response.message); 
         })
       }
     },
     checkIfFavorite () {
-      UserService.getMyFavouriteSongs().then(response => {
+      UserService.getMyFavouriteSongs(this.user_logged.id).then(response => {
         const favorites = response // Asumiendo que la API devuelve un arreglo de canciones favoritas
         console.log(favorites)
         this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
@@ -216,6 +222,14 @@ export default {
           this.isPlaying = false
         }
       }
+    },
+    getUser (usersList, email) {
+      for (const user of usersList) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
     }
   }
 }
