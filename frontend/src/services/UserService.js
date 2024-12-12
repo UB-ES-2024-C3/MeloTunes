@@ -2,7 +2,7 @@ import axios from '../http-common'
 
 class UserService {
   getAll () {
-    return axios.get('/api/v1/users')
+    return axios.get('/api/v1/users/')
       .then((res) => {
         return res
       })
@@ -70,8 +70,8 @@ class UserService {
         throw error // Lanzar otros errores
       })
   }
-  updateUser (user_id, strNombre, strApellido, strBiografia) {
-    return axios.patch(`/api/v1/users/${user_id}`, {
+  updateUser (userId, strNombre, strApellido, strBiografia) {
+    return axios.patch(`/api/v1/users/${userId}`, {
       first_name: strNombre,
       second_name: strApellido,
       description: strBiografia

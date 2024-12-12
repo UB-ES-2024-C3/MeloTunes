@@ -44,7 +44,7 @@
             />
           </v-btn>
         </v-app>
-        <div class="favorite-btn-container">
+        <div class="favorite-btn-container" v-if="this.user_logged">
           <i
             :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
             @click="addFavorites"
@@ -102,11 +102,13 @@ export default {
       this.song_id = this.$route.query.song
       SongService.get(this.song_id).then(response => {
         this.song = response.data
-        SongService.getAll().then(response => {
-          this.all_songs = response.data.data
-          this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
-        })
-        this.checkIfFavorite()
+        if (this.user_logged) {
+          SongService.getAll().then(response => {
+            this.all_songs = response.data.data
+            this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+          })
+          this.checkIfFavorite()
+        }
       })
       this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
       this.audio.addEventListener('ended', () => {
@@ -162,13 +164,13 @@ export default {
         UserService.addToFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
           console.log(response)
           this.isFavorited = true
-          alert(response.message); 
+          alert(response.message)
         })
       } else {
         UserService.deleteOfFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
           console.log(response)
           this.isFavorited = false
-          alert(response.message); 
+          alert(response.message)
         })
       }
     },
