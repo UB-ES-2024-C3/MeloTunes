@@ -475,12 +475,85 @@ footer .social-icons {
   margin-right: -70vw; /* Asegura que no haya margen derecho */
 }
 
+/* Media Queries para mejorar la adaptabilidad */
 @media (max-width: 768px) {
-  /* Ajustes generales */
+  header {
+    flex-direction: column;
+    padding: 2vh 1vw;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    gap: 1vh;
+  }
+  
   body {
     font-size: 14px; /* Tamaño base de fuente más pequeño */
   }
 
+  .search-bar input[type="text"] {
+    width: 80%;
+    font-size: 1rem;
+  }
+
+  .search-bar button {
+    width: auto;
+    padding: 1rem;
+  }
+
+  .album img, .artist img {
+    width: 15vw;
+    height: 15vw;
+  }
+
+  .album {
+    width: 90%;
+    margin: 1rem 0;
+  }
+
+  .artist-section h2 {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 1vh 1vw;
+  }
+
+  .hero h1 {
+    font-size: 10vw;
+  }
+
+  .search-bar input[type="text"] {
+    font-size: 0.8rem;
+  }
+
+  .search-bar button {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+  .album img, .artist img {
+    width: 20vw;
+    height: 20vw;
+  }
+
+  .artist-section h2 {
+    font-size: 2rem;
+  }
+
+  footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  footer .social-icons img {
+    width: 5vw;
+  }
+}
+
+/* Media Queries para mejorar la adaptabilidad */
   /* Header */
   header {
     flex-direction: column; /* Cambia a columna en lugar de fila */

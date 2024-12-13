@@ -155,9 +155,9 @@ import SongService from '../services/SongService'
 export default {
   name: 'Perfil_user',
   mounted () {
-    UserService.get().then(response => {
-      this.user_logged = response.data
-      UserService.getMyFavouriteSongs().then(response => {
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      UserService.getMyFavouriteSongs(this.user_logged.id).then(response => {
         this.fav_songs = response
         if (this.user_logged.artist_name) {
           SongService.getAllArtist(this.user_logged.artist_name).then(response => {
@@ -236,11 +236,23 @@ export default {
     },
     enviarModificacion () {
       this.showEditProfile = false
-      UserService.updateUser(this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+      UserService.updateUser(this.user_logged.id, this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+        .then(() => {
+          this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+          this.$router.go()
+        })
         .catch((error) => {
           console.error(error)
           alert('Algo ha fallado')
         })
+    },
+    getUser (usersList, email) {
+      for (const user of usersList) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
     }
   }
 }

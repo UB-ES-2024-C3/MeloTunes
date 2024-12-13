@@ -48,9 +48,7 @@
       <section class="events">
         <h2 class="title-red">Próximos Eventos</h2>
         <ul>
-          <li v-for="event in upcomingEvents" :key="event.id">
-            {{ event.name }} - {{ event.date }} - {{ event.location }}
-          </li>
+          <li v-for="event in upcomingEvents" :key="event.id">{{ event.name }} - {{ event.date }} - {{ event.location }}</li>
         </ul>
       </section>
     </div>
@@ -87,7 +85,6 @@ export default {
         { id: 2, name: 'Gira 2024 - Sevilla', date: '29 de marzo', location: 'Auditorio Rocío Jurado, Sevilla' },
         { id: 3, name: 'Festival Primavera Sound', date: '5 de abril', location: 'Parc del Fòrum, Barcelona' }
       ]
-
     }
   },
   mounted () {
@@ -257,6 +254,20 @@ body, html {
 .genre {
   color: #aaa;
   margin-top: 1vh;
+}
+
+.bio, .bio-short {
+  margin-top: 2vh;
+  font-size: 1rem;
+}
+
+.btn-toggle-bio {
+  background-color: #ff3d00;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .top-section {
