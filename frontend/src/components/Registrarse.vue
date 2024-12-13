@@ -357,4 +357,38 @@ body, html {
 .close-btn:hover {
   color: #ff4d4d;
 }
+
+@media (max-width: 768px) {
+  .container {
+    width: 90%; /* Reducir el ancho de la caja para pantallas pequeñas */
+    padding: 15px;
+  }
+
+  .form-input {
+    width: 100%; /* Los campos de entrada ocupan el 100% del ancho */
+  }
+
+  .submit-btn {
+    width: 100%; /* Botón de envío a pantalla completa */
+  }
+
+  .password-container img {
+    width: 35px; /* Hacer el icono más pequeño */
+    height: 30px;
+    margin-left: -35px;
+  }
+
+  .close-btn {
+    font-size: 20px; /* Reducir el tamaño del botón de cerrar */
+  }
+
+  h1 {
+    font-size: 1.5em; /* Reducir el tamaño de la cabecera */
+  }
+
+  .error {
+    font-size: 12px; /* Reducir el tamaño de los mensajes de error */
+  }
+}
+
 </style>

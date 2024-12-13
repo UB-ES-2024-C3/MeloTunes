@@ -368,7 +368,7 @@ section {
 
 .divider {
   width: 1px;
-  background-color: #555;
+  background-color: #ce6c6c;
   height: 100%;
   align-self: stretch; /* Hace que la barra divisora ocupe todo el alto */
 }
@@ -405,12 +405,6 @@ section {
 .recommendation-column li {
   font-size: 1.2rem;
   color: #ddd;
-}
-
-.divider {
-  width: 2px;
-  background-color: #555;
-  margin: 0 1vw;
 }
 
 .modal-overlay {
@@ -531,7 +525,6 @@ section {
   box-sizing: border-box;
 }
 
-/* Estilo base del body */
 body {
   margin: 0;
   padding: 0;
@@ -674,10 +667,81 @@ li {
   justify-content: center;
 }
 
-.divider {
-  width: 1px;
-  background-color: #ff3d00;
-  margin: 0 3vw;
+@media (max-width: 768px) {
+  .perfil {
+    padding: 5vw 3vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 5vw 3vw;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+  }
+
+  .user-details {
+    margin-top: 2vh;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .top-songs, .top-albums {
+    width: 100%;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .recommendations-grid {
+    flex-direction: column;
+    gap: 3vh;
+  }
+
+  .modal-content {
+    padding: 4vw;
+    max-width: 90%;
+    gap: 3vh;
+  }
+
+  .modal-content button {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .modal-content .form-group input,
+  .modal-content .form-group textarea {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  .music-recommendations {
+    padding: 3vw;
+  }
+
+  .events ul {
+    padding-left: 0;
+  }
 }
 
 </style>

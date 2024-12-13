@@ -318,4 +318,79 @@ li {
   margin: 0 auto;
   box-sizing: border-box;
 }
+
+/* Media queries para pantallas pequeñas */
+@media (max-width: 768px) {
+  .perfil-artist {
+    padding: 2vh 4vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2vh 2vw;
+  }
+
+  .avatar-container {
+    margin: 0 0 2vh;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+    border-width: 0.2vw;
+  }
+
+  .artist-details h1 {
+    font-size: 1.8rem;
+  }
+
+  .bio, .bio-short {
+    font-size: 0.9rem;
+  }
+
+  .btn-toggle-bio {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .top-section {
+    flex-direction: column;
+    gap: 2vh;
+    padding: 3vh 3vw;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .top-discography, .top-collaborations {
+    padding: 2vh 2vw;
+  }
+
+  .logo {
+    width: 12vw;
+    max-width: 40px;
+  }
+
+  .events {
+    padding: 3vh 3vw;
+  }
+
+  li {
+    font-size: 0.9rem;
+  }
+
+  .events-container {
+    margin: 0;
+    width: 100%;
+  }
+}
+
 </style>

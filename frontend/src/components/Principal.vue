@@ -474,4 +474,73 @@ footer .social-icons img:hover {
 footer .social-icons {
   margin-right: -70vw; /* Asegura que no haya margen derecho */
 }
+
+@media (max-width: 768px) {
+  /* Ajustes generales */
+  body {
+    font-size: 14px; /* Tamaño base de fuente más pequeño */
+  }
+
+  /* Header */
+  header {
+    flex-direction: column; /* Cambia a columna en lugar de fila */
+    padding: 2vh 1vw;
+  }
+  .logo img {
+    width: 20vw; /* Ajusta el tamaño del logo */
+    margin: 0 auto; /* Centra el logo */
+  }
+  header .auth-buttons {
+    position: static; /* Permite que se apilen los botones */
+    flex-direction: column; /* Acomoda los botones en columna */
+    gap: 10px; /* Espaciado más pequeño entre botones */
+  }
+
+  /* Hero section */
+  .hero h1 {
+    font-size: 5vw; /* Reduce el tamaño del texto principal */
+    letter-spacing: 1rem;
+  }
+
+  /* Barra de búsqueda */
+  .search-bar input {
+    width: 80vw; /* Aumenta el ancho del input */
+    font-size: 1rem; /* Reduce el tamaño de la fuente */
+  }
+  .search-bar button {
+    width: auto; /* El botón se ajusta al contenido */
+    padding: 0.8em;
+  }
+
+  /* Álbumes */
+  .album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Más columnas en pantallas pequeñas */
+    gap: 10px; /* Reduce el espacio entre tarjetas */
+  }
+  .album-info p {
+    font-size: 0.9rem; /* Reduce tamaño del texto */
+  }
+
+  /* Artistas */
+  .artist img {
+    width: 40vw; /* Ajusta tamaño de las imágenes */
+    height: auto; /* Mantiene proporción */
+  }
+  .artist-name {
+    width: 40vw; /* Se ajusta a la imagen */
+    font-size: 1rem; /* Reduce el tamaño del texto */
+    height: auto; /* Permite que el texto se adapte */
+  }
+
+  /* Footer */
+  footer {
+    flex-direction: column; /* Cambia a columna */
+    align-items: center; /* Centra todos los elementos */
+    text-align: center;
+  }
+  footer .legal, footer .social-icons {
+    margin: 10px 0; /* Espaciado uniforme */
+  }
+}
+
 </style>

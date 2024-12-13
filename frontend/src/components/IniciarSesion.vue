@@ -221,4 +221,37 @@ color: yellow;
 font-size: 14px;
 font-weight: bold;
 }
+
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .container input[type="email"],
+  .container .form-input,
+  .submit-btn {
+    width: 80%;
+  }
+
+  .close-btn {
+    font-size: 20px;
+  }
+
+  .password-container img {
+    width: 35px;
+    height: 30px;
+  }
+
+  .container h1 {
+    font-size: 20px;
+  }
+
+  .error {
+    font-size: 12px;
+  }
+}
+
 </style>
