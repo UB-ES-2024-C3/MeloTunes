@@ -59,7 +59,7 @@
         <div v-for="comment in comments" :key="comment.id" class="comment-item">
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
           <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
-          <button v-if="comment.user === currentUser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+          <button v-if="comment.user === currentUser || isAdmin" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
             Eliminar
           </button>
         </div>
@@ -113,11 +113,14 @@ export default {
       isLoggedIn: false, // Variable que indica si el usuario está logueado
       currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
       audio: null,
-      isPlaying: false
+      isPlaying: false,
+      isAdmin: false
     }
   },
   mounted () {
     this.song_id = this.$route.query.song
+    // Backend: comprobar que el usuario sea admin aquí
+    // this.isAdmin = this.$route.query.admin === 'true'
     SongService.get(this.song_id).then(response => {
       this.song = response.data
       this.loadComments()
