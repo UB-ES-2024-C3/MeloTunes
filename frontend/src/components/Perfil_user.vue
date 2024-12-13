@@ -252,7 +252,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-image: url('../assets/fondo.png'); /* Ruta a tu imagen de fondo */
+  background-image: url('../assets/fondo.jpg'); /* Ruta a tu imagen de fondo */
   background-size: cover; /* Hace que la imagen cubra toda la pantalla */
   background-position: center; /* Centra la imagen */
   background-repeat: no-repeat; /* Evita que la imagen se repita */

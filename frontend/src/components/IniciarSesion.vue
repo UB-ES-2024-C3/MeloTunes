@@ -106,7 +106,7 @@ top: 0;
 left: 0;
 width: 100%;
 height: 100%;
-background: url('../assets/fondo.png');
+background: url('../assets/fondo.jpg');
 background-size: cover;
 filter: brightness(50%);
 z-index: 1;

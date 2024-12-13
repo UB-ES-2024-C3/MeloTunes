@@ -8,14 +8,14 @@
     </div>
     <header class="perfil-header">
       <div class="avatar-container">
-        <img src="../assets/artistas/melendi.jpeg" alt="Avatar del artista" class="avatar" />
+        <img :src="getArtistImage(artistStageName)" alt="Avatar del artista" class="avatar" />
       </div>
       <div class="artist-details">
         <h1>{{ artistStageName }}</h1>
         <p class="genre">{{ genre }}</p>
         <p v-if="expandedBio" class="bio">{{ bio }}</p>
         <p v-else class="bio-short">{{ shortBio }}</p>
-        <button class="btn" @click="toggleBio">
+        <button class="btn-toggle-bio" @click="toggleBio">
           {{ expandedBio ? 'Ver menos' : 'Ver más' }}
         </button>
       </div>
@@ -27,9 +27,7 @@
         <div class="top-discography">
           <h2 class="title-red">Discografía Destacada</h2>
           <ul>
-            <li v-for="album in discography" :key="album.id">
-              {{ album.title }} ({{ album.releaseYear }})
-            </li>
+            <li v-for="song in artist_songs" :key="song.id">{{ song.title }} - {{ getYear(song.timestamp) }}</li>
           </ul>
         </div>
 
@@ -39,9 +37,7 @@
         <div class="top-collaborations">
           <h2 class="title-red">Colaboraciones</h2>
           <ul>
-            <li v-for="collab in collaborations" :key="collab.id">
-              {{ collab.title }} - {{ collab.artist }}
-            </li>
+            <li v-for="collab in collaborations" :key="collab.id">{{ collab.title }} - {{ collab.artist }}</li>
           </ul>
         </div>
       </div>
@@ -62,36 +58,93 @@
 </template>
 
 <script>
+import SongService from '../services/SongService'
+import UserService from '../services/UserService'
 export default {
   name: 'ArtistProfile',
+  computed: {
+    truncatedDescription () {
+      return this.bio.length > 20
+        ? this.bio.substring(0, 20) + '...'
+        : this.bio
+    }
+  },
   data () {
     return {
-      artistStageName: 'MELENDI',
+      artistStageName: '',
+      drawer: false,
+      artist_songs: [],
       genre: 'Rumba - Pop - Rock',
-      bio: 'Artista con un estilo único que combina pop, rock y flamenco. Con más de dos décadas en la industria, 20 años sin noticias de holanda...',
-      shortBio: 'Artista de pop rock y rumba...',
+      bio: '',
+      shortBio: '',
       expandedBio: false,
-      discography: [
-        { id: 1, title: 'Sin Noticias de Holanda', releaseYear: '2003' },
-        { id: 2, title: 'Que el Cielo Espere Sentao', releaseYear: '2005' },
-        { id: 3, title: 'Volvamos a Empezar', releaseYear: '2010' }
-      ],
       collaborations: [
         { id: 1, title: 'Destino o Casualidad', artist: 'Ha*Ash' },
         { id: 2, title: 'Desde que estamos juntos', artist: 'Alejandro Sanz' }
       ],
       upcomingEvents: [
         { id: 1, name: 'Gira 2024 - Madrid', date: '15 de marzo', location: 'Wizink Center, Madrid' },
-        { id: 2, name: 'Gira 2024 - Sevilla', date: '29 de marzo', location: 'Auditorio Rocío Jurado, Sevilla' }
+        { id: 2, name: 'Gira 2024 - Sevilla', date: '29 de marzo', location: 'Auditorio Rocío Jurado, Sevilla' },
+        { id: 3, name: 'Festival Primavera Sound', date: '5 de abril', location: 'Parc del Fòrum, Barcelona' }
       ]
+
     }
+  },
+  mounted () {
+    this.artistStageName = this.$route.query.artist
+    SongService.getAllArtist(this.artistStageName).then(response => {
+      this.artist_songs = response.data.data
+      UserService.getbyArtist(this.artistStageName).then(response => {
+        this.bio = response.data.description
+      })
+    })
   },
   methods: {
     toggleBio () {
       this.expandedBio = !this.expandedBio
     },
+    getArtistImage (artist) {
+      const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
+    },
+    removeAccents (str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+    },
+    toggleDrawer () {
+      this.drawer = !this.drawer // Alterna el estado del drawer
+    },
+    getAlbumImage (album) {
+      console.log(album)
+      const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
+    },
+    handleClick (song) {
+      const currentSongId = this.$route.query.song
+      const targetSongId = song.id
+      // Si el ID de la canción es el mismo que el actual, no realizamos la navegación
+      if (currentSongId === targetSongId) {
+        return
+      }
+      this.$router.push({path: '/song',
+        query: {
+          email: this.$route.query.email,
+          logged: this.$route.query.logged,
+          token: this.$route.query.token,
+          song: song.id
+        }
+      })
+      this.$router.go()
+    },
+    getYear (timestamp) {
+      const date = new Date(timestamp)
+      return date.getFullYear()
+    },
     goHome () {
-      this.$router.push({path: '/home'})
+      this.$router.push({
+        path: '/home',
+        query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token}
+      })
+      this.$router.go()
     }
   }
 }
@@ -112,7 +165,7 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/fondo.png'); /* Reemplazar con la textura del fondo animado */
+  background: url('../assets/fondo.jpg'); /* Reemplazar con la textura del fondo animado */
   background-size: cover;
   filter: brightness(50%);
   z-index: -1;
@@ -144,7 +197,6 @@ body, html {
   position: relative;
 }
 
-/* Resto de los estilos */
 .logo {
   width: 8vw;
   max-width: 50px;
@@ -177,6 +229,20 @@ body, html {
   margin: 0;
 }
 
+.bio, .bio-short {
+  margin-top: 2vh;
+  font-size: 1rem;
+}
+
+.btn-toggle-bio {
+  background-color: #ff3d00;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .btn {
   background-color: #bf0000;
   padding: 1.5vh 2vw;
@@ -191,11 +257,6 @@ body, html {
 .genre {
   color: #aaa;
   margin-top: 1vh;
-}
-
-.bio, .bio-short {
-  margin-top: 2vh;
-  font-size: 1rem;
 }
 
 .top-section {
@@ -236,7 +297,7 @@ li {
 
 .divider {
   width: 2px;
-  background-color: #555;
+  background-color: #949393;
   margin: 0 1vw;
 }
 

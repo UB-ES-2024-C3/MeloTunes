@@ -243,7 +243,7 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/fondo.png'); /* Asegúrate de usar una textura sutil */
+  background: url('../assets/fondo.jpg'); /* Asegúrate de usar una textura sutil */
   background-size: cover;
   filter: brightness(50%);
   z-index: 1;

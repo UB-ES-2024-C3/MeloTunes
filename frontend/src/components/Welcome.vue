@@ -41,7 +41,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/fondo.png'); /* Cambia esta ruta según tu archivo de imagen */
+  background: url('../assets/fondo.jpg'); /* Cambia esta ruta según tu archivo de imagen */
   background-size: cover;
   filter: brightness(50%);
   z-index: 0; /* Fondo detrás */

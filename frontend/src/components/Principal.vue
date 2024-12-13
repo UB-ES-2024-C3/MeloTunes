@@ -23,7 +23,7 @@
 
     <div class="hero">
       <h1>
-        <span translate="no" class="melo">MELO</span><span translate="no" class="tunes">TUNES</span>
+        <span translate="no" class="melo">¡MELO</span><span translate="no" class="tunes">TUNES!</span>
       </h1>
     </div>
 
