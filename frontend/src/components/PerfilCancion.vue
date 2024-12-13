@@ -53,28 +53,44 @@
         </div>
       </div>
 
-    </div>
-    <div>
-      <v-app class="main-container">
-        <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
-        <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
-          <v-list>
-            <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
-              <v-list-item-content>
-                <v-list-item-title class="item">
-                  <!-- Muestra la portada del álbum o una imagen por defecto -->
-                  <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
-                  <div class="item-info">
-                    <!-- Muestra el título de la canción y el nombre del artista -->
-                    <p>{{ song.title }}</p>
-                  </div>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
-      </v-app>
-    </div>
+      <!-- Comentarios -->
+      <div v-if="comments.length > 0" class="comments-section">
+        <h3>Comentarios:</h3>
+        <div v-for="comment in comments" :key="comment.id" class="comment-item">
+          <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
+          <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
+          <button v-if="comment.user === currentUser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+          Eliminar
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón para comentar -->
+      <div v-if="isLoggedIn" class="comment-input-container">
+        <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
+        <button @click="postComment">Comentar</button>
+      </div>
+      </div>
+
+    <v-app class="main-container">
+      <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
+      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
+        <v-list>
+          <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
+            <v-list-item-content>
+              <v-list-item-title class="item">
+                <!-- Muestra la portada del álbum o una imagen por defecto -->
+                <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
+                <div class="item-info">
+                  <!-- Muestra el título de la canción y el nombre del artista -->
+                  <p>{{ song.title }}</p>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </v-app>
   </div>
 </template>
 
@@ -92,6 +108,20 @@ export default {
       drawer: false, // Estado del drawer
       isFavorited: false,
       searchQuery: '',
+      comments: [], // Lista de comentarios
+      newComment: '', // Texto del nuevo comentario
+      isLoggedIn: false, // Variable que indica si el usuario está logueado
+      currentUser: 'Usuario' // DIANA: Cambiar por el usuario, este es para probar
+    }
+  },
+  mounted () {
+    this.song_id = this.$route.query.song || 1
+    SongService.get(this.song_id).then(response => {
+      this.song = response.data
+      this.loadComments()
+      SongService.getAll().then(response => {
+        this.all_songs = response.data.data
+        this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
       audio: null,
       isPlaying: false
     }
@@ -182,6 +212,34 @@ export default {
         console.log(this.isFavorite)
       })
     },
+    loadComments () {
+      // Simulamos la carga de comentarios
+      // DIANA: Llamada a la API para obtener los comentarios de la canción
+      this.comments = [
+        { id: 1, user: 'Usuario1', text: 'Me encanta esta canción!' },
+        { id: 2, user: 'Usuario2', text: '¡Increíble ritmo!' },
+        { id: 3, user: 'Usuario3', text: '¡Es tan pegajosa!' }
+      ]
+      // Verificamos si el usuario está logueado
+      this.isLoggedIn = !!this.$route.query.logged
+    },
+    postComment () {
+      if (this.newComment.trim() !== '') {
+        // Agregar comentario al backend
+        this.comments.push({ id: Date.now(), user: 'Usuario', text: this.newComment })
+        this.newComment = '' // Limpiar el campo de comentario después de enviar
+      }
+    },
+    deleteComment (commentId) {
+      // Encuentra el índice del comentario
+      const index = this.comments.findIndex((comment) => comment.id === commentId)
+      if (index !== -1) {
+        // Elimina el comentario del estado local
+        this.comments.splice(index, 1)
+        // Simulacion la eliminación
+        console.log(`Comentario con ID ${commentId} eliminado.`)
+        // DIANA: Llamada al backend para eliminar el comentario de la base de datos
+      }
     playAudio () {
       if (this.audio) {
         if (this.isPlaying) {
@@ -244,8 +302,13 @@ export default {
 }
 
 .main-container, main {
-  background-color: black !important;
-
+  background-color: transparent !important;
+  min-height: 100vh; /* Asegura que el contenedor tenga al menos la altura de la ventana */
+  display: flex;
+  flex-direction: column;
+  padding-top: 15vh;
+  padding-bottom: 5vh;
+  position: relative;
 }
 
 .v-navigation-drawer .v-list-item {
@@ -258,14 +321,14 @@ export default {
   box-shadow: none;
   cursor: pointer;
   width: 5vw;
-  height: 10vh !important;
+  height: 2vh !important;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   transform: scaleX(1);
   transition: transform 0.3s ease;
-  margin-top: 5vh;
+  margin-top: 1vh;
 }
 .floating-btn img {
   transform: scaleX(1); /* Estado inicial de la imagen */
@@ -288,7 +351,6 @@ export default {
 body {
   background-color: #000000;
   height: 100vh;
-  overflow: hidden;
 }
 
 .background-image {
@@ -314,6 +376,7 @@ header {
   background: rgba(0, 0, 0, 0.7);
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
   z-index: 1000;
+  padding: 1vh 2vw;
 }
 
 /* Aseguramos que el logo se mantenga fijo y no se mueva */
@@ -367,7 +430,7 @@ header {
   height: 80vh;
   display: flex;
   padding: 2vw;
-  margin-top: 15vh;
+  margin-top: 5vh;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -452,15 +515,58 @@ header {
 }
 
 .favorite-btn-container {
-  position: fixed;
-  bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
+  position: absolute;
+  top: 80vh; /* Distancia desde la parte inferior de la pantalla */
   right: 5vw;/* Distancia desde el lado derecho de la pantalla */
+  z-index: 1; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
 .favorite-btn-container i {
   font-size: 3rem; /* Puedes ajustar el tamaño del icono */
   color: #ff0000; /* Color del icono */
   cursor: pointer;
+}
+
+.comments-section {
+  margin-top: 20px;
+  color: white;
+  position: relative;
+}
+
+.comment-item {
+  background-color: #333;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.comment-input-container {
+  margin-top: 20px;
+}
+
+.comment-input-container textarea {
+  width: 100%;
+  padding: 10px;
+  background-color: #2c2c2c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  z-index: 9999;
+}
+
+.comment-input-container button {
+  padding: 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.comment-input-container button:hover {
+  background-color: #f44336;
 }
 
 .item:hover {
