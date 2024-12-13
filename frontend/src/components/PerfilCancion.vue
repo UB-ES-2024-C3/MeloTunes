@@ -129,7 +129,7 @@ export default {
       currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
       audio: null,
       isPlaying: false,
-      isAdmin: true,
+      isAdmin: false,
       deleteDialog: false,
       songToDelete: null // Almacenamos la cacnión que se va a eliminar
     }
@@ -350,14 +350,13 @@ export default {
   box-shadow: none;
   cursor: pointer;
   width: 5vw;
-  height: 2vh !important;
+  height: 0vh !important;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   transform: scaleX(1);
   transition: transform 0.3s ease;
-  margin-top: 1vh;
 }
 .floating-btn img {
   transform: scaleX(1); /* Estado inicial de la imagen */
