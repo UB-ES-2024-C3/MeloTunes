@@ -122,11 +122,11 @@ export default {
       SongService.get(this.song_id).then(response => {
         this.song = response.data
         this.loadComments()
+        SongService.getAll().then(response => {
+          this.all_songs = response.data.data
+          this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+        })
         if (this.user_logged) {
-          SongService.getAll().then(response => {
-            this.all_songs = response.data.data
-            this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
-          })
           this.checkIfFavorite()
         }
       })
