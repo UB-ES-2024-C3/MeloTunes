@@ -222,7 +222,6 @@ font-size: 14px;
 font-weight: bold;
 }
 
-
 /* Media Query para pantallas pequeñas */
 @media (max-width: 768px) {
   .container {
