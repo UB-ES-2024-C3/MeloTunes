@@ -27,7 +27,7 @@
         <div class="btn-group">
           <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
           <button class="btn" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
-          <button v-if="this.user_logged.is_artist" class="btn-upload-song" @click="uploadSong">
+          <button v-if="this.user_logged.is_artist" class="btn" @click="uploadSong">
             Subir canción
           </button>
           <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
