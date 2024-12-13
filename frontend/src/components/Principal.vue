@@ -100,7 +100,7 @@ export default {
     }
     SongService.getAll().then(response => {
       this.all_songs = response.data.data
-      this.songs_list = response.data.data.slice(0, 8)
+      this.songs_list = response.data.data.slice(0, 10)
       for (const song of this.songs_list) {
         if (!this.artists.includes(song.artist)) {
           this.artists.push(song.artist)
@@ -167,7 +167,7 @@ export default {
       // Si la búsqueda está vacía, mostrar todas las canciones
       if (!this.searchQuery.trim()) {
         SongService.getAll().then(response => {
-          this.songs_list = response.data.data.slice(0, 8)
+          this.songs_list = response.data.data.slice(0, 10)
         })
         return
       }
@@ -178,7 +178,7 @@ export default {
         this.removeAccents(song.title.toLowerCase()).includes(normalizedSearchQuery) ||
         this.removeAccents(song.artist.toLowerCase()).includes(normalizedSearchQuery) ||
         this.removeAccents(song.album.toLowerCase()).includes(normalizedSearchQuery)
-      ).slice(0, 8)
+      ).slice(0, 10)
       localStorage.removeItem('searchQuery')
     }
   }
@@ -475,85 +475,12 @@ footer .social-icons {
   margin-right: -70vw; /* Asegura que no haya margen derecho */
 }
 
-/* Media Queries para mejorar la adaptabilidad */
 @media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    padding: 2vh 1vw;
-  }
-
-  .search-bar {
-    flex-direction: column;
-    gap: 1vh;
-  }
-  
+  /* Ajustes generales */
   body {
     font-size: 14px; /* Tamaño base de fuente más pequeño */
   }
 
-  .search-bar input[type="text"] {
-    width: 80%;
-    font-size: 1rem;
-  }
-
-  .search-bar button {
-    width: auto;
-    padding: 1rem;
-  }
-
-  .album img, .artist img {
-    width: 15vw;
-    height: 15vw;
-  }
-
-  .album {
-    width: 90%;
-    margin: 1rem 0;
-  }
-
-  .artist-section h2 {
-    font-size: 3rem;
-  }
-}
-
-@media (max-width: 480px) {
-  header {
-    padding: 1vh 1vw;
-  }
-
-  .hero h1 {
-    font-size: 10vw;
-  }
-
-  .search-bar input[type="text"] {
-    font-size: 0.8rem;
-  }
-
-  .search-bar button {
-    font-size: 0.8rem;
-    padding: 0.5rem;
-  }
-
-  .album img, .artist img {
-    width: 20vw;
-    height: 20vw;
-  }
-
-  .artist-section h2 {
-    font-size: 2rem;
-  }
-
-  footer {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  footer .social-icons img {
-    width: 5vw;
-  }
-}
-
-/* Media Queries para mejorar la adaptabilidad */
   /* Header */
   header {
     flex-direction: column; /* Cambia a columna en lugar de fila */
