@@ -108,28 +108,33 @@ export default {
       drawer: false, // Estado del drawer
       isFavorited: false,
       searchQuery: '',
+      audio: null,
+      isPlaying: false,
       comments: [], // Lista de comentarios
       newComment: '', // Texto del nuevo comentario
       isLoggedIn: false, // Variable que indica si el usuario está logueado
-      currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
-      audio: null,
-      isPlaying: false
+      currentUser: 'Usuario' // DIANA: Cambiar por el usuario, este es para probar
     }
   },
   mounted () {
-    this.song_id = this.$route.query.song
-    SongService.get(this.song_id).then(response => {
-      this.song = response.data
-      this.loadComments()
-      SongService.getAll().then(response => {
-        this.all_songs = response.data.data
-        this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      this.song_id = this.$route.query.song
+      SongService.get(this.song_id).then(response => {
+        this.song = response.data
+        this.loadComments()
+        if (this.user_logged) {
+          SongService.getAll().then(response => {
+            this.all_songs = response.data.data
+            this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+          })
+          this.checkIfFavorite()
+        }
       })
-      this.checkIfFavorite()
-    })
-    this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
-    this.audio.addEventListener('ended', () => {
-      this.isPlaying = false
+      this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
+      this.audio.addEventListener('ended', () => {
+        this.isPlaying = false
+      })
     })
   },
   methods: {
@@ -211,6 +216,7 @@ export default {
     },
     postComment () {
       if (this.newComment.trim() !== '') {
+        console.log(this.newComment)
         // Agregar comentario al backend
         this.comments.push({ id: Date.now(), user: 'Usuario', text: this.newComment })
         this.newComment = '' // Limpiar el campo de comentario después de enviar
@@ -304,18 +310,20 @@ export default {
 
 /* Estilo para el botón flotante */
 .floating-btn {
+  position: fixed; /* Posiciona el botón de forma fija */
+  top: 50%; /* Centrado verticalmente */
+  right: 0; /* Pegado al lado derecho */
+  transform: translateY(-50%); /* Ajusta el centrado vertical */
+  width: 50px; /* Ajusta el tamaño según sea necesario */
+  height: 50px;
+  background-color: transparent; /* Fondo transparente */
   border: none;
-  box-shadow: none;
-  cursor: pointer;
-  width: 5vw;
-  height: 2vh !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: transparent;
-  transform: scaleX(1);
-  transition: transform 0.3s ease;
-  margin-top: 1vh;
+  cursor: pointer;
+  z-index: 1000; /* Asegúrate de que esté sobre otros elementos */
+  transition: transform 0.3s ease; /* Transición suave */
 }
 .floating-btn img {
   transform: scaleX(1); /* Estado inicial de la imagen */
