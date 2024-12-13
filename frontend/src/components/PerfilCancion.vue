@@ -60,7 +60,7 @@
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
           <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
           <button v-if="comment.user === currentUser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
-          Eliminar
+            Eliminar
           </button>
         </div>
       </div>
@@ -70,7 +70,7 @@
         <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
         <button @click="postComment">Comentar</button>
       </div>
-      </div>
+    </div>
 
     <v-app class="main-container">
       <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
@@ -111,39 +111,25 @@ export default {
       comments: [], // Lista de comentarios
       newComment: '', // Texto del nuevo comentario
       isLoggedIn: false, // Variable que indica si el usuario está logueado
-      currentUser: 'Usuario' // DIANA: Cambiar por el usuario, este es para probar
+      currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
+      audio: null,
+      isPlaying: false
     }
   },
   mounted () {
-    this.song_id = this.$route.query.song || 1
+    this.song_id = this.$route.query.song
     SongService.get(this.song_id).then(response => {
       this.song = response.data
       this.loadComments()
       SongService.getAll().then(response => {
         this.all_songs = response.data.data
         this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
-      audio: null,
-      isPlaying: false
-    }
-  },
-  mounted () {
-    UserService.getAll().then(response => {
-      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
-      this.song_id = this.$route.query.song
-      SongService.get(this.song_id).then(response => {
-        this.song = response.data
-        if (this.user_logged) {
-          SongService.getAll().then(response => {
-            this.all_songs = response.data.data
-            this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
-          })
-          this.checkIfFavorite()
-        }
       })
-      this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
-      this.audio.addEventListener('ended', () => {
-        this.isPlaying = false
-      })
+      this.checkIfFavorite()
+    })
+    this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
+    this.audio.addEventListener('ended', () => {
+      this.isPlaying = false
     })
   },
   methods: {
@@ -240,6 +226,7 @@ export default {
         console.log(`Comentario con ID ${commentId} eliminado.`)
         // DIANA: Llamada al backend para eliminar el comentario de la base de datos
       }
+    },
     playAudio () {
       if (this.audio) {
         if (this.isPlaying) {
