@@ -29,7 +29,32 @@ export default {
       this.$router.push('/login')
       this.$router.go()
     },
+    async enviaremail() {
+      this.errorEmail = null;
+      this.successMessage = null;
 
+      // Validaciones del email
+      if (!this.email.trim()) {
+        this.errorEmail = 'El campo de correo electrónico no puede estar vacío.';
+        return;
+      }
+      if (!validateEmail(this.email)) {
+        this.errorEmail = 'El formato del correo electrónico no es válido.';
+        return;
+      }
+
+      // Llamada al backend
+      try {
+        const response = await RegisterService.sendPasswordRecoveryEmail(this.email); // Método hipotético en el servicio
+        this.successMessage =
+          'Si tu email está registrado, recibirás un correo con las instrucciones para recuperar tu contraseña.';
+      } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        this.errorEmail =
+          'No hemos podido procesar tu solicitud en este momento. Inténtalo más tarde.';
+      }
+    }
+    /*
     handleSubmit () {
       // Reinicia errores
       this.errorEmail = ''
@@ -62,7 +87,7 @@ export default {
     validateEmail (email) {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Regex para validar formato de email
       return regex.test(email)
-    }
+    }*/
   }
 }
 </script>
