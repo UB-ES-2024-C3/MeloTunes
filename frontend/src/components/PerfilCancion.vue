@@ -34,7 +34,7 @@
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
           <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
-        <div v-if="isAdmin" class="admin-controls">
+        <div v-if="isAdmin || isOwner" class="admin-controls">
           <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
         </div>
         <v-dialog v-model="deleteDialog" max-width="500px">
@@ -130,6 +130,7 @@ export default {
       audio: null,
       isPlaying: false,
       isAdmin: false,
+      isOwner: false,
       deleteDialog: false,
       songToDelete: null // Almacenamos la cacnión que se va a eliminar
     }
@@ -138,6 +139,7 @@ export default {
     this.song_id = this.$route.query.song
     // Backend: comprobar que el usuario sea admin aquí
     // this.isAdmin = this.$route.query.admin === 'true'
+    // Comprobar que el usuario es el dueño de la canción
     SongService.get(this.song_id).then(response => {
       this.song = response.data
       this.loadComments()
