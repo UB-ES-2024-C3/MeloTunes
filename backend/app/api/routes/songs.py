@@ -20,6 +20,7 @@ from app.models import (
     SongsOut,
     SongUpdate,
     Album,
+    User
 )
 
 router = APIRouter()
@@ -173,15 +174,16 @@ def update_song(*, session: SessionDep, song_id: int, song_in: SongUpdate) -> An
     return db_song
 
 
-@router.delete("/{song_id}")
-def delete_song(session: SessionDep, current_user: CurrentUser, song_id: int) -> Message:
+@router.delete("/{song_id}/{user_id}")
+def delete_song(session: SessionDep, song_id: int, user_id: int) -> Message:
     """
     Delete a song.
     """
+    user = session.get(User, user_id)
     song = session.get(Song, song_id)
     if not song:
         raise HTTPException(status_code=404, detail="Song not found")
-    elif song.artist != current_user.first_name + " " + current_user.second_name and not current_user.is_superuser:
+    elif song.artist != user.artist_name and not user.is_superuser:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
