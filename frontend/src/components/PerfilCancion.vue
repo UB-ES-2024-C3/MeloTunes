@@ -34,6 +34,21 @@
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
           <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
+        <div v-if="isAdmin || isOwner" class="admin-controls">
+          <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
+        </div>
+        <v-dialog v-model="deleteDialog" max-width="500px">
+          <v-card>
+            <v-card-title class="headline">Confirmar eliminación</v-card-title>
+            <v-card-text>
+              ¿Estás seguro de que quieres eliminar esta canción?
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="green" text @click="deleteSong">Sí</v-btn>
+              <v-btn color="red" text @click="cancelDelete">No</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-app class="main-container">
           <v-btn color="black"  @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
             <img
@@ -59,7 +74,7 @@
         <div v-for="comment in comments" :key="comment.id" class="comment-item">
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
           <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
-          <button v-if="comment.user === currentUser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+          <button v-if="comment.user === currentUser || isAdmin" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
             Eliminar
           </button>
         </div>
@@ -113,11 +128,18 @@ export default {
       isLoggedIn: false, // Variable que indica si el usuario está logueado
       currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
       audio: null,
-      isPlaying: false
+      isPlaying: false,
+      isAdmin: false,
+      isOwner: false,
+      deleteDialog: false,
+      songToDelete: null // Almacenamos la cacnión que se va a eliminar
     }
   },
   mounted () {
     this.song_id = this.$route.query.song
+    // Backend: comprobar que el usuario sea admin aquí
+    // this.isAdmin = this.$route.query.admin === 'true'
+    // Comprobar que el usuario es el dueño de la canción
     SongService.get(this.song_id).then(response => {
       this.song = response.data
       this.loadComments()
@@ -277,6 +299,28 @@ export default {
         }
       }
       return NaN
+    },
+    openDeleteDialog () {
+      this.deleteDialog = true
+      this.songToDelete = this.song.id // Guarda la canción actual para eliminarla
+    },
+    cancelDelete () {
+      this.deleteDialog = false
+      this.songToDelete = null
+    },
+    deleteSong () {
+      if (this.songToDelete !== null) {
+        // Backend: Eliminar la canción del backend
+        SongService.delete(this.songToDelete).then(response => {
+          console.log('Canción eliminada:', response)
+          this.deleteDialog = false
+          // Redirigimos a home después de eliminar la canción
+          this.$router.push('/home')
+        }).catch(error => {
+          console.error('Error al eliminar la canción:', error)
+          this.deleteDialog = false
+        })
+      }
     }
   }
 }
@@ -308,14 +352,13 @@ export default {
   box-shadow: none;
   cursor: pointer;
   width: 5vw;
-  height: 2vh !important;
+  height: 0vh !important;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: transparent;
   transform: scaleX(1);
   transition: transform 0.3s ease;
-  margin-top: 1vh;
 }
 .floating-btn img {
   transform: scaleX(1); /* Estado inicial de la imagen */
@@ -596,6 +639,21 @@ header {
 .mirrored {
   transform: rotate(180deg); /* Rota la imagen 180 grados */
   transition: transform 0.3s ease;
+}
+
+.delete-button{
+  padding: 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #f44336;
 }
 
 </style>
