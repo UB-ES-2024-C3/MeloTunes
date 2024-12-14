@@ -127,7 +127,7 @@ def test_user_create_song_and_delete_integration(client, db):
     song_id = created_song["id"]
 
     # Eliminar la canción
-    delete_response = client.delete(f"{settings.API_V1_STR}/songs/{song_id}", headers=token_headers)
+    delete_response = client.delete(f"{settings.API_V1_STR}/songs/{song_id}/{user.id}", headers=token_headers)
     assert delete_response.status_code == 200
 
 # Trying to delete a song by diferent users
@@ -197,7 +197,7 @@ def test_delete_song_with_multiple_users(client: TestClient, db: Session) -> Non
 
         # Enviar la solicitud para eliminar la canción
         delete_response = client.delete(
-            f"{settings.API_V1_STR}/songs/{create_response.json()['id']}",
+            f"{settings.API_V1_STR}/songs/{create_response.json()['id']}/{user.id}",
             headers={"Authorization": f"Bearer {access_token}"}
         )
         
