@@ -33,7 +33,7 @@
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
           <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
-        <div v-if="isAdmin || isOwner" class="admin-controls">
+        <div v-if="user_logged.is_superuser || isOwner" class="admin-controls">
           <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
         </div>
         <v-dialog v-model="deleteDialog" max-width="500px">
@@ -73,14 +73,14 @@
         <div v-for="comment in comments" :key="comment.id" class="comment-item">
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
           <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
-          <button v-if="comment.user === currentUser || isAdmin" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+          <button v-if="comment.user === currentUser || user_logged.is_superuser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
             Eliminar
           </button>
         </div>
       </div>
 
       <!-- Botón para comentar -->
-      <div v-if="isLoggedIn" class="comment-input-container">
+      <div v-if="user_logged" class="comment-input-container">
         <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
         <button @click="postComment">Comentar</button>
       </div>
@@ -126,12 +126,9 @@ export default {
       isPlaying: false,
       comments: [], // Lista de comentarios
       newComment: '', // Texto del nuevo comentario
-      isLoggedIn: false, // Variable que indica si el usuario está logueado
-      currentUser: 'Usuario' // DIANA: Cambiar por el usuario, este es para probar
-      isAdmin: false,
+      currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
       isOwner: false,
-      deleteDialog: false,
-      songToDelete: null // Almacenamos la cacnión que se va a eliminar
+      deleteDialog: false
     }
   },
   mounted () {
@@ -140,10 +137,10 @@ export default {
       this.song_id = this.$route.query.song
       SongService.get(this.song_id).then(response => {
         this.song = response.data
-        this.loadComments()
         SongService.getAll().then(response => {
           this.all_songs = response.data.data
           this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+          this.loadComments()
         })
         if (this.user_logged) {
           this.checkIfFavorite()
@@ -229,8 +226,6 @@ export default {
         { id: 2, user: 'Usuario2', text: '¡Increíble ritmo!' },
         { id: 3, user: 'Usuario3', text: '¡Es tan pegajosa!' }
       ]
-      // Verificamos si el usuario está logueado
-      this.isLoggedIn = !!this.$route.query.logged
     },
     postComment () {
       if (this.newComment.trim() !== '') {
@@ -304,25 +299,25 @@ export default {
     },
     openDeleteDialog () {
       this.deleteDialog = true
-      this.songToDelete = this.song.id // Guarda la canción actual para eliminarla
     },
     cancelDelete () {
       this.deleteDialog = false
-      this.songToDelete = null
     },
     deleteSong () {
-      if (this.songToDelete !== null) {
-        // Backend: Eliminar la canción del backend
-        SongService.delete(this.songToDelete).then(response => {
-          console.log('Canción eliminada:', response)
-          this.deleteDialog = false
-          // Redirigimos a home después de eliminar la canción
-          this.$router.push('/home')
-        }).catch(error => {
-          console.error('Error al eliminar la canción:', error)
-          this.deleteDialog = false
+      // Backend: Eliminar la canción del backend
+      SongService.deleteSong(this.song.id, this.user_logged.id).then(response => {
+        console.log('Canción eliminada:', response)
+        this.deleteDialog = false
+        // Redirigimos a home después de eliminar la canción
+        this.$router.push({
+          path: '/home',
+          query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token}
         })
-      }
+        this.$router.go()
+      }).catch(error => {
+        console.error('Error al eliminar la canción:', error)
+        this.deleteDialog = false
+      })
     }
   }
 }
