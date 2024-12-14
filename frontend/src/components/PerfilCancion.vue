@@ -23,8 +23,7 @@
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
             <button class="play-button" @click="playAudio">
-              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')"
-                   style="width:10vw; height:10vh; object-fit: contain;">
+              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')" style="width:10vw; height:10vh; object-fit: contain;">
             </button>
           </div>
 
@@ -123,12 +122,12 @@ export default {
       drawer: false, // Estado del drawer
       isFavorited: false,
       searchQuery: '',
+      audio: null,
+      isPlaying: false,
       comments: [], // Lista de comentarios
       newComment: '', // Texto del nuevo comentario
       isLoggedIn: false, // Variable que indica si el usuario está logueado
-      currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
-      audio: null,
-      isPlaying: false,
+      currentUser: 'Usuario' // DIANA: Cambiar por el usuario, este es para probar
       isAdmin: false,
       isOwner: false,
       deleteDialog: false,
@@ -136,22 +135,24 @@ export default {
     }
   },
   mounted () {
-    this.song_id = this.$route.query.song
-    // Backend: comprobar que el usuario sea admin aquí
-    // this.isAdmin = this.$route.query.admin === 'true'
-    // Comprobar que el usuario es el dueño de la canción
-    SongService.get(this.song_id).then(response => {
-      this.song = response.data
-      this.loadComments()
-      SongService.getAll().then(response => {
-        this.all_songs = response.data.data
-        this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      this.song_id = this.$route.query.song
+      SongService.get(this.song_id).then(response => {
+        this.song = response.data
+        this.loadComments()
+        SongService.getAll().then(response => {
+          this.all_songs = response.data.data
+          this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+        })
+        if (this.user_logged) {
+          this.checkIfFavorite()
+        }
       })
-      this.checkIfFavorite()
-    })
-    this.audio = new Audio(require('@/assets/canciones/melendi_lagrimasdesordenadas.mp3'))
-    this.audio.addEventListener('ended', () => {
-      this.isPlaying = false
+      this.audio = new Audio(require(`@/assets/canciones/${this.artist.toLowerCase()}_${this.song.title.toLowerCase()}.mp3`))
+      this.audio.addEventListener('ended', () => {
+        this.isPlaying = false
+      })
     })
   },
   methods: {
@@ -233,6 +234,7 @@ export default {
     },
     postComment () {
       if (this.newComment.trim() !== '') {
+        console.log(this.newComment)
         // Agregar comentario al backend
         this.comments.push({ id: Date.now(), user: 'Usuario', text: this.newComment })
         this.newComment = '' // Limpiar el campo de comentario después de enviar
@@ -348,17 +350,20 @@ export default {
 
 /* Estilo para el botón flotante */
 .floating-btn {
+  position: fixed; /* Posiciona el botón de forma fija */
+  top: 50%; /* Centrado verticalmente */
+  right: 0; /* Pegado al lado derecho */
+  transform: translateY(-50%); /* Ajusta el centrado vertical */
+  width: 50px; /* Ajusta el tamaño según sea necesario */
+  height: 50px;
+  background-color: transparent; /* Fondo transparente */
   border: none;
-  box-shadow: none;
-  cursor: pointer;
-  width: 5vw;
-  height: 0vh !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: transparent;
-  transform: scaleX(1);
-  transition: transform 0.3s ease;
+  cursor: pointer;
+  z-index: 1000; /* Asegúrate de que esté sobre otros elementos */
+  transition: transform 0.3s ease; /* Transición suave */
 }
 .floating-btn img {
   transform: scaleX(1); /* Estado inicial de la imagen */

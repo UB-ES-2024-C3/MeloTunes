@@ -94,7 +94,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: url('../assets/fondo.jpg') no-repeat center center fixed; /* Fondo de la imagen */
+  background-size: cover; /* Hace que la imagen cubra todo el área del popup */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -103,15 +104,16 @@ export default {
 
 .popup-content {
   position: relative;
-  background: linear-gradient(to bottom, #000, #e53935);
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente para hacer que el contenido sea legible sobre la imagen */
   padding: 20px;
   border-radius: 10px;
   text-align: center;
   width: 40vw;
 }
+
 .close-button {
   cursor: pointer;
-  color: #000000;
+  color: #ff1e1e;
   transition: color 0.3s ease;
   font-size: 1.5rem;
 }
@@ -119,24 +121,25 @@ export default {
 .close-button:hover {
   color: #ff0000;
 }
+
 .info {
-  border: 2px solid #000000; /* Borde azul */
+  border: 2px solid #000000; /* Borde oscuro */
   padding: 1vw; /* Espaciado interno */
   border-radius: 5px; /* Bordes redondeados */
-  background-color: #000000; /* Fondo azul claro */
-  margin: 1vw ; /* Separación con otros elementos */
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro para que el texto sea legible */
+  margin: 1vw; /* Separación con otros elementos */
   max-height: 50vh; /* Altura máxima del recuadro */
   overflow-y: auto; /* Activa la scrollbar vertical */
   text-align: justify;
-
 }
 
 .info p {
-  color: #ffffff; /* Texto negro para contraste */
+  color: #ffffff; /* Texto blanco para contraste */
   margin: 0;
   font-size: 1.4rem;
   line-height: 2.7rem;
 }
+
 .info::-webkit-scrollbar {
   width: 8px; /* Ancho de la scrollbar */
 }
@@ -151,12 +154,12 @@ export default {
   border-radius: 10px; /* Bordes redondeados */
   border: 2px solid #000000; /* Espaciado interno */
 }
+
 .title {
   font-size: 1.3em; /* Aumenta ligeramente el tamaño del texto */
   font-weight: bold; /* Aplica negrita */
   margin-top: 1.1em; /* Espaciado superior para separarlo del texto anterior */
   margin-bottom: 0.5em; /* Espaciado inferior */
-  color: #ffffff; /* Asegura que sea negro para buen contraste */
+  color: #ffffff; /* Texto blanco para mejor contraste */
 }
-
 </style>

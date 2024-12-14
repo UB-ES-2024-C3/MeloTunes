@@ -1,5 +1,8 @@
 <template>
   <div class="perfil-artist">
+    <!-- Fondo animado -->
+    <div class="background-animation"></div>
+
     <div class="logo-link" @click="goHome">
       <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
     </div>
@@ -11,8 +14,10 @@
         <h1>{{ artistStageName }}</h1>
         <p class="genre">{{ genre }}</p>
         <p v-if="expandedBio" class="bio">{{ bio }}</p>
-        <p v-else class="bio-short">{{ truncatedDescription }}</p>
-        <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        <p v-else class="bio-short">{{ shortBio }}</p>
+        <button class="btn-toggle-bio" @click="toggleBio">
+          {{ expandedBio ? 'Ver menos' : 'Ver más' }}
+        </button>
       </div>
     </header>
 
@@ -74,6 +79,11 @@ export default {
       collaborations: [
         { id: 1, title: 'Destino o Casualidad', artist: 'Ha*Ash' },
         { id: 2, title: 'Desde que estamos juntos', artist: 'Alejandro Sanz' }
+      ],
+      upcomingEvents: [
+        { id: 1, name: 'Gira 2024 - Madrid', date: '15 de marzo', location: 'Wizink Center, Madrid' },
+        { id: 2, name: 'Gira 2024 - Sevilla', date: '29 de marzo', location: 'Auditorio Rocío Jurado, Sevilla' },
+        { id: 3, name: 'Festival Primavera Sound', date: '5 de abril', location: 'Parc del Fòrum, Barcelona' }
       ]
     }
   },
@@ -138,13 +148,31 @@ export default {
 </script>
 
 <style scoped>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fondo animado */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../assets/fondo.jpg'); /* Reemplazar con la textura del fondo animado */
+  background-size: cover;
+  filter: brightness(50%);
+  z-index: -1;
+}
 
 .perfil-artist {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: #121212;
   color: white;
   padding: calc(2vh + 4vw) 3vw 3vh;
   min-height: 100vh;
@@ -153,7 +181,7 @@ export default {
 }
 
 .perfil-header {
-  background: #1f1f1f;
+  background: rgba(31, 31, 31, 0.9);
   color: white;
   padding: 3vh 3vw;
   display: flex;
@@ -198,6 +226,20 @@ export default {
   margin: 0;
 }
 
+.bio, .bio-short {
+  margin-top: 2vh;
+  font-size: 1rem;
+}
+
+.btn-toggle-bio {
+  background-color: #ff3d00;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .btn {
   background-color: #bf0000;
   padding: 1.5vh 2vw;
@@ -231,7 +273,7 @@ export default {
 .top-section {
   margin-top: 2vh;
   width: 100%;
-  background-color: #1f1f1f;
+  background-color: rgba(31, 31, 31, 0.9);
   padding: 2vh 2vw;
   border-radius: 1vw;
 }
@@ -266,7 +308,7 @@ li {
 
 .divider {
   width: 2px;
-  background-color: #555;
+  background-color: #949393;
   margin: 0 1vw;
 }
 
@@ -274,15 +316,9 @@ li {
   color: red;
 }
 
-.top-discography h2,
-.top-collaborations h2,
-.events h2 {
-  color: red;
-}
-
 .events {
   margin-top: 2vh;
-  background-color: #1f1f1f;
+  background-color: rgba(31, 31, 31, 0.9);
   padding: 2vh 2vw;
   border-radius: 1vw;
 }
@@ -292,6 +328,80 @@ li {
   padding: 0;
   margin: 0 auto;
   box-sizing: border-box;
+}
+
+/* Media queries para pantallas pequeñas */
+@media (max-width: 768px) {
+  .perfil-artist {
+    padding: 2vh 4vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2vh 2vw;
+  }
+
+  .avatar-container {
+    margin: 0 0 2vh;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+    border-width: 0.2vw;
+  }
+
+  .artist-details h1 {
+    font-size: 1.8rem;
+  }
+
+  .bio, .bio-short {
+    font-size: 0.9rem;
+  }
+
+  .btn-toggle-bio {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .top-section {
+    flex-direction: column;
+    gap: 2vh;
+    padding: 3vh 3vw;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .top-discography, .top-collaborations {
+    padding: 2vh 2vw;
+  }
+
+  .logo {
+    width: 12vw;
+    max-width: 40px;
+  }
+
+  .events {
+    padding: 3vh 3vw;
+  }
+
+  li {
+    font-size: 0.9rem;
+  }
+
+  .events-container {
+    margin: 0;
+    width: 100%;
+  }
 }
 
 </style>

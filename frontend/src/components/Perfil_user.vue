@@ -16,7 +16,7 @@
         <h1 v-if="!this.user_logged.is_artist">{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
         <h4 v-if="!this.user_logged.is_artist">{{ this.user_logged.email }}</h4>
         <h1 v-if="this.user_logged.is_artist">{{ this.user_logged.artist_name }}</h1>
-        <p class="location" v-if="this.user_logged.isArtist">{{ location }}</p>
+        <p class="location" v-if="this.user_logged.is_artist">{{ location }}</p>
         <div v-if="this.user_logged.is_artist">
           <p v-if="expandedBio" class="bio">{{ this.user_logged.description }}</p>
           <p v-else class="bio-short">{{ truncatedDescription }}</p>
@@ -27,7 +27,7 @@
         <div class="btn-group">
           <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
           <button class="btn" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
-          <button v-if="this.user_logged.is_artist" class="btn-upload-song" @click="uploadSong">
+          <button v-if="this.user_logged.is_artist" class="btn" @click="uploadSong">
             Subir canción
           </button>
           <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
@@ -52,7 +52,7 @@
             </div>
           </li>
         </ul>
-        <p v-else>No tienes favoritos aún.</p>
+        <p v-else>No tienes canciones aún.</p>
       </div>
     </div>
 
@@ -264,7 +264,10 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: #121212;
+  background-image: url('../assets/fondo.jpg'); /* Ruta a tu imagen de fondo */
+  background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
   color: white;
   padding: calc(2vh + 6vw) 3vw 3vh;
   min-height: 100vh;
@@ -286,23 +289,26 @@ export default {
   position: relative;
 }
 
- .btn {
-   background-color: #bf0000;
-   padding: 1.5vh 2vw;
-   border-radius: 2vw;
-   color: white;
-   font-size: 1.2rem;
-   text-decoration: none;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   border: none;
-   cursor: pointer;
-   transition: all 0.3s ease;
- }
+.btn {
+  background-color: #f32121; /* Un rojo vibrante */
+  color: white; /* Texto blanco para contraste */
+  padding: 10px 1px; /* Reducir el padding horizontal */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 17px; /* Tamaño de fuente legible */
+  font-weight: bold; /* Texto destacado */
+  cursor: pointer; /* Cambia el cursor al pasar el mouse */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  transition: all 0.3s ease-in-out; /* Transición suave para los efectos */
+}
 
 .btn:hover {
-  background-color: #a30000;
+  background-color: #d62828; /* Rojo más oscuro al pasar el mouse */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Más sombra */
+}
+
+.btn:active {
+  transform: scale(0.95); /* Efecto de pulsación */
 }
 
 .logo-link {
@@ -374,7 +380,7 @@ section {
 
 .divider {
   width: 1px;
-  background-color: #555;
+  background-color: #ce6c6c;
   height: 100%;
   align-self: stretch; /* Hace que la barra divisora ocupe todo el alto */
 }
@@ -411,12 +417,6 @@ section {
 .recommendation-column li {
   font-size: 1.2rem;
   color: #ddd;
-}
-
-.divider {
-  width: 2px;
-  background-color: #555;
-  margin: 0 1vw;
 }
 
 .modal-overlay {
@@ -537,7 +537,6 @@ section {
   box-sizing: border-box;
 }
 
-/* Estilo base del body */
 body {
   margin: 0;
   padding: 0;
@@ -680,10 +679,81 @@ li {
   justify-content: center;
 }
 
-.divider {
-  width: 1px;
-  background-color: #ff3d00;
-  margin: 0 3vw;
+@media (max-width: 768px) {
+  .perfil {
+    padding: 5vw 3vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 5vw 3vw;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+  }
+
+  .user-details {
+    margin-top: 2vh;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .top-songs, .top-albums {
+    width: 100%;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .recommendations-grid {
+    flex-direction: column;
+    gap: 3vh;
+  }
+
+  .modal-content {
+    padding: 4vw;
+    max-width: 90%;
+    gap: 3vh;
+  }
+
+  .modal-content button {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .modal-content .form-group input,
+  .modal-content .form-group textarea {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  .music-recommendations {
+    padding: 3vw;
+  }
+
+  .events ul {
+    padding-left: 0;
+  }
 }
 
 </style>
