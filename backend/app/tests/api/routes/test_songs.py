@@ -157,3 +157,13 @@ def test_create_song_already_exists(client) -> None:
     assert response.status_code == 400
     data = response.json()
     assert data["detail"] == "The song already exists in the system."
+
+def test_read_song_by_title_not_found() -> None:
+    """
+    Test to check if song retrieval by title returns an empty list when no songs are found.
+    """
+    song_title_to_find = "Nonexistent Song"
+    response = client.get(f"{settings.API_V1_STR}/songs/songs/{song_title_to_find}")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["data"]) == 0  # Verifica que no se encuentra ninguna canción
