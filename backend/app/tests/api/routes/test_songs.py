@@ -129,7 +129,7 @@ def test_delete_song_super_user(
     
     # Intentar eliminar la canción con el superusuario
     r = client.delete(
-        f"{settings.API_V1_STR}/songs/{song.id}",
+        f"{settings.API_V1_STR}/songs/{song.id}/{user.id}",
         headers=user_token_headers,
     )
     

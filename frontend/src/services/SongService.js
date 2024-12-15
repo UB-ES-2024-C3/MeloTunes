@@ -37,6 +37,16 @@ class SongService {
         throw new Error('The song already exists in the system.')
       })
   }
+  deleteSong (songId, userId) {
+    return axios.delete(`/api/v1/songs/${songId}/${userId}`)
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('The song already exists in the system.')
+      })
+  }
 }
 
 export default new SongService()

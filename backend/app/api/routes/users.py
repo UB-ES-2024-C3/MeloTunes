@@ -89,8 +89,6 @@ def update_user_me(*, session: SessionDep, user_in: UserUpdateMe, current_user: 
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
             )
-        if not current_user.is_artist:
-            user_in.artist_name = None
     user_data = user_in.model_dump(exclude_unset=True)
     current_user.sqlmodel_update(user_data)
     session.add(current_user)
@@ -171,10 +169,9 @@ def read_user_by_artist_name(session: SessionDep, artist_name: str) -> Any:
 
 @router.patch(
     "/{user_id}",
-    dependencies=[Depends(get_current_active_superuser)],
     response_model=UserOut,
 )
-def update_user(*, session: SessionDep, user_id: int, user_in: UserUpdate,) -> Any:
+def update_user(*, session: SessionDep, user_id: int, user_in: UserUpdate) -> Any:
     """
     Update a user.
     """
@@ -220,14 +217,20 @@ def delete_user(session: SessionDep, current_user: CurrentUser, user_id: int) ->
 
 
 @router.get("/me/my_songs")
-def get_my_favourite_songs(session: SessionDep, current_user: CurrentUser) -> Any:
+def get_my_favourite_songs_auth(session: SessionDep, current_user: CurrentUser) -> Any:
     statement = select(User).where(User.id == current_user.id)
+    user = session.exec(statement).first()
+    return user.favourite_songs
+
+@router.get("/me/fav_songs/{user_id}")
+def get_my_favourite_songs(session: SessionDep, user_id: int) -> Any:
+    statement = select(User).where(User.id == user_id)
     user = session.exec(statement).first()
     return user.favourite_songs
 
 
 @router.patch("/me/{song_id}")
-def new_favourite_song(session: SessionDep, current_user: CurrentUser, song_id: int) -> Any:
+def new_favourite_song_auth(session: SessionDep, current_user: CurrentUser, song_id: int) -> Any:
     db_user = session.get(User, current_user.id)
     db_song = session.get(Song, song_id)
     if not db_song:
@@ -243,12 +246,41 @@ def new_favourite_song(session: SessionDep, current_user: CurrentUser, song_id: 
     db_user = crud.user.add_song_to_favourites(session=session, db_user=db_user, db_song=db_song)
     return Message(message="Song liked successfully")
 
+@router.patch("/me/favs/{song_id}/{user_id}")
+def new_favourite_song(session: SessionDep, user_id: int, song_id: int) -> Any:
+    db_user = session.get(User, user_id)
+    db_song = session.get(Song, song_id)
+    if not db_song:
+        raise HTTPException(
+            status_code=404,
+            detail="The song with this id does not exist in the system"
+        )
+    if db_song in db_user.favourite_songs:
+            raise HTTPException(
+                status_code=409, detail="You already liked this song"
+            )
+
+    db_user = crud.user.add_song_to_favourites(session=session, db_user=db_user, db_song=db_song)
+    return Message(message="Song liked successfully")
+
 @router.patch("/me/my_songs/{song_id}")
-def delete_favourite_song(session: SessionDep, current_user: CurrentUser, song_id: int) -> Message:
+def delete_favourite_song_auth(session: SessionDep, current_user: CurrentUser, song_id: int) -> Message:
     """
     Delete a user.
     """
     db_user = session.get(User, current_user.id)
+    db_song = session.get(Song, song_id)
+    if not db_song in db_user.favourite_songs:
+        raise HTTPException(status_code=404, detail="Song not found")
+    db_user = crud.user.remove_song_from_favourites(session=session, db_user=db_user, db_song=db_song)
+    return Message(message="Song unliked successfully")
+
+@router.patch("/me/fav_songs/{song_id}/{user_id}")
+def delete_favourite_song(session: SessionDep, user_id: int, song_id: int) -> Message:
+    """
+    Delete a user.
+    """
+    db_user = session.get(User, user_id)
     db_song = session.get(Song, song_id)
     if not db_song in db_user.favourite_songs:
         raise HTTPException(status_code=404, detail="Song not found")

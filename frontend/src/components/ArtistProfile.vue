@@ -1,6 +1,11 @@
 <template>
   <div class="perfil-artist">
-    <!-- Encabezado del perfil con fondo -->
+    <!-- Fondo animado -->
+    <div class="background-animation"></div>
+
+    <div class="logo-link" @click="goHome">
+      <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
+    </div>
     <header class="perfil-header">
       <div class="avatar-container">
         <img :src="getArtistImage(artistStageName)" alt="Avatar del artista" class="avatar" />
@@ -9,17 +14,18 @@
         <h1>{{ artistStageName }}</h1>
         <p class="genre">{{ genre }}</p>
         <p v-if="expandedBio" class="bio">{{ bio }}</p>
-        <p v-else class="bio-short">{{ truncatedDescription }}</p>
-        <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        <p v-else class="bio-short">{{ shortBio }}</p>
+        <button class="btn-toggle-bio" @click="toggleBio">
+          {{ expandedBio ? 'Ver menos' : 'Ver más' }}
+        </button>
       </div>
     </header>
 
-    <!-- Sección Discografía y Colaboraciones en columnas con línea divisoria -->
     <section class="top-section">
       <div class="top-columns">
         <!-- Discografía Destacada -->
         <div class="top-discography">
-          <h2>Discografía Destacada</h2>
+          <h2 class="title-red">Discografía Destacada</h2>
           <ul>
             <li v-for="song in artist_songs" :key="song.id">{{ song.title }} - {{ getYear(song.timestamp) }}</li>
           </ul>
@@ -28,9 +34,8 @@
         <!-- Línea divisoria -->
         <div class="divider"></div>
 
-        <!-- Colaboraciones -->
         <div class="top-collaborations">
-          <h2>Colaboraciones</h2>
+          <h2 class="title-red">Colaboraciones</h2>
           <ul>
             <li v-for="collab in collaborations" :key="collab.id">{{ collab.title }} - {{ collab.artist }}</li>
           </ul>
@@ -38,13 +43,15 @@
       </div>
     </section>
 
-    <!-- Próximos Conciertos -->
-    <section class="events">
-      <h2>Próximos Conciertos</h2>
-      <ul>
-        <li v-for="event in upcomingEvents" :key="event.id">{{ event.name }} - {{ event.date }} - {{ event.location }}</li>
-      </ul>
-    </section>
+    <!-- Eventos Cercanos -->
+    <div class="events-container">
+      <section class="events">
+        <h2 class="title-red">Próximos Eventos</h2>
+        <ul>
+          <li v-for="event in upcomingEvents" :key="event.id">{{ event.name }} - {{ event.date }} - {{ event.location }}</li>
+        </ul>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -75,7 +82,8 @@ export default {
       ],
       upcomingEvents: [
         { id: 1, name: 'Gira 2024 - Madrid', date: '15 de marzo', location: 'Wizink Center, Madrid' },
-        { id: 2, name: 'Gira 2024 - Sevilla', date: '29 de marzo', location: 'Auditorio Rocío Jurado, Sevilla' }
+        { id: 2, name: 'Gira 2024 - Sevilla', date: '29 de marzo', location: 'Auditorio Rocío Jurado, Sevilla' },
+        { id: 3, name: 'Festival Primavera Sound', date: '5 de abril', location: 'Parc del Fòrum, Barcelona' }
       ]
     }
   },
@@ -110,58 +118,102 @@ export default {
     handleClick (song) {
       const currentSongId = this.$route.query.song
       const targetSongId = song.id
-
       // Si el ID de la canción es el mismo que el actual, no realizamos la navegación
       if (currentSongId === targetSongId) {
         return
       }
-      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.push({path: '/song',
+        query: {
+          email: this.$route.query.email,
+          logged: this.$route.query.logged,
+          token: this.$route.query.token,
+          song: song.id
+        }
+      })
       this.$router.go()
     },
     getYear (timestamp) {
       const date = new Date(timestamp)
       return date.getFullYear()
+    },
+    goHome () {
+      this.$router.push({
+        path: '/home',
+        query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token}
+      })
+      this.$router.go()
     }
   }
 }
 </script>
 
 <style scoped>
-/* Nuevos estilos para el nombre real */
-.real-name {
-  color: #ccc;
-  font-size: 1rem;
-  margin-top: 0.5rem;
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fondo animado */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../assets/fondo.jpg'); /* Reemplazar con la textura del fondo animado */
+  background-size: cover;
+  filter: brightness(50%);
+  z-index: -1;
 }
 
 .perfil-artist {
-  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   color: white;
-  padding: 2rem;
+  padding: calc(2vh + 4vw) 3vw 3vh;
   min-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .perfil-header {
-  background: #1f1f1f;
-  padding: 2rem;
+  background: rgba(31, 31, 31, 0.9);
+  color: white;
+  padding: 3vh 3vw;
   display: flex;
   align-items: center;
-  border-radius: 12px;
+  justify-content: flex-start;
+  border-radius: 1.2vw;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  margin-bottom: 2rem;
+  margin-bottom: 3vh;
+  width: 100%;
+  position: relative;
+}
+
+.logo {
+  width: 8vw;
+  max-width: 50px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1);
 }
 
 .avatar-container {
-  flex-shrink: 0;
-  margin-right: 1.5rem;
+  margin-right: 2vw;
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
+  width: 15vw;
+  height: 15vw;
   border-radius: 50%;
-  border: 3px solid #ff3d00;
-  object-fit: cover;
+  border: 0.3vw solid #ff3d00;
 }
 
 .artist-details {
@@ -170,18 +222,42 @@ export default {
 }
 
 .artist-details h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin: 0;
-  font-weight: 700;
+}
+
+.bio, .bio-short {
+  margin-top: 2vh;
+  font-size: 1rem;
+}
+
+.btn-toggle-bio {
+  background-color: #ff3d00;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn {
+  background-color: #bf0000;
+  padding: 1.5vh 2vw;
+  border-radius: 2vw;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #a30000;
 }
 
 .genre {
   color: #aaa;
-  margin-top: 0.5rem;
+  margin-top: 1vh;
 }
 
 .bio, .bio-short {
-  margin-top: 1rem;
+  margin-top: 2vh;
   font-size: 1rem;
 }
 
@@ -195,22 +271,16 @@ export default {
 }
 
 .top-section {
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
-}
-
-.top-section h2 {
-  color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  margin-top: 2vh;
+  width: 100%;
+  background-color: rgba(31, 31, 31, 0.9);
+  padding: 2vh 2vw;
+  border-radius: 1vw;
 }
 
 .top-columns {
   display: flex;
-  align-items: stretch;
-  gap: 1rem;
+  gap: 2vw;
 }
 
 .top-discography, .top-collaborations {
@@ -223,39 +293,115 @@ export default {
   margin-top: 0;
 }
 
+.logo-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  cursor: pointer;
+}
+
 li {
   color: #ddd;
   margin-bottom: 0.5rem;
 }
 
 .divider {
-  width: 1px;
-  background-color: #555;
-  height: auto;
-  align-self: stretch;
+  width: 2px;
+  background-color: #949393;
+  margin: 0 1vw;
+}
+
+.title-red {
+  color: red;
 }
 
 .events {
-  margin-top: 2rem;
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
+  margin-top: 2vh;
+  background-color: rgba(31, 31, 31, 0.9);
+  padding: 2vh 2vw;
+  border-radius: 1vw;
 }
 
-.events h2 {
-  color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.events ul {
-  list-style: none;
+.events-container {
+  width: 100%;
   padding: 0;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-.events li {
-  color: #ddd;
-  margin-bottom: 0.5rem;
+/* Media queries para pantallas pequeñas */
+@media (max-width: 768px) {
+  .perfil-artist {
+    padding: 2vh 4vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2vh 2vw;
+  }
+
+  .avatar-container {
+    margin: 0 0 2vh;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+    border-width: 0.2vw;
+  }
+
+  .artist-details h1 {
+    font-size: 1.8rem;
+  }
+
+  .bio, .bio-short {
+    font-size: 0.9rem;
+  }
+
+  .btn-toggle-bio {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .top-section {
+    flex-direction: column;
+    gap: 2vh;
+    padding: 3vh 3vw;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .top-discography, .top-collaborations {
+    padding: 2vh 2vw;
+  }
+
+  .logo {
+    width: 12vw;
+    max-width: 40px;
+  }
+
+  .events {
+    padding: 3vh 3vw;
+  }
+
+  li {
+    font-size: 0.9rem;
+  }
+
+  .events-container {
+    margin: 0;
+    width: 100%;
+  }
 }
 
 </style>
