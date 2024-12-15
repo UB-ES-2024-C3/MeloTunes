@@ -1,31 +1,68 @@
 <template>
   <div class="perfil">
-    <!-- Encabezado del perfil con fondo -->
-    <button @click="goHome">Ir a Inicio</button>
+    <div class="logo-link" @click="goHome">
+      <img src="../assets/Im_logo.png" alt="Logo" class="logo" />
+    </div>
     <header class="perfil-header">
       <div class="avatar-container">
-        <img src="../assets/facebook.png" alt="Avatar del usuario" class="avatar" />
+        <div v-if="this.user_logged.is_artist">
+          <img :src="getArtistImage(this.user_logged.artist_name)" alt="Avatar del usuario" class="avatar" />
+        </div>
+        <div v-if="!this.user_logged.is_artist">
+          <img src="../assets/user.png" alt="Avatar del usuario" class="avatar" />
+        </div>
       </div>
       <div class="user-details">
-        <h1>{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
-        <h4>{{ this.user_logged.email }}</h4>
-        <p class="location" v-if="this.user_logged.isArtist">{{ location }}</p>
-        <div v-if="this.user_logged.isArtist">
-          <p v-if="expandedBio" class="bio">{{ bio }}</p>
-          <p v-else class="bio-short">{{ shortBio }}</p>
-          <button class="btn-toggle-bio" @click="toggleBio">{{ expandedBio ? 'Ver menos' : 'Ver más' }}</button>
+        <h1 v-if="!this.user_logged.is_artist">{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
+        <h4 v-if="!this.user_logged.is_artist">{{ this.user_logged.email }}</h4>
+        <h1 v-if="this.user_logged.is_artist">{{ this.user_logged.artist_name }}</h1>
+        <p class="location" v-if="this.user_logged.is_artist">{{ location }}</p>
+        <div v-if="this.user_logged.is_artist">
+          <p v-if="expandedBio" class="bio">{{ this.user_logged.description }}</p>
+          <p v-else class="bio-short">{{ truncatedDescription }}</p>
+          <button class="btn-toggle-bio" @click="toggleBio">
+            {{ expandedBio ? 'Ver menos' : 'Ver más' }}
+          </button>
         </div>
-        <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
+        <div class="btn-group">
+          <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
+          <button class="btn" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
+          <button v-if="this.user_logged.is_artist" class="btn" @click="uploadSong">
+            Subir canción
+          </button>
+          <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
+        </div>
       </div>
     </header>
+
+    <!-- Popup modal de canciones -->
+    <div v-if="showSongs" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="showSongs = false">×</button>
+        <h2>Mis Canciones</h2>
+        <ul v-if="this.my_songs && this.my_songs.length" class="favorites-list">
+          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item">
+            <a :href="uploaded_song.cover" target="_blank" rel="noopener noreferrer">
+              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" />
+            </a>
+            <div class="favorite-details">
+              <h3>{{ uploaded_song.title }}</h3>
+              <p>{{ uploaded_song.artist }}</p>
+              <span class="song-duration">{{ getYear(uploaded_song.timestamp) }}</span>
+            </div>
+          </li>
+        </ul>
+        <p v-else>No tienes canciones aún.</p>
+      </div>
+    </div>
 
     <!-- Popup modal de favoritos -->
     <div v-if="showFavorites" class="modal-overlay">
       <div class="modal-content">
         <button class="close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
-        <ul v-if="this.fav_songs && this.fav_songs.length" class="favorites-list">
-          <li v-for="favorite in this.fav_songs" :key="favorite.id" class="favorite-item">
+        <ul v-if="fav_songs && fav_songs.length" class="favorites-list">
+          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
               <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" />
             </a>
@@ -37,6 +74,29 @@
           </li>
         </ul>
         <p v-else>No tienes favoritos aún.</p>
+      </div>
+    </div>
+
+    <!-- Modal para editar el perfil -->
+    <div v-if="showEditProfile" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" @click="showEditProfile = false">×</button>
+        <h2>Editar Perfil</h2>
+        <form>
+          <div class="form-group">
+            <label for="firstName">Nombre:</label>
+            <input type="text" id="firstName" v-model="editProfile.firstName" />
+          </div>
+          <div class="form-group">
+            <label for="secondName">Apellido:</label>
+            <input type="text" id="secondName" v-model="editProfile.secondName" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Biografía:</label>
+            <textarea id="bio" v-model="editProfile.bio"></textarea>
+          </div>
+          <button class="btn-save" @click="enviarModificacion">Guardar</button>
+        </form>
       </div>
     </div>
 
@@ -53,6 +113,7 @@
 
         <!-- Línea divisoria -->
         <div class="divider"></div>
+
         <!-- Top 3 Álbumes -->
         <div class="top-albums">
           <h2>MI TOP 3 ÁLBUMES</h2>
@@ -60,7 +121,6 @@
             <li v-for="song in fav_songs.slice(0, 3)" :key="song.id">{{ song.album }} - {{ song.artist }}</li>
           </ul>
         </div>
-
       </div>
     </section>
 
@@ -87,35 +147,53 @@
 
 <script>
 import UserService from '../services/UserService'
-import vertigoCover from '../assets/facebook.png'
-import lagrimasCover from '../assets/instagram.png'
-import sinFronterasCover from '../assets/twitter.png'
+import vertigoCover from '../assets/albumes/antesdequecuentediez.jpeg'
+import lagrimasCover from '../assets/albumes/lagrimasdesordenadas.jpeg'
+import sinFronterasCover from '../assets/albumes/estopa1.jpeg'
+import SongService from '../services/SongService'
 
 export default {
   name: 'Perfil_user',
   mounted () {
-    UserService.get().then(response => {
-      this.user_logged = response.data
-      console.log(response.data)
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      UserService.getMyFavouriteSongs(this.user_logged.id).then(response => {
+        this.fav_songs = response
+        if (this.user_logged.artist_name) {
+          SongService.getAllArtist(this.user_logged.artist_name).then(response => {
+            this.my_songs = response.data.data
+            console.log(this.my_songs)
+          })
+        }
+      })
     })
-    UserService.getMyFavouriteSongs().then(response => {
-      this.fav_songs = response
-      console.log(response)
-    })
+  },
+  computed: {
+    truncatedDescription () {
+      return this.user_logged.description.length > 20
+        ? this.user_logged.description.substring(0, 20) + '...'
+        : this.user_logged.description
+    }
   },
   data () {
     return {
       user_logged: {},
       fav_songs: [],
+      my_songs: [],
       location: 'Barcelona',
-      bio: 'Amante de la música rock y pop. ...',
-      shortBio: 'Amante de la música r...',
       expandedBio: false,
       showFavorites: false,
+      showSongs: false,
+      showEditProfile: false,
+      editProfile: {
+        first_name: '',
+        second_name: '',
+        bio: ''
+      },
       musicRecommendations: [
-        { id: 1, title: 'Vértigo', artist: 'Pablo Alborán', cover: vertigoCover },
+        { id: 1, title: 'Antes de que cuente 10', artist: 'Fito y Fitipaldis', cover: vertigoCover },
         { id: 2, title: 'Lágrimas desordenadas', artist: 'Melendi', cover: lagrimasCover },
-        { id: 3, title: 'Sin fronteras', artist: 'Luis Fonsi', cover: sinFronterasCover }
+        { id: 3, title: 'Paseo', artist: 'Estopa', cover: sinFronterasCover }
       ],
       upcomingEvents: [
         { id: 1, name: 'Concierto de Melendi', date: '15 de diciembre', location: 'Girona' },
@@ -136,12 +214,45 @@ export default {
       this.$router.go()
     },
     removeAccents (str) {
-      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     },
     getAlbumImage (album) {
       console.log(album)
       const sanitizedAlbum = this.removeAccents(album.toLowerCase().replace(/ /g, ''))
       return require(`@/assets/albumes/${sanitizedAlbum}.jpeg`)
+    },
+    uploadSong () {
+      this.$router.push({ path: '/addsong', query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token} })
+      this.$router.go()
+    },
+    saveProfile () {
+      Object.assign(this.user_logged, this.editProfile)
+      this.showEditProfile = false
+      alert('Perfil actualizado con éxito')
+    },
+    getArtistImage (artist) {
+      const sanitizedArtist = this.removeAccents(artist.toLowerCase().replace(/ /g, ''))
+      return require(`@/assets/artistas/${sanitizedArtist}.jpeg`)
+    },
+    enviarModificacion () {
+      this.showEditProfile = false
+      UserService.updateUser(this.user_logged.id, this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+        .then(() => {
+          this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+          this.$router.go()
+        })
+        .catch((error) => {
+          console.error(error)
+          alert('Algo ha fallado')
+        })
+    },
+    getUser (usersList, email) {
+      for (const user of usersList) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
     }
   }
 }
@@ -149,75 +260,355 @@ export default {
 
 <style scoped>
 .perfil {
-  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-image: url('../assets/fondo.jpg'); /* Ruta a tu imagen de fondo */
+  background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
   color: white;
-  padding: 2rem;
+  padding: calc(2vh + 6vw) 3vw 3vh;
   min-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .perfil-header {
   background: #1f1f1f;
   color: white;
-  padding: 2rem;
+  padding: 3vh 3vw;
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Alineamos a la izquierda */
-  border-radius: 12px;
+  justify-content: flex-start;
+  border-radius: 1.2vw;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  margin-bottom: 2rem;
+  margin-bottom: 3vh;
+  width: 100%;
+  position: relative;
+}
+
+.btn {
+  background-color: #f32121; /* Un rojo vibrante */
+  color: white; /* Texto blanco para contraste */
+  padding: 10px 1px; /* Reducir el padding horizontal */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 17px; /* Tamaño de fuente legible */
+  font-weight: bold; /* Texto destacado */
+  cursor: pointer; /* Cambia el cursor al pasar el mouse */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  transition: all 0.3s ease-in-out; /* Transición suave para los efectos */
+}
+
+.btn:hover {
+  background-color: #d62828; /* Rojo más oscuro al pasar el mouse */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Más sombra */
+}
+
+.btn:active {
+  transform: scale(0.95); /* Efecto de pulsación */
+}
+
+.logo-link {
+  position: fixed;
+  top: 2vh;
+  left: 2vw;
+  z-index: 10000;
+  cursor: pointer;
+}
+
+.logo {
+  width: 8vw;
+  max-width: 50px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+section {
+  margin-top: 2vh;
+  width: 100%;
+  background-color: #1f1f1f;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  box-sizing: border-box;
+}
+
+.top-section {
+  background-color: #1f1f1f;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  margin-top: 3vh;
+  width: 100%;
+}
+
+.top-columns {
+  display: flex;
+  gap: 2vw;
+  justify-content: space-between; /* Espacio entre los dos bloques */
+}
+
+.top-songs, .top-albums {
+  flex: 1; /* Ambos bloques ocupan el mismo espacio */
+  padding: 1vh 1vw;
+  background-color: #333;
+  border-radius: 1vw;
+  color: white;
+  box-sizing: border-box;
+}
+
+.top-songs h2, .top-albums h2 {
+  color: #ff3d00;
+  font-size: 2rem;
+  margin-bottom: 1.5vh;
+}
+
+.top-songs ul, .top-albums ul {
+  list-style: none;
+  padding: 0;
+}
+
+.top-songs li, .top-albums li {
+  color: #ddd;
+  margin-bottom: 1vh;
+}
+
+.divider {
+  width: 1px;
+  background-color: #ce6c6c;
+  height: 100%;
+  align-self: stretch; /* Hace que la barra divisora ocupe todo el alto */
+}
+
+.top-section h2 {
+  color: #ff3d00;
+  font-size: 2rem;
+  margin-bottom: 2vh;
+  text-align: center;
+}
+
+.recommendations-grid {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 2vw;
+}
+
+.recommendation-column h3 {
+  font-size: 1.8rem;
+  color: #ff3d00;
+  margin-bottom: 1.5vh;
+}
+
+.recommendation-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recommendation-column li {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo translúcido oscuro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Asegura que esté encima de todo */
+}
+
+.modal-content {
+  background-color: #1f1f1f; /* Fondo gris oscuro */
+  color: #ffffff; /* Texto blanco */
+  padding: 3vh 3vw;
+  border-radius: 1vw;
+  width: 90%;
+  max-width: 500px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh; /* Espaciado entre elementos */
+}
+
+.modal-content h2 {
+  color: #ff3d00; /* Título en color destacado */
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.modal-content .form-group label {
+  color: #ff3d00;
+  font-size: 1.2rem;
+}
+
+.modal-content .form-group input,
+.modal-content .form-group textarea {
+  background-color: #333; /* Fondo gris oscuro */
+  color: #ffffff; /* Texto blanco */
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5vw;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.modal-content button {
+  background-color: #bf0000;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5vw;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #ff3d00;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 0.6vw;
+  background-color: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.recommendation-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.recommendation-column li {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.close-button {
+  justify-content: flex-end;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1f1f1f; /* Fondo oscuro unificado */
+  color: #f63b3b;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh; /* Asegura que ocupe toda la altura */
+  overflow-x: hidden; /* Elimina el desplazamiento horizontal si es innecesario */
+}
+
+section {
+  background-color: #1f1f1f; /* Fondo consistente con el body */
+  padding: 2vh 2vw;
+  width: 100%;
+}
+
+header, nav, footer {
+  margin: 0;
+  padding: 0;
+  background-color: transparent; /* Elimina fondos que puedan causar problemas */
 }
 
 .avatar-container {
   flex-shrink: 0;
-  margin-right: 1.5rem;
+  margin-right: 2vw;
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
+  width: 15vw;
+  height: 15vw;
   border-radius: 50%;
-  border: 3px solid #ff3d00;
+  border: 0.3vw solid #ff3d00;
   object-fit: cover;
 }
 
 .user-details {
   flex-grow: 1;
-  max-width: 500px;
+  max-width: 50vw;
 }
 
 .user-details h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin: 0;
   font-weight: 700;
 }
 
 .location {
   color: #aaa;
-  margin-top: 0.5rem;
+  margin-top: 1vh;
 }
 
 .bio, .bio-short {
-  margin-top: 1rem;
+  margin-top: 2vh;
   font-size: 1rem;
+  line-height: 1.5;
 }
 
-.btn-toggle-bio {
-  background-color: #ff3d00;
-  color: white;
-  padding: 0.5rem 1.2rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.btn-group {
+  display: flex;
+  gap: 2vw;
+  margin-top: 2vh;
 }
 
 .music-recommendations,
 .top-songs,
 .top-albums,
 .events {
-  margin-top: 2rem;
+  margin-top: 3vh;
   background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  width: 100%;
 }
 
 .music-recommendations h2,
@@ -225,27 +616,27 @@ export default {
 .top-albums h2,
 .events h2 {
   color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  margin-bottom: 1.5vh;
 }
 
 .recommendations-grid {
   display: flex;
-  gap: 1rem;
+  gap: 2vw;
   flex-wrap: wrap;
 }
 
 .recommendation {
   background-color: #333;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 1vh;
+  border-radius: 1vw;
   text-align: center;
 }
 
 .recommendation-cover {
   width: 100%;
-  height: 200px;
-  border-radius: 8px;
+  height: 15vw;
+  border-radius: 1vw;
 }
 
 .music-stats ul,
@@ -256,209 +647,113 @@ export default {
 }
 
 ul {
-  margin-top: 1rem;
+  margin-top: 1.5vh;
 }
 
 li {
   color: #ddd;
-}
-
-.top-songs ul,
-.top-albums ul {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.album-info p,
-.song-info p {
   font-size: 1rem;
-  color: #ff3d00;
-}
-
-.top-section {
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
-}
-
-.top-section h2 {
-  color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.top-columns {
-  display: flex;
-  gap: 2rem;
-}
-
-.top-songs, .top-albums {
-  flex: 1;
-}
-
-.top-songs ul, .top-albums ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 0;
-}
-
-li {
-  color: #ddd;
-  margin-bottom: 0.5rem;
-}
-
-/* Estilos para Top Canciones y Álbumes en columnas con línea divisoria */
-.top-section {
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
-}
-
-.top-section h2 {
-  color: #ff3d00;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.top-columns {
-  display: flex;
-  align-items: stretch; /* Asegura que las columnas tengan la misma altura */
-  gap: 1rem;
-}
-
-.top-songs, .top-albums {
-  flex: 1;
-}
-
-.top-songs h3, .top-albums h3 {
-  color: #ff3d00;
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-}
-
-.top-songs ul, .top-albums ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-li {
-  color: #ddd;
-  margin-bottom: 0.5rem;
-}
-
-.btn-favoritos {
-  background-color: #ff3d00;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  text-decoration: none;
-  margin-top: 2rem;
-  display: inline-block;
-  font-weight: bold;
-}
-
-/* Línea divisoria entre las columnas */
-.divider {
-  width: 1px;
-  background-color: #555; /* Color gris */
-  height: auto;
-  align-self: stretch; /* Extiende la línea para abarcar la altura completa */
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: #333;
-  color: white;
-  padding: 1rem;
-  border-radius: 10px;
-  max-width: 400px; /* Tamaño reducido */
-  max-height: 70%; /* Ajustar la altura del modal */
-  overflow: hidden; /* Elimina la barra de desplazamiento */
-  position: relative;
-}
-
-.modal-content::-webkit-scrollbar {
-  width: 6px; /* Ajusta el tamaño de la barra */
-  background-color: transparent; /* Fondo transparente */
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-  background-color: #333; /* Barra de desplazamiento negra */
-  border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-  background-color: transparent; /* Fondo transparente del track */
-}
-
-.modal-content {
-  overflow-y: auto; /* Habilita el desplazamiento vertical */
-  -webkit-overflow-scrolling: touch; /* Desplazamiento suave */
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5rem;
-  color: #ff3d00;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-h2 {
-  color: #ff3d00;
+  margin-bottom: 1vh;
 }
 
 .favorites-list {
-  list-style: none;
-  padding: 0;
-  margin-top: 1rem;
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
 .favorite-item {
   display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: #333;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin: 1vh 0;
 }
 
 .favorite-cover {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  margin-right: 1rem;
 }
 
-.favorite-details h3 {
-  margin: 0;
-  font-size: 1.2rem;
+.favorite-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.favorite-details p, .song-duration {
-  color: #aaa;
+@media (max-width: 768px) {
+  .perfil {
+    padding: 5vw 3vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 5vw 3vw;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+  }
+
+  .user-details {
+    margin-top: 2vh;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .top-songs, .top-albums {
+    width: 100%;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .recommendations-grid {
+    flex-direction: column;
+    gap: 3vh;
+  }
+
+  .modal-content {
+    padding: 4vw;
+    max-width: 90%;
+    gap: 3vh;
+  }
+
+  .modal-content button {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .modal-content .form-group input,
+  .modal-content .form-group textarea {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  .music-recommendations {
+    padding: 3vw;
+  }
+
+  .events ul {
+    padding-left: 0;
+  }
 }
 
-.song-duration {
-  color: #ff3d00;
-}
 </style>

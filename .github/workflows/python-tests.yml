@@ -1,0 +1,102 @@
+name: Run Backend and Cypress Tests
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clona el repositorio
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      # 2. Configura Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11.3"
+
+      # 3. Instala Poetry
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          poetry --version
+
+      # 4. Instala las dependencias del backend
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: |
+          poetry install
+
+      # 5. Crear el archivo .env con las variables necesarias
+      - name: Set up environment variables
+        run: |
+          echo "PROJECT_NAME=mt_app" >> .env
+          echo "FIRST_SUPERUSER=Melotunes" >> .env
+          echo "FIRST_SUPERUSER_PASSWORD=Melotunes123" >> .env
+          echo "BACKEND_CORS_ORIGINS=http://localhost:8080" >> .env
+          echo "DATABASE_URL=sqlite:///./mt_db.sqlite" >> .env
+
+      # 6. Ejecuta las migraciones de Alembic
+      - name: Run Alembic migrations
+        working-directory: ./backend
+        run: |
+          poetry run alembic upgrade head
+
+      # 7. Instala pytest-cov
+      - name: Install pytest-cov
+        working-directory: ./backend
+        run: |
+          poetry add pytest-cov
+
+      # 8. Ejecuta los tests con cobertura para el backend
+      - name: Run backend tests with coverage
+        working-directory: ./backend
+        run: |
+          poetry run pytest --disable-warnings --cov=./ --cov-report=term
+
+      # 9. Instala Node.js y Cypress
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # 10. Instala las dependencias de Cypress
+      - name: Install Cypress dependencies
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm install cypress --save-dev
+
+      # 11. Ejecuta el servidor del backend 
+      - name: Start backend server
+        working-directory: ./backend
+        run: |
+          nohup poetry run uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+
+      # 12. Ejecuta el servidor del frontend con npm run dev
+      - name: Start frontend server
+        working-directory: ./frontend
+        run: |
+          nohup npm run dev &
+
+      # 13. Espera a que el frontend esté disponible
+      - name: Wait for frontend to be available
+        run: |
+          until curl -s http://localhost:8080 > /dev/null; do
+            echo "Waiting for frontend to be available..."
+            sleep 2
+          done
+
+      # 14. Ejecutar Cypress tests
+      - name: Run Cypress tests
+        working-directory: ./frontend
+        run: |
+          npx cypress run --headless

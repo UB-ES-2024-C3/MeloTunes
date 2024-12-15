@@ -1,9 +1,8 @@
-import http from '../http-common'
-import axios from 'axios'
+import axios from '../http-common'
 
 class UserService {
   getAll () {
-    return http.get('/api/v1/users')
+    return axios.get('/api/v1/users/')
       .then((res) => {
         return res
       })
@@ -13,7 +12,7 @@ class UserService {
     if (!token) {
       return Promise.reject(new Error('No token found'))
     }
-    return axios.get('http://localhost:8000/api/v1/users/me', {
+    return axios.get('/api/v1/users/me', {
       headers: {
         Authorization: `Bearer ${token}` // Incluir token en la cabecera
       }
@@ -29,15 +28,8 @@ class UserService {
         throw error
       })
   }
-  getMyFavouriteSongs () {
-    const token = localStorage.getItem('accessToken') // Recuperar token
-    if (!token) {
-      return Promise.reject(new Error('No token found')) // Rechazar si no hay token
-    }
-    return axios.get('http://localhost:8000/api/v1/users/me/my_songs', {
-      headers: {
-        Authorization: `Bearer ${token}` // Incluir token en la cabecera
-      }
+  getMyFavouriteSongs (userId) {
+    return axios.get(`/api/v1/users/me/fav_songs/${userId}`, {
     })
       .then((res) => {
         return res.data // Devolver los datos de la respuesta
@@ -50,17 +42,8 @@ class UserService {
         throw error // Lanzar otros errores
       })
   }
-  addToFavoriteSongs (songId) {
-    const token = localStorage.getItem('accessToken') // Recuperar token
-    if (!token) {
-      return Promise.reject(new Error('No token found')) // Rechazar si no hay token
-    }
-    const parameters = `song_id=${songId}`
-    return axios.patch(`http://localhost:8000/api/v1/users/me/${songId}`, parameters, {
-      headers: {
-        Authorization: `Bearer ${token}` // Incluir token en la cabecera
-      }
-    })
+  addToFavoriteSongs (songId, userId) {
+    return axios.patch(`/api/v1/users/me/favs/${songId}/${userId}`)
       .then((res) => {
         console.log(res)
         return res.data // Devolver los datos de la respuesta
@@ -73,17 +56,8 @@ class UserService {
         throw error // Lanzar otros errores
       })
   }
-  deleteOfFavoriteSongs (songId) {
-    const token = localStorage.getItem('accessToken') // Recuperar token
-    if (!token) {
-      return Promise.reject(new Error('No token found')) // Rechazar si no hay token
-    }
-    const parameters = `song_id=${songId}`
-    return axios.patch(`http://localhost:8000/api/v1/users/me/my_songs/${songId}`, parameters, {
-      headers: {
-        Authorization: `Bearer ${token}` // Incluir token en la cabecera
-      }
-    })
+  deleteOfFavoriteSongs (songId, userId) {
+    return axios.patch(`/api/v1/users/me/fav_songs/${songId}/${userId}`)
       .then((res) => {
         console.log(res)
         return res.data // Devolver los datos de la respuesta
@@ -94,6 +68,26 @@ class UserService {
           throw new Error('Unauthorized. Please log in again.') // Error específico para 401
         }
         throw error // Lanzar otros errores
+      })
+  }
+  updateUser (userId, strNombre, strApellido, strBiografia) {
+    return axios.patch(`/api/v1/users/${userId}`, {
+      first_name: strNombre,
+      second_name: strApellido,
+      description: strBiografia
+    })
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('No disponible')
+      })
+  }
+  getbyArtist (artistName) {
+    return axios.get(`/api/v1/users/artist/${artistName}`)
+      .then((res) => {
+        return res
       })
   }
 }

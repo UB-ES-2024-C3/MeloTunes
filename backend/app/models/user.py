@@ -11,6 +11,7 @@ class UserBase(SQLModel):
     is_superuser: bool = False
     first_name: str | None = None
     second_name: str | None = None
+    artist_name: str | None = None
     description: str | None = None
     is_artist: bool = False
 
@@ -34,6 +35,7 @@ class UserCreateOpen(SQLModel):
     description: str | None = None
 
 
+
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: str | None = None  # type: ignore
@@ -45,6 +47,7 @@ class UserUpdate(UserBase):
 class UserUpdateMe(SQLModel):
     first_name: str | None = None
     second_name: str | None = None
+    artist_name: str | None = None
     email: str | None = None
     description: str | None = None
 
@@ -79,3 +82,12 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str
+
+class UserTest(SQLModel):
+    email: str
+    password: str
+    first_name: str
+    second_name: str | None = None
+    description: str | None = None
+    is_superuser: bool = False
+    is_artist: bool = False

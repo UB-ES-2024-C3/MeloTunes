@@ -4,7 +4,7 @@ import logging
 from sqlmodel import Session
 
 from app.core.db import engine, init_db
-from app.models import Song
+from app.models import Song, userSongLink, User
 from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.INFO)
@@ -16,17 +16,19 @@ def init() -> None:
         init_db(session)
 
         session.query(Song).delete()
+        session.query(User).delete()
+        session.query(userSongLink).delete() 
         song1 = Song(
             title="Piratas del Bar Caribe", 
-            artist="Melendi", 
-            album="Curiosa la cara de tu padre", 
+            artist="Melendi",
+            album="Curiosa la cara de tu padre",
             duration=timedelta(minutes=4, seconds=5), 
             timestamp=datetime(2008, 9, 16)
         )
         
         song2 = Song(
             title="Tu jardín con enanitos", 
-            artist="Melendi", 
+            artist="Melendi",
             album="Lágrimas desordenadas", 
             duration=timedelta(minutes=3, seconds=57), 
             timestamp=datetime(2012, 11, 13)
@@ -82,7 +84,7 @@ def init() -> None:
         
         song9 = Song(
             title="Un violinista en tu tejado", 
-            artist="Melendi", 
+            artist="Melendi",
             album="Curiosa la cara de tu padre", 
             duration=timedelta(minutes=3, seconds=41), 
             timestamp=datetime(2008, 9, 16)
@@ -90,7 +92,7 @@ def init() -> None:
         
         song10 = Song(
             title="Lágrimas desordenadas", 
-            artist="Melendi", 
+            artist="Melendi",
             album="Lágrimas desordenadas", 
             duration=timedelta(minutes=3, seconds=49), 
             timestamp=datetime(2012, 11, 13)
