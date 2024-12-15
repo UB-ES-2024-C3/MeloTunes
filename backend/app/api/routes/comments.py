@@ -135,17 +135,17 @@ def read_comments_by_user(user: str, session: SessionDep) -> Any:
 
 
 @router.delete("/{comment_id}")
-def delete_comment(session: SessionDep, current_user: CurrentUser, comment_id: int) -> Message:
+def delete_comment(session: SessionDep, comment_id: int) -> Message:
     """
     Delete a comment.
     """
     comment = session.get(Comment, comment_id)
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
-    elif comment.user != current_user.artist_name and not current_user.is_superuser:
-        raise HTTPException(
-            status_code=403, detail="The user doesn't have enough privileges"
-        )
+    #elif comment.user != current_user.artist_name and not current_user.is_superuser:
+        #raise HTTPException(
+            #status_code=403, detail="The user doesn't have enough privileges"
+        #)
 
     session.delete(comment)
     session.commit()
