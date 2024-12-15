@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import CommentService from '../services/CommentService'
 import SongService from '../services/SongService'
 import UserService from '../services/UserService'
 export default {
@@ -221,29 +222,28 @@ export default {
     loadComments () {
       // Simulamos la carga de comentarios
       // DIANA: Llamada a la API para obtener los comentarios de la canción
-      this.comments = [
-        { id: 1, user: 'Usuario1', text: 'Me encanta esta canción!' },
-        { id: 2, user: 'Usuario2', text: '¡Increíble ritmo!' },
-        { id: 3, user: 'Usuario3', text: '¡Es tan pegajosa!' }
-      ]
+      CommentService.getAllSong(this.song.title).then(response => {
+        this.comments = response.data.data
+      })
     },
     postComment () {
       if (this.newComment.trim() !== '') {
         console.log(this.newComment)
         // Agregar comentario al backend
-        this.comments.push({ id: Date.now(), user: 'Usuario', text: this.newComment })
-        this.newComment = '' // Limpiar el campo de comentario después de enviar
+        CommentService.createComment(this.newComment, this.user_logged.first_name, this.song.title).then(response => {
+          this.comments.push({ id: Date.now(), user: this.user_logged.first_name, text: this.newComment })
+          this.newComment = '' // Limpiar el campo de comentario después de enviar
+        })
       }
     },
     deleteComment (commentId) {
       // Encuentra el índice del comentario
       const index = this.comments.findIndex((comment) => comment.id === commentId)
       if (index !== -1) {
-        // Elimina el comentario del estado local
-        this.comments.splice(index, 1)
-        // Simulacion la eliminación
+        CommentService.deleteComment(commentId).then(response => {
+          this.comments.splice(index, 1)
+        })
         console.log(`Comentario con ID ${commentId} eliminado.`)
-        // DIANA: Llamada al backend para eliminar el comentario de la base de datos
       }
     },
     playAudio () {
