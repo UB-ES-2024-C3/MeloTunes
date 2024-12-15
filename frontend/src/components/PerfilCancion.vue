@@ -6,7 +6,6 @@
           <img src="../assets/logo2.png" alt="Logo" />
         </button>
       </div>
-
       <div class="search-bar">
         <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
         <button @click="goHome">
