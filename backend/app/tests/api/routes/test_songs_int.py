@@ -200,52 +200,40 @@ def test_delete_song_with_multiple_users(client: TestClient, db: Session) -> Non
             f"{settings.API_V1_STR}/songs/{create_response.json()['id']}/{user.id}",
             headers={"Authorization": f"Bearer {access_token}"}
         )
-        
+
         # Validar el resultado según los roles
         if user.is_superuser or (user.is_artist and user.artist_name == song_data["artist"]):
             assert delete_response.status_code == 200  # Superuser o artista asociado puede eliminar
         else:
             assert delete_response.status_code == 403  # Otros usuarios no autorizados deben recibir 403
 
-def test_delete_song_not_owner(client, db: Session) -> None:
-    """
-    Test para verificar que un usuario no pueda eliminar una canción que no le pertenece.
-    """
-    # Crear un usuario de prueba
-    user_data = {
-        "email": random_email(),
-        "password": random_lower_string(),
+# Verificar que un usuario no pueda crear una cacnión si ya existe
+def test_create_song_duplicate(client, db):
+    # Crear un artista
+    artist_data = {
+        "email": "artist@example.com",
+        "password": "password123",
         "first_name": "Test",
-        "second_name": "User",
+        "second_name": "Artist",
         "is_superuser": False,
-        "is_artist": False
+        "is_artist": True,
+        "artist_name": "Artist Name"
     }
-    user = crud.user.create_user(session=db, user_create=UserTest(**user_data))
+    artist = crud.user.create_user(session=db, user_create=UserTest(**artist_data))
 
-    # Obtener un token de acceso
-    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data={
-        "username": user_data["email"],
-        "password": user_data["password"]
-    })
-    assert login_response.status_code == 200
-    access_token = login_response.json()["access_token"]
-    token_headers = {"Authorization": f"Bearer {access_token}"}
-
-    # Crear una canción como un artista diferente
+    # Crear una canción inicial
     song_data = {
-        "title": "Test Song By Another Artist",
-        "artist": "Another Artist",
-        "album": "Album of Another Artist",
-        "duration": 300,
+        "title": "Artist's Song",
+        "artist": artist_data["artist_name"],
+        "album": "Artist's Album",
+        "duration": 240,
         "timestamp": datetime.utcnow().isoformat()
     }
     create_response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
     assert create_response.status_code == 200
-    created_song = create_response.json()
-    song_id = created_song["id"]
 
-    # Intentar eliminar la canción por un usuario que no es el dueño
-    delete_response = client.delete(f"{settings.API_V1_STR}/songs/{song_id}/{user.id}", headers=token_headers)
-    assert delete_response.status_code == 403  # Debería devolver un error de acceso denegado
-    data = delete_response.json()
-    assert data["detail"] == "The user doesn't have enough privileges"
+    # Intentar crear una canción duplicada con el mismo título y artista
+    duplicate_response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+    assert duplicate_response.status_code == 400
+    data = duplicate_response.json()
+    assert data["detail"] == "The song already exists in the system."
