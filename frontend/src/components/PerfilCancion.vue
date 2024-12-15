@@ -1,19 +1,20 @@
 <template class="main">
-  <div class="main-container background-image">
-    <header>
-      <div class="logo">
-        <button @click="goHome" style="border: none; background: none;">
-          <img src="../assets/logo2.png" alt="Logo" />
-        </button>
-      </div>
-      <div class="search-bar">
-        <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
-        <button @click="goHome">
-          <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width: 2vw; vertical-align: middle;" />
-          Buscar
-        </button>
-      </div>
-    </header>
+  <div class="main-container">
+    <div class="background-image"></div>
+      <header>
+        <div class="logo">
+          <button @click="goHome" style="border: none; background: none;">
+            <img src="../assets/logo2.png" alt="Logo" />
+          </button>
+        </div>
+        <div class="search-bar">
+          <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
+          <button @click="goHome">
+            <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width: 2vw; vertical-align: middle;" />
+            Buscar
+          </button>
+        </div>
+      </header>
 
     <div>
       <div class="perfil">
@@ -313,14 +314,23 @@ export default {
 </script>
 
 <style>
-
+/* Ocultar scrollbars en navegadores que soporten esta regla */
 ::-webkit-scrollbar {
   display: none;
 }
 
+/* Estilos generales */
+body {
+  background-color: #000000;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Contenedor principal */
 .main-container, main {
   background-color: transparent !important;
-  min-height: 100vh; /* Asegura que el contenedor tenga al menos la altura de la ventana */
+  min-height: 100vh; /* Altura mínima de toda la vista */
   display: flex;
   flex-direction: column;
   padding-top: 15vh;
@@ -328,62 +338,20 @@ export default {
   position: relative;
 }
 
-.v-navigation-drawer .v-list-item {
-  color: #000000 !important;
-}
-
-/* Estilo para el botón flotante */
-.floating-btn {
-  position: fixed; /* Posiciona el botón de forma fija */
-  top: 50%; /* Centrado verticalmente */
-  right: 0; /* Pegado al lado derecho */
-  transform: translateY(-50%); /* Ajusta el centrado vertical */
-  width: 50px; /* Ajusta el tamaño según sea necesario */
-  height: 50px;
-  background-color: transparent; /* Fondo transparente */
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000; /* Asegúrate de que esté sobre otros elementos */
-  transition: transform 0.3s ease; /* Transición suave */
-}
-.floating-btn img {
-  transform: scaleX(1); /* Estado inicial de la imagen */
-  transition: transform 0.3s ease; /* Asegura la transición al volver */
-}
-
-/* Estilo para mover el botón hacia la izquierda cuando el drawer está abierto */
-.floating-btn:hover, .floating-btn:focus {
-  box-shadow: none;
-  outline: none;
-  background: transparent;
-}
-
-.floating-btn:active {
-  outline: none;
-  box-shadow: none;
-  background-color: transparent;
-}
-
-body {
-  background-color: #000000;
-  height: 100vh;
-}
-
+/* Fondo de imagen fija */
 .background-image {
-  background: url('../assets/fondo.jpg') no-repeat center center fixed; /* Imagen de fondo centrada */
-  background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
-  position: fixed; /* Mantiene el fondo fijo mientras haces scroll */
+  background: url('../assets/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; /* Se asegura de cubrir toda la altura de la ventana */
-  z-index: -1; /* Mantiene el fondo detrás de todo el contenido */
-  filter: brightness(0.7); /* Oscurece la imagen */
+  height: 100%;
+  z-index: -1;
+  filter: brightness(0.7);
 }
 
+/* Cabecera */
 header {
   display: flex;
   justify-content: space-between;
@@ -398,20 +366,17 @@ header {
   z-index: 1000;
 }
 
-/* Aseguramos que el logo se mantenga fijo y no se mueva */
 .logo img {
-  width: 3.5vw; /* Adaptable */
+  width: 3.5vw;
   margin-top: -2vh;
   margin-left: -1vw;
 }
 
-/* Estilos de la barra de búsqueda */
+/* Barra de búsqueda */
 .search-bar {
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  height: auto;
-
 }
 
 .search-bar input[type="text"] {
@@ -445,6 +410,7 @@ header {
   height: 3.5vh;
 }
 
+/* Perfil */
 .perfil {
   height: 80vh;
   display: flex;
@@ -453,28 +419,14 @@ header {
   flex-direction: column;
   align-items: flex-start;
 }
-.play-button {
-  background: none; /* Sin fondo extra */
-  border: none; /* Sin borde */
-  cursor: pointer; /* Cambia el puntero al pasar el mouse */
-  display: flex; /* Para ajustar alineación interna */
-  align-items: center; /* Centra el contenido verticalmente */
-  justify-content: flex-start; /* Alinea el contenido a la izquierda */
-  padding: 0; /* Sin espacio interno */
-  margin: 0; /* Sin márgenes extra */
-  width: 3000vw;
-}
-.play-button img {
-  margin-top: 5vh;
-  margin-left: -3vw;
-}
 
+/* Detalles de la canción */
 .album {
   display: flex;
-  flex-direction: row; /* Imagen a la izquierda, texto a la derecha */
-  align-items: flex-start; /* Alinea verticalmente al inicio */
-  gap: 2vw; /* Espaciado entre la imagen y el texto */
-  margin-bottom: 2vh; /* Espacio debajo de la sección de detalles */
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2vw;
+  margin-bottom: 2vh;
 }
 
 .album img {
@@ -483,25 +435,11 @@ header {
   object-fit: cover;
   border-radius: 10px;
 }
-.album-info {
-  margin: 0;
-}
 
 .details {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centrar verticalmente */
-
-}
-
-.song-info p {
-  margin: 1vw 0;
-  color: white;
-}
-
-.song-info img {
   justify-content: center;
-  width: 20vw;
 }
 
 .song-title {
@@ -517,39 +455,79 @@ header {
   margin: 0;
 }
 
-/* Estilos de la información del álbum */
 .information {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 0 0.5vw;
-  color: #ffffff;
   flex-direction: column;
   gap: 0.5vh;
   font-size: 1.5rem;
-}
-.information v-btn {
-  background-color: black;
-  color: black;
+  color: white;
 }
 
+/* Botón de reproducción */
+.play-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.play-button img {
+  width: 10vw;
+  height: 10vh;
+  object-fit: contain;
+}
+
+/* Botón flotante */
+.floating-btn {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.floating-btn img {
+  transform: scaleX(1);
+  transition: transform 0.3s ease;
+}
+
+.floating-btn:hover img {
+  transform: scaleX(-1);
+}
+
+.mirrored {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+/* Botón de favoritos */
 .favorite-btn-container {
   position: absolute;
-  top: 80vh; /* Distancia desde la parte inferior de la pantalla */
-  right: 5vw;/* Distancia desde el lado derecho de la pantalla */
-  z-index: 1; /* Asegúrate de que el botón esté encima de otros elementos */
+  top: 80vh;
+  right: 5vw;
+  z-index: 1;
 }
 
 .favorite-btn-container i {
-  font-size: 3rem; /* Puedes ajustar el tamaño del icono */
-  color: #ff0000; /* Color del icono */
+  font-size: 3rem;
+  color: #ff0000;
   cursor: pointer;
 }
 
+/* Comentarios */
 .comments-section {
   margin-top: 20px;
   color: white;
-  position: relative;
 }
 
 .comment-item {
@@ -571,7 +549,6 @@ header {
   border: none;
   border-radius: 8px;
   margin-bottom: 10px;
-  z-index: 9999;
 }
 
 .comment-input-container button {
@@ -581,16 +558,25 @@ header {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  z-index: 9999;
 }
 
 .comment-input-container button:hover {
   background-color: #f44336;
 }
 
-.item:hover {
-  transform: scale(1.1);
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
+/* Lista de canciones */
+.v-navigation-drawer .v-list-item {
+  color: #000000 !important;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 24vw;
+  background-color: #1f1f1f;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .item img {
@@ -599,38 +585,21 @@ header {
   border-radius: 10px;
   margin-right: 0.2vw;
   object-fit: cover;
-  margin-left: 0.1vw;
-
-}
-
-.item img:hover {
-  transform: scale(1.1);
-
 }
 
 .item-info p {
   margin: 0.5vw;
   color: white;
   font-size: 1rem;
-  text-align: left;
 }
 
-.item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 24vw;
-  text-align: center;
-  background-color: #1f1f1f;
-  border-radius: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.mirrored {
-  transform: rotate(180deg); /* Rota la imagen 180 grados */
-  transition: transform 0.3s ease;
+.item:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-.delete-button{
+/* Botón de eliminar canción */
+.delete-button {
   padding: 10px;
   background-color: #e53935;
   color: white;
@@ -643,6 +612,232 @@ header {
 
 .delete-button:hover {
   background-color: #f44336;
+}
+
+/* Estilo base para dispositivos móviles pequeños (pantallas hasta 480px de ancho) */
+@media screen and (max-width: 480px) {
+
+  /* Cabecera */
+  header {
+    padding: 2vh 2vw;
+  }
+
+  .logo img {
+    width: 40vw; /* Ajuste de tamaño de logo en móvil */
+  }
+
+  /* Barra de búsqueda */
+  .search-bar input[type="text"] {
+    width: 60vw; /* Ajuste de tamaño para campo de búsqueda */
+  }
+
+  .search-bar button {
+    width: 30vw; /* Botón de búsqueda más pequeño */
+  }
+
+  .search-bar button img {
+    width: 12vw; /* Ajuste para el icono del botón */
+  }
+
+  /* Perfil */
+  .perfil {
+    padding: 4vw;
+  }
+
+  .album img {
+    width: 45vw; /* Ajustar el tamaño de la imagen del álbum */
+    height: 40vh;
+  }
+
+  .details {
+    gap: 2vw;
+  }
+
+  .song-title {
+    font-size: 2rem; /* Ajustar tamaño de texto en móvil */
+  }
+
+  .song-author {
+    font-size: 1.3rem; /* Ajuste en el tamaño del autor */
+  }
+
+  .information {
+    font-size: 1.1rem;
+  }
+
+  /* Botón de reproducción */
+  .play-button img {
+    width: 50vw; /* Ajuste del tamaño del botón de reproducción */
+    height: 50vh;
+  }
+
+  /* Botón flotante */
+  .floating-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .floating-btn img {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Favoritos */
+  .favorite-btn-container {
+    top: 70vh;
+    right: 5vw;
+  }
+
+  /* Comentarios */
+  .comment-item {
+    padding: 6px;
+  }
+
+  .comment-input-container textarea {
+    padding: 6px;
+  }
+
+  .comment-input-container button {
+    padding: 6px;
+  }
+
+  /* Lista de canciones */
+  .item {
+    flex-direction: column;
+    width: 90vw;
+    margin: 2vh 0;
+  }
+
+  .item img {
+    width: 60vw;
+    height: 60vw;
+    margin-bottom: 8px;
+  }
+
+  .item-info p {
+    font-size: 0.9rem;
+  }
+
+  .item:hover {
+    transform: scale(1);
+  }
+
+  .delete-button {
+    padding: 6px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Dispositivos con pantallas medianas (entre 481px y 768px de ancho, tablets y teléfonos grandes) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+
+  /* Cabecera */
+  header {
+    padding: 3vh 3vw;
+  }
+
+  .logo img {
+    width: 25vw;
+  }
+
+  /* Barra de búsqueda */
+  .search-bar input[type="text"] {
+    width: 65vw;
+  }
+
+  .search-bar button {
+    width: 30vw;
+  }
+
+  .search-bar button img {
+    width: 10vw;
+  }
+
+  /* Perfil */
+  .perfil {
+    padding: 3vw;
+  }
+
+  .album img {
+    width: 35vw;
+    height: 45vh;
+  }
+
+  .details {
+    gap: 1.5vw;
+  }
+
+  .song-title {
+    font-size: 2.5rem;
+  }
+
+  .song-author {
+    font-size: 1.5rem;
+  }
+
+  .information {
+    font-size: 1.2rem;
+  }
+
+  /* Botón de reproducción */
+  .play-button img {
+    width: 40vw;
+    height: 40vh;
+  }
+
+  /* Botón flotante */
+  .floating-btn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .floating-btn img {
+    width: 25px;
+    height: 25px;
+  }
+
+  /* Favoritos */
+  .favorite-btn-container {
+    top: 60vh;
+    right: 4vw;
+  }
+
+  /* Comentarios */
+  .comment-item {
+    padding: 8px;
+  }
+
+  .comment-input-container textarea {
+    padding: 8px;
+  }
+
+  .comment-input-container button {
+    padding: 8px;
+  }
+
+  /* Lista de canciones */
+  .item {
+    flex-direction: row;
+    width: 85vw;
+    margin: 2vh 0;
+  }
+
+  .item img {
+    width: 40vw;
+    height: 40vw;
+  }
+
+  .item-info p {
+    font-size: 1rem;
+  }
+
+  .item:hover {
+    transform: scale(1.05);
+  }
+
+  .delete-button {
+    padding: 8px;
+  }
 }
 
 </style>
