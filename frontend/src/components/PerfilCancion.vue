@@ -1,41 +1,43 @@
 <template class="main">
-  <div class="main-container">
+  <div class="main-container background-image">
     <header>
       <div class="logo">
         <button @click="goHome" style="border: none; background: none;">
-          <img src="../assets/logo2.png" alt="Logo"></button>
+          <img src="../assets/logo2.png" alt="Logo" />
+        </button>
       </div>
-
       <div class="search-bar">
         <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
-        <button @click="goHome"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:2vw; vertical-align: middle;">
+        <button @click="goHome">
+          <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width: 2vw; vertical-align: middle;" />
           Buscar
         </button>
       </div>
     </header>
+
     <div>
       <div class="perfil">
         <div class="album">
-          <img :src="getAlbumImage(song.album)" alt="Album Cover" class="album-img">
+          <img :src="getAlbumImage(song.album)" alt="Album Cover" class="album-img" />
 
-          <!-- Contenedor para el título y el autor -->
           <div class="details">
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
             <button class="play-button" @click="playAudio">
-              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')" style="width:10vw; height:10vh; object-fit: contain;">
+              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')" style="width: 10vw; height: 10vh; object-fit: contain;" />
             </button>
           </div>
-
         </div>
 
-        <!-- Información del álbum -->
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
-          <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
+          <p class="album-info">{{ getYear(song.timestamp) }}</p>
+        </div>
+
         <div v-if="user_logged.is_superuser || isOwner" class="admin-controls">
           <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
         </div>
+
         <v-dialog v-model="deleteDialog" max-width="500px">
           <v-card>
             <v-card-title class="headline">Confirmar eliminación</v-card-title>
@@ -48,38 +50,28 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-app class="main-container">
-          <v-btn color="black"  @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
-            <img
-              src="../assets/avance-rapido.png"
-              alt="Botón Imagen"
-              height=40
-              width="40"
-            />
+          <v-btn color="black" @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
+            <img src="../assets/avance-rapido.png" alt="Botón Imagen" height="40" width="40" />
           </v-btn>
         </v-app>
+
         <div class="favorite-btn-container" v-if="this.user_logged">
-          <i
-            :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
-            @click="addFavorites"
-            style="cursor: pointer; font-size: 24px; color: #ff0000;"
-          ></i>
+          <i :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'" @click="addFavorites" style="cursor: pointer; font-size: 24px; color: #ff0000;"></i>
         </div>
       </div>
 
-      <!-- Comentarios -->
       <div v-if="comments.length > 0" class="comments-section">
         <h3>Comentarios:</h3>
         <div v-for="comment in comments" :key="comment.id" class="comment-item">
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
-          <!-- Botón eliminar, visible solo si el comentario pertenece al usuario actual -->
           <button v-if="comment.user === currentUser || user_logged.is_superuser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
             Eliminar
           </button>
         </div>
       </div>
 
-      <!-- Botón para comentar -->
       <div v-if="user_logged" class="comment-input-container">
         <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
         <button @click="postComment">Comentar</button>
@@ -87,16 +79,13 @@
     </div>
 
     <v-app class="main-container">
-      <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
       <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
         <v-list>
           <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
             <v-list-item-content>
               <v-list-item-title class="item">
-                <!-- Muestra la portada del álbum o una imagen por defecto -->
-                <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
+                <img :src="getAlbumImage(song.album)" alt="Portada del álbum" />
                 <div class="item-info">
-                  <!-- Muestra el título de la canción y el nombre del artista -->
                   <p>{{ song.title }}</p>
                 </div>
               </v-list-item-title>
@@ -394,6 +383,7 @@ body {
   z-index: -1; /* Mantiene el fondo detrás de todo el contenido */
   filter: brightness(0.7); /* Oscurece la imagen */
 }
+
 header {
   display: flex;
   justify-content: space-between;
@@ -406,7 +396,6 @@ header {
   background: rgba(0, 0, 0, 0.7);
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  padding: 1vh 2vw;
 }
 
 /* Aseguramos que el logo se mantenga fijo y no se mueva */
