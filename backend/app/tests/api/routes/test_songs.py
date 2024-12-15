@@ -137,3 +137,23 @@ def test_delete_song_super_user(
     assert r.status_code == 200
     deleted_song = r.json()
     assert deleted_song["message"] == "Song deleted successfully"
+
+def test_create_song_already_exists(client) -> None:
+    """
+    Test to check if creating a song that already exists returns an error.
+    """
+    song_data = {
+        "title": "Test Song",
+        "artist": "Test Artist",
+        "album": "Test Album",
+        "duration": 360,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    # Primero crea la canción
+    client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+
+    # Ahora intenta crear la misma canción, debería fallar
+    response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+    assert response.status_code == 400
+    data = response.json()
+    assert data["detail"] == "The song already exists in the system."
