@@ -117,3 +117,29 @@ def test_read_album_by_title_not_found() -> None:
     assert response.status_code == 200
     data = response.json()
     assert len(data["data"]) == 0  # Verifica que no se encuentra ningún álbum
+
+def test_delete_album_not_authorized(client: TestClient, db: Session) -> None:
+    """
+    Test to check if a non-authorized user cannot delete an album.
+    """
+    # Crear un usuario no autorizado (no es superusuario)
+    username = "test2@artist.com"
+    password = "User123"
+    user_in = UserTest(email=username, password=password, first_name="Test Artist", second_name="Test Artist", is_superuser=False, is_artist=True)
+    user = crud.user.create_user(session=db, user_create=user_in)
+
+    # Hacer login con el nuevo usuario
+    login_data = {"username": username, "password": password}
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+
+    assert login_response.status_code == 200
+    access_token = login_response.json()["access_token"]
+
+    # Usamos el token del usuario no autorizado
+    user_token_headers = {"Authorization": f"Bearer {access_token}"}
+
+    # Intentar eliminar el álbum
+    response = client.delete(f"{settings.API_V1_STR}/albums/{album_id}", headers=user_token_headers)
+
+    # Verificar que no se permita la eliminación
+    assert response.status_code == 404
