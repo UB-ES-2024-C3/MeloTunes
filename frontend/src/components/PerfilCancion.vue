@@ -35,7 +35,7 @@
           <p class="album-info">{{ getYear(song.timestamp) }}</p>
         </div>
 
-        <div v-if="user_logged.is_superuser || isOwner" class="admin-controls">
+        <div v-if="user_logged.is_superuser || user_logged.artist_name == song.artist" class="admin-controls">
           <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
         </div>
 
@@ -67,7 +67,7 @@
         <h3>Comentarios:</h3>
         <div v-for="comment in comments" :key="comment.id" class="comment-item">
           <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
-          <button v-if="comment.user === currentUser || user_logged.is_superuser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+          <button v-if="comment.user === user_logged.first_name || user_logged.is_superuser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
             Eliminar
           </button>
         </div>
@@ -225,6 +225,8 @@ export default {
           this.newComment = '' // Limpiar el campo de comentario después de enviar
         })
       }
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: this.$route.query.song } })
+      this.$router.go()
     },
     deleteComment (commentId) {
       // Encuentra el índice del comentario
@@ -235,6 +237,8 @@ export default {
         })
         console.log(`Comentario con ID ${commentId} eliminado.`)
       }
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: this.$route.query.song } })
+      this.$router.go()
     },
     playAudio () {
       if (this.audio) {
