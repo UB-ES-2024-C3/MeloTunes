@@ -120,3 +120,20 @@ def test_delete_comment_as_user(client: TestClient, db: Session) -> None:
     # Verificar que la eliminación es exitosa
     assert response.status_code == 200
     assert response.json() == {"message": "Comment deleted successfully"}
+
+def test_create_comment_missing_fields() -> None:
+    """
+    Test to check the behavior when creating a comment with missing fields.
+    """
+    comment_data = {
+        "text": "Comentario con datos faltantes",
+        "song_id": 1,  # Falta el 'user' y el 'timestamp'
+    }
+    response = client.post(f"{settings.API_V1_STR}/comments/", json=comment_data)
+    assert response.status_code == 422  # 422 Unprocessable Entity
+    data = response.json()
+    assert "detail" in data  # Validar que hay un detalle del error
+    assert "user" in data["detail"][0]["loc"]
+    assert "timestamp" not in data["detail"][0]["loc"]
+
+
