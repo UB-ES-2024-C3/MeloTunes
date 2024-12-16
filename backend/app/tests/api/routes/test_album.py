@@ -161,3 +161,14 @@ def test_create_album_invalid_release_date(client) -> None:
     assert response.status_code == 422  # 422 para errores de validación
     data = response.json()
     assert "detail" in data  # Detalles sobre el error de formato de fecha
+
+def test_delete_album_not_found(client) -> None:
+    """
+    Test to check if trying to delete an album that doesn't exist returns a 404 error.
+    """
+    non_existent_album_id = 999999  # Un ID que no existe
+    response = client.delete(f"{settings.API_V1_STR}/albums/{non_existent_album_id}")
+
+    assert response.status_code == 404  # 404 para recursos no encontrados
+    data = response.json()
+    assert "detail" in data  # Detalles sobre el error de no encontrado
