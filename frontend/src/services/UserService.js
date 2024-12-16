@@ -121,6 +121,24 @@ class UserService {
         return res
       })
   }
+  changePassword (strPass) {
+    const token = localStorage.getItem('accessToken') // Recuperar token
+    if (!token) {
+      return Promise.reject(new Error('No token found')) // Rechazar si no hay token
+    }
+    return axios.patch('/api/v1/users/me', {
+      password: strPass
+    }, {headers: {
+      Authorization: `Bearer ${token}` // Incluir token en la cabecera
+    }})
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('No disponible')
+      })
+  }
 }
 
 export default new UserService()
