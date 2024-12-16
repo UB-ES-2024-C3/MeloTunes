@@ -1,100 +1,80 @@
-<template>
+no, simplemente esconde el boton de cambiar cuando se le de y aparezcan los campos nuevos: <template>
   <body>
   <form @submit.prevent="handleSubmit" novalidate>
-  <div class="container">
-    <h1>Cambia tu contraseña</h1>
-    <label class="email" for="email">Email</label><br>
-    <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input"><br>
-    <button type="submit" class="submit-btn" @click="enviaremail">Recibir email</button>
-    <button class="close-btn" @click="cerrarPopup">X</button>
-  </div>
+    <div class="container">
+      <h1>Cambia tu contraseña</h1>
+
+      <!-- Email -->
+      <label class="email" for="email">Email</label><br>
+      <input type="email" v-model="email" placeholder="name@domain.com" required class="form-input" :disabled="isChangingPassword"><br>
+
+      <!-- Mostrar los campos de contraseña solo cuando el usuario haga clic en 'Cambiar' -->
+      <div v-if="isChangingPassword">
+        <label for="newPassword">Nueva contraseña</label><br>
+        <input type="password" v-model="newPassword" placeholder="Nueva contraseña" required class="form-input"><br>
+
+        <!-- Confirmar nueva contraseña -->
+        <label for="confirmPassword">Confirmar nueva contraseña</label><br>
+        <input type="password" v-model="confirmPassword" placeholder="Confirmar nueva contraseña" required class="form-input"><br>
+
+        <p v-if="newPassword && confirmPassword && newPassword !== confirmPassword" class="error">Las contraseñas no coinciden.</p>
+      </div>
+
+      <!-- Botón para cambiar la contraseña -->
+      <button type="button" class="submit-btn" @click="togglePasswordFields">Cambiar</button>
+
+      <!-- Botón para actualizar la contraseña -->
+      <button v-if="isChangingPassword" type="submit" class="submit-btn">Actualizar contraseña</button>
+
+      <button class="close-btn" @click="cerrarPopup">X</button>
+    </div>
   </form>
   </body>
 </template>
 
 <script>
-import RegisterService from '../services/RegisterService'
-
 export default {
   data () {
     return {
       email: '',
+      newPassword: '',
+      confirmPassword: '',
+      isChangingPassword: false,
       token: null,
       is_authenticated: false,
       error: null
     }
   },
   methods: {
+    togglePasswordFields () {
+      this.isChangingPassword = !this.isChangingPassword
+    },
+    handleSubmit () {
+      if (this.newPassword !== this.confirmPassword) {
+        this.error = 'Las contraseñas no coinciden.'
+      }
+      this.updatePassword(this.email, this.newPassword)
+    },
+    updatePassword (email, password) {
+      console.log('Actualizando contraseña de usuario:', email)
+
+      // Simular éxito en la actualización:
+      alert('Contraseña actualizada con éxito')
+
+      // Cerrar el popup o redirigir al usuario
+      this.cerrarPopup()
+    },
     cerrarPopup () {
       this.$router.push('/login')
       this.$router.go()
-    },
-    async enviaremail() {
-      this.errorEmail = null;
-      this.successMessage = null;
-
-      // Validaciones del email
-      if (!this.email.trim()) {
-        this.errorEmail = 'El campo de correo electrónico no puede estar vacío.';
-        return;
-      }
-      if (!validateEmail(this.email)) {
-        this.errorEmail = 'El formato del correo electrónico no es válido.';
-        return;
-      }
-
-      // Llamada al backend
-      try {
-        const response = await RegisterService.sendPasswordRecoveryEmail(this.email); // Método hipotético en el servicio
-        this.successMessage =
-          'Si tu email está registrado, recibirás un correo con las instrucciones para recuperar tu contraseña.';
-      } catch (error) {
-        console.error('Error al enviar el correo:', error);
-        this.errorEmail =
-          'No hemos podido procesar tu solicitud en este momento. Inténtalo más tarde.';
-      }
     }
-    /*
-    handleSubmit () {
-      // Reinicia errores
-      this.errorEmail = ''
-
-      let hasError = false
-
-      // Validaciones
-      if (!this.email.trim()) {
-        this.errorEmail = 'El campo de correo electrónico no puede estar vacío.'
-        hasError = true
-      } else if (!this.validateEmail(this.email)) {
-        this.errorEmail = 'El formato del correo electrónico no es válido.'
-        hasError = true
-      }
-
-      if (hasError) return
-
-      // Si todo está correcto
-      RegisterService.registerUser(this.email, this.firstName, this.lastName, this.password)
-        .then(() => {
-          alert('Registro exitoso!')
-          this.$router.push('/login')
-          this.$router.go()
-        })
-        .catch((error) => {
-          console.error(error)
-          alert('El usuario con email ' + this.email + ' ya está registrado en el sistema.')
-        })
-    },
-    validateEmail (email) {
-      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ // Regex para validar formato de email
-      return regex.test(email)
-    }*/
   }
 }
 </script>
 
 <style scoped>
 body, html {
-  background: url('../assets/fondo.jpg');
+  background: url('../assets/fondo.jpg') no-repeat center center fixed;
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
@@ -166,6 +146,7 @@ body, html {
   border-color: #007BFF; /* Borde azul al hacer foco */
   outline: none; /* Elimina el borde predeterminado del navegador */
 }
+
 .submit-btn {
   width: 60%;
   padding: 15px;
@@ -195,8 +176,5 @@ body, html {
   color: yellow;
   font-size: 14px;
   font-weight: bold;
-}
-.email{
-
 }
 </style>
