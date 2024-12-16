@@ -172,3 +172,22 @@ def test_delete_album_not_found(client) -> None:
     assert response.status_code == 404  # 404 para recursos no encontrados
     data = response.json()
     assert "detail" in data  # Detalles sobre el error de no encontrado
+
+def test_create_album_missing_required_fields(client) -> None:
+    """
+    Test to check if creating an album with missing required fields returns an error.
+    """
+    album_data = {
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+    }
+    # Falta el campo 'title', 'duration' y 'timestamp'
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+
+    assert response.status_code == 422  # Error de validación
+    data = response.json()
+    assert "detail" in data  # Los detalles de los campos que faltan deben aparecer
+    missing_fields = [error["loc"][-1] for error in data["detail"]]
+    assert "title" in missing_fields
+    assert "duration" in missing_fields
+    assert "timestamp" in missing_fields
