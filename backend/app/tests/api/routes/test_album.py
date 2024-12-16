@@ -4,7 +4,6 @@ from app.main import app
 from app.core.config import settings
 from app.models import AlbumCreate, Album, UserTest
 from app import crud
-from app.tests.utils.utils import random_lower_string
 from datetime import datetime
 
 client = TestClient(app)
@@ -55,3 +54,37 @@ def test_read_album_by_title() -> None:
     assert "data" in data
     assert len(data["data"]) > 0
     assert data["data"][0]["title"] == album_title_to_find
+
+def test_delete_album_super_user(client: TestClient, db: Session) -> None:
+    """
+    Test to delete an album as a superuser.
+    """
+    # Crear un superusuario de prueba
+    username = "test1@artist.com"
+    password = "Superuser123"
+    user_in = UserTest(email=username, password=password, first_name="Test Artist", second_name="Test Artist", is_superuser=True, is_artist=True)
+    user = crud.user.create_user(session=db, user_create=user_in)
+
+    # Hacer una solicitud POST a /login/access-token para obtener el token de acceso del nuevo usuario
+    login_data = {
+        "username": username,
+        "password": password
+    }
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+
+    assert login_response.status_code == 200
+    access_token = login_response.json()["access_token"]
+
+    # Usamos el token generado para el nuevo usuario
+    user_token_headers = {"Authorization": f"Bearer {access_token}"}
+
+    # Intentar eliminar el álbum con el superusuario
+    response = client.delete(
+        f"{settings.API_V1_STR}/albums/{album_id}",
+        headers=user_token_headers,
+    )
+
+    # Comprobamos que la eliminación fue exitosa
+    assert response.status_code == 200
+    deleted_album = response.json()
+    assert deleted_album["message"] == "Album deleted successfully"
