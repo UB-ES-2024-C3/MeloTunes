@@ -107,3 +107,13 @@ def test_create_album_already_exists(client) -> None:
     response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
     assert response.status_code == 422
     data = response.json()
+
+def test_read_album_by_title_not_found() -> None:
+    """
+    Test to check if album retrieval by title returns an empty list when no albums are found.
+    """
+    album_title_to_find = "Nonexistent Album"
+    response = client.get(f"{settings.API_V1_STR}/albums/albums/{album_title_to_find}")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["data"]) == 0  # Verifica que no se encuentra ningún álbum
