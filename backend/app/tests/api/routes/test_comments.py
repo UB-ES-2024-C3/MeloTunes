@@ -37,3 +37,12 @@ def test_create_comment() -> None:
     comment_id = data["id"]
     assert data["text"] == comment_data["text"]
     assert data["user"]== comment_data["user"]
+
+def test_read_comment_by_id() -> None:
+    """
+    Test to retrieve a comment by its ID
+    """
+    response = client.get(f"{settings.API_V1_STR}/comments/{comment_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == comment_id
