@@ -88,3 +88,22 @@ def test_delete_album_super_user(client: TestClient, db: Session) -> None:
     assert response.status_code == 200
     deleted_album = response.json()
     assert deleted_album["message"] == "Album deleted successfully"
+
+def test_create_album_already_exists(client) -> None:
+    """
+    Test to check if creating an album that already exists returns an error.
+    """
+    album_data = {
+        "title": "Test Album",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg"
+    }
+    # Primero crea el álbum
+    client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+
+    # Ahora intenta crear el mismo álbum, debería fallar
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+    assert response.status_code == 422
+    data = response.json()
