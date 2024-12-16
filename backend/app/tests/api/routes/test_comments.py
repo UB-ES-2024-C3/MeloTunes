@@ -69,3 +69,13 @@ def test_delete_comment_super_user(client: TestClient, db: Session) -> None:
     assert response.status_code == 200
     deleted_comment = response.json()
     assert deleted_comment["message"] == "Comment deleted successfully"
+
+def test_delete_comment_not_found() -> None:
+    """
+    Test to check if trying to delete a non-existent comment returns a 404 error.
+    """
+    non_existent_comment_id = 99999
+    response = client.delete(f"{settings.API_V1_STR}/comments/{non_existent_comment_id}")
+    assert response.status_code == 404
+    data = response.json()
+    assert data["detail"] == "Comment not found"
