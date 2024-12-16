@@ -33,3 +33,26 @@ def test_create_and_read_comment_integration(client):
     assert read_by_id_response.status_code == 200
     retrieved_comment = read_by_id_response.json()
     assert retrieved_comment["text"] == comment_data["text"]
+
+# Create and delete comment
+def test_create_update_and_delete_comment_integration(client, superuser_token_headers):
+    """
+    Integration test: Create a comment and delete it.
+    """
+    # Datos para crear el comentario
+    comment_data = {
+        "text": "Integration Update Comment",
+        "user": "Original User",
+        "song_id": 1,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+    # Crear el comentario
+    create_response = client.post(f"{settings.API_V1_STR}/comments/", json=comment_data)
+    assert create_response.status_code == 200
+    created_comment = create_response.json()
+    comment_id = created_comment["id"]
+
+    # Eliminar el comentario
+    delete_response = client.delete(f"{settings.API_V1_STR}/comments/{comment_id}", headers=superuser_token_headers)
+    assert delete_response.status_code == 200
