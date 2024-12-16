@@ -79,3 +79,44 @@ def test_delete_comment_not_found() -> None:
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == "Comment not found"
+
+def test_delete_comment_as_user(client: TestClient, db: Session) -> None:
+    """
+    Test to delete a comment by a user if the comment was created by them.
+    """
+    # Crear un usuario
+    username = "testuser@domain.com"
+    password = "User1234"
+    user_in = UserTest(email=username, password=password, first_name="Test", second_name="User", is_superuser=False, is_artist=False)
+    user = crud.user.create_user(session=db, user_create=user_in)
+
+    # Iniciar sesión y obtener el token de acceso del usuario
+    login_data = {"username": username, "password": password}
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+    assert login_response.status_code == 200
+    access_token = login_response.json()["access_token"]
+    user_token_headers = {"Authorization": f"Bearer {access_token}"}
+
+    # Crear un comentario
+    comment_data = {
+        "text": "Comentario de prueba por el usuario",
+        "user": username,
+        "song_id": 1,  # Asume que la canción con ID 1 ya existe
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    response = client.post(f"{settings.API_V1_STR}/comments/", json=comment_data)
+    assert response.status_code == 200
+    data = response.json()
+
+    comment_id = data["id"]
+
+    # Verificar que el comentario se haya creado correctamente
+    assert "id" in data
+    assert data["text"] == comment_data["text"]
+
+    # Intentar eliminar el comentario como el usuario que lo creó
+    response = client.delete(f"{settings.API_V1_STR}/comments/{comment_id}", headers=user_token_headers)
+
+    # Verificar que la eliminación es exitosa
+    assert response.status_code == 200
+    assert response.json() == {"message": "Comment deleted successfully"}
