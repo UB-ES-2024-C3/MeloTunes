@@ -28,7 +28,7 @@
           <p class="album-info">{{ getYear(album.timestamp) }}</p>
         </div>
 
-        <div v-if="user_logged.is_superuser || isOwner" class="admin-controls">
+        <div v-if="user_logged.is_superuser || this.album.artist == user_logged.artist_name" class="admin-controls">
           <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
         </div>
 
@@ -36,10 +36,10 @@
           <v-card>
             <v-card-title class="headline">Confirmar eliminación</v-card-title>
             <v-card-text>
-              ¿Estás seguro de que quieres eliminar esta canción?
+              ¿Estás seguro de que quieres eliminar este álbum?
             </v-card-text>
             <v-card-actions>
-              <v-btn color="green" text @click="deleteSong">Sí</v-btn>
+              <v-btn color="green" text @click="deleteAlbum">Sí</v-btn>
               <v-btn color="red" text @click="cancelDelete">No</v-btn>
             </v-card-actions>
           </v-card>
@@ -79,6 +79,7 @@ import AlbumService from '../services/AlbumService'
 export default {
   data () {
     return {
+      user_logged: {},
       all_songs: [],
       album_songs: [],
       album: {},
@@ -159,10 +160,11 @@ export default {
     cancelDelete () {
       this.deleteDialog = false
     },
-    deleteSong () {
-      /*
-      // Backend: Eliminar la canción del backend
-      SongService.deleteSong(this.song.id, this.user_logged.id).then(response => {
+    deleteAlbum () {
+      for (const aS of this.album_songs) {
+        SongService.deleteSong(aS.id, this.user_logged.id)
+      }
+      AlbumService.deleteAlbum(this.album.id, this.user_logged.id).then(response => {
         console.log('Canción eliminada:', response)
         this.deleteDialog = false
         // Redirigimos a home después de eliminar la canción
@@ -174,7 +176,7 @@ export default {
       }).catch(error => {
         console.error('Error al eliminar la canción:', error)
         this.deleteDialog = false
-      }) */
+      })
     }
   }
 }
