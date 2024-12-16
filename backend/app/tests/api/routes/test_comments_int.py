@@ -56,3 +56,36 @@ def test_create_update_and_delete_comment_integration(client, superuser_token_he
     # Eliminar el comentario
     delete_response = client.delete(f"{settings.API_V1_STR}/comments/{comment_id}", headers=superuser_token_headers)
     assert delete_response.status_code == 200
+
+# Trying to delete a comment with superuser
+def test_delete_comment_with_multiple_users(client: TestClient, db: Session) -> None:
+    """
+    Integration test: Try to delete a comment with a superuser.
+    """
+    # Crear un comentario de prueba
+    comment_data = {
+        "text": "Test Comment Multiple Users",
+        "user": "Test User",
+        "song_id": 1,  # Asume que la canción con ID 1 ya existe
+        "timestamp": "2023-01-01T00:00:00"
+    }
+    create_response = client.post(f"{settings.API_V1_STR}/comments/", json=comment_data)
+    assert create_response.status_code == 200
+
+    # Crear un superusuario
+    user_data_super = {
+        "email": "test_user_super@example.com",
+        "first_name": "Test",
+        "second_name": "UserSuper",
+        "password": "Admin1234",
+        "is_superuser": True,
+        "is_artist": False
+    }
+    user_super = crud.user.create_user(session=db, user_create=UserTest(**user_data_super))
+
+    # Eliminar el comentario con el superusuario
+    delete_response_super = client.delete(
+        f"{settings.API_V1_STR}/comments/{create_response.json()['id']}",
+        headers={"Authorization": f"Bearer {user_super.id}"}
+    )
+    assert delete_response_super.status_code == 200  # El superusuario puede eliminar el comentario correctamente
