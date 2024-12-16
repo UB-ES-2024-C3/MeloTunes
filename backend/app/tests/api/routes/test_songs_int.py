@@ -200,10 +200,40 @@ def test_delete_song_with_multiple_users(client: TestClient, db: Session) -> Non
             f"{settings.API_V1_STR}/songs/{create_response.json()['id']}/{user.id}",
             headers={"Authorization": f"Bearer {access_token}"}
         )
-        
+
         # Validar el resultado según los roles
         if user.is_superuser or (user.is_artist and user.artist_name == song_data["artist"]):
             assert delete_response.status_code == 200  # Superuser o artista asociado puede eliminar
         else:
             assert delete_response.status_code == 403  # Otros usuarios no autorizados deben recibir 403
 
+# Verificar que un usuario no pueda crear una cacnión si ya existe
+def test_create_song_duplicate(client, db):
+    # Crear un artista
+    artist_data = {
+        "email": "artist@example.com",
+        "password": "password123",
+        "first_name": "Test",
+        "second_name": "Artist",
+        "is_superuser": False,
+        "is_artist": True,
+        "artist_name": "Artist Name"
+    }
+    artist = crud.user.create_user(session=db, user_create=UserTest(**artist_data))
+
+    # Crear una canción inicial
+    song_data = {
+        "title": "Artist's Song",
+        "artist": artist_data["artist_name"],
+        "album": "Artist's Album",
+        "duration": 240,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    create_response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+    assert create_response.status_code == 200
+
+    # Intentar crear una canción duplicada con el mismo título y artista
+    duplicate_response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+    assert duplicate_response.status_code == 400
+    data = duplicate_response.json()
+    assert data["detail"] == "The song already exists in the system."

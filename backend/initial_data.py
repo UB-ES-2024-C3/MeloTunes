@@ -18,6 +18,7 @@ def init() -> None:
         session.query(Song).delete()
         session.query(Album).delete()
         session.query(User).delete()
+        session.query(Album).delete()
         session.query(userSongLink).delete() 
 
         song1 = Song(
