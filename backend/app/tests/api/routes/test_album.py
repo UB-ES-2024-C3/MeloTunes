@@ -25,8 +25,8 @@ def test_create_album(client) -> None:
     Test to create a new album.
     """
     album_data = {
-        "title": "Album Test2",
-        "artist": "Artist4",
+        "title": "Test Album",
+        "artist": "Artist",
         "release_date": "2024-12-16",
         "genre": "Pop",
         "cover_image_url": "https://example.com/cover.jpg",
@@ -43,3 +43,15 @@ def test_create_album(client) -> None:
     album_id = data["id"]
     assert data["title"] == album_data["title"]
     assert data["artist"] == album_data["artist"]
+
+def test_read_album_by_title() -> None:
+    """
+    Test to retrieve albums by title.
+    """
+    album_title_to_find = "Test Album"
+    response = client.get(f"{settings.API_V1_STR}/albums/albums/{album_title_to_find}")
+    assert response.status_code == 200
+    data = response.json()
+    assert "data" in data
+    assert len(data["data"]) > 0
+    assert data["data"][0]["title"] == album_title_to_find
