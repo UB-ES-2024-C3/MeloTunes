@@ -191,3 +191,20 @@ def test_create_album_missing_required_fields(client) -> None:
     assert "title" in missing_fields
     assert "duration" in missing_fields
     assert "timestamp" in missing_fields
+
+def test_create_album_with_invalid_genre(client) -> None:
+    """
+    Test to check if creating an album with an invalid genre returns an error.
+    """
+    album_data = {
+        "title": "Invalid Genre Album",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Unknown Genre",  # Este género no está permitido
+        "cover_image_url": "https://example.com/cover.jpg"
+    }
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+
+    assert response.status_code == 422  # Error de validación
+    data = response.json()
+    assert "detail" in data  # Debe mostrar el error de validación para el género
