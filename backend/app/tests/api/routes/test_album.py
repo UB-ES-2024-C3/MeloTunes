@@ -208,3 +208,16 @@ def test_create_album_with_invalid_genre(client) -> None:
     assert response.status_code == 422  # Error de validación
     data = response.json()
     assert "detail" in data  # Debe mostrar el error de validación para el género
+
+def test_filter_albums_by_genre(client) -> None:
+    """
+    Test to filter albums by genre.
+    """
+    genre = "Pop"
+    response = client.get(f"{settings.API_V1_STR}/albums/?genre={genre}")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    for album in data["data"]:
+        assert album["genre"] == genre  # Todos los álbumes deben tener el género solicitado
