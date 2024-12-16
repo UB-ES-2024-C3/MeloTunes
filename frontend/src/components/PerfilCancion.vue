@@ -484,8 +484,8 @@ header {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
+  width: 10vw;
+  height: 10vw;
   background-color: transparent;
   border: none;
   display: flex;
@@ -497,6 +497,9 @@ header {
 }
 
 .floating-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transform: scaleX(1);
   transition: transform 0.3s ease;
 }
