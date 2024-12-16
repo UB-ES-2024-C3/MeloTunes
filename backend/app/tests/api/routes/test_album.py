@@ -221,3 +221,21 @@ def test_filter_albums_by_genre(client) -> None:
 
     for album in data["data"]:
         assert album["genre"] == genre  # Todos los álbumes deben tener el género solicitado
+
+def test_create_album_with_negative_duration(client) -> None:
+    """
+    Test to check if an album with a negative duration returns an error.
+    """
+    album_data = {
+        "title": "Negative Duration Album",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg",
+        "duration": -50  # Duración negativa
+    }
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+
+    assert response.status_code == 422  # Error de validación
+    data = response.json()
+    assert "detail" in data
