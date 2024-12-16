@@ -143,3 +143,21 @@ def test_delete_album_not_authorized(client: TestClient, db: Session) -> None:
 
     # Verificar que no se permita la eliminación
     assert response.status_code == 404
+
+def test_create_album_invalid_release_date(client) -> None:
+    """
+    Test to check if creating an album with an invalid release date format returns an error.
+    """
+    invalid_album_data = {
+        "title": "Invalid Date Album",
+        "artist": "Test Artist",
+        "release_date": "16-12-2024",  # Fecha en formato incorrecto
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg"
+    }
+
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=invalid_album_data)
+
+    assert response.status_code == 422  # 422 para errores de validación
+    data = response.json()
+    assert "detail" in data  # Detalles sobre el error de formato de fecha
