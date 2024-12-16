@@ -484,12 +484,12 @@ header {
 
 /* Botón flotante */
 .floating-btn {
-  position: fixed;
+  position: relative;
   top: 50%;
-  right: 0;
+  right: 2%;
   transform: translateY(-50%);
-  width: 10vw;
-  height: 10vw;
+  width: 8vw;
+  height: 8vw;
   background-color: transparent;
   border: none;
   display: flex;
@@ -501,9 +501,6 @@ header {
 }
 
 .floating-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   transform: scaleX(1);
   transition: transform 0.3s ease;
 }
