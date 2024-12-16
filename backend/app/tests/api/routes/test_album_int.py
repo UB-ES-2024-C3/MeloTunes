@@ -29,3 +29,29 @@ def test_create_album_and_fail_to_create_duplicate() -> None:
     # 2. Intentar crear el mismo álbum de nuevo
     duplicate_response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
     assert duplicate_response.status_code == 400
+
+def test_create_and_read_album_by_id() -> None:
+    """
+    Integration test to create an album and read it by its ID.
+    """
+    # 1. Crear un álbum
+    album_data = {
+        "title": "Read Album",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg",
+        "duration": 3600,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    create_response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+    assert create_response.status_code == 200
+
+    album_id = create_response.json()["id"]
+
+    # 2. Leer el álbum por su ID
+    get_response = client.get(f"{settings.API_V1_STR}/albums/{album_id}")
+    assert get_response.status_code == 200
+
+    album = get_response.json()
+    assert album["title"] == album_data["title"]
