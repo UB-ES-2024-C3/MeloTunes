@@ -35,7 +35,7 @@ def test_create_and_read_comment_integration(client):
     assert retrieved_comment["text"] == comment_data["text"]
 
 # Create and delete comment
-def test_create_update_and_delete_comment_integration(client, superuser_token_headers):
+def test_create_and_delete_comment_integration(client, superuser_token_headers):
     """
     Integration test: Create a comment and delete it.
     """
@@ -89,3 +89,19 @@ def test_delete_comment_with_multiple_users(client: TestClient, db: Session) -> 
         headers={"Authorization": f"Bearer {user_super.id}"}
     )
     assert delete_response_super.status_code == 200  # El superusuario puede eliminar el comentario correctamente
+
+# Create a comment with missing fields and check it doesn't post
+def test_create_comment_missing_fields() -> None:
+    """
+    Test to check the behavior when creating a comment with missing fields.
+    """
+    comment_data = {
+        "text": "Comentario con datos faltantes",
+        "song_id": 1,  # Falta el campo 'user' y el 'timestamp'
+    }
+    response = client.post(f"{settings.API_V1_STR}/comments/", json=comment_data)
+    assert response.status_code == 422  # 422 Unprocessable Entity
+    data = response.json()
+    assert "detail" in data  # Validar que hay un detalle del error
+    assert "user" in data["detail"][0]["loc"]  # El error debe indicar que falta el 'user'
+    assert "timestamp" not in data["detail"][0]["loc"]  # El error debe indicar que falta 'timestamp'
