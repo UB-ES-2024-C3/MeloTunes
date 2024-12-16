@@ -62,7 +62,7 @@ export default new Router({
       component: PerfilCancion
     },
     {
-      path: '/change',
+      path: '/recuperar',
       name: 'Recuperar',
       component: RecuperarContra
     }
