@@ -67,7 +67,7 @@ export default {
       UserService.getAll().then(response => {
         this.user_logged = this.getUser(response.data.data, email)
       })
-      UserService.changePassword(password, 5)
+      UserService.changePassword(password, 8)
         .then(() => {
           this.$router.push({ path: '/login' })
           this.$router.go()
