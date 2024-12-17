@@ -33,7 +33,14 @@ no, simplemente esconde el boton de cambiar cuando se le de y aparezcan los camp
 </template>
 
 <script>
+import UserService from '../services/UserService'
 export default {
+  name: 'RecuperarContra',
+  mounted () {
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.email)
+    })
+  },
   data () {
     return {
       email: '',
@@ -57,6 +64,18 @@ export default {
     },
     updatePassword (email, password) {
       console.log('Actualizando contraseña de usuario:', email)
+      UserService.getAll().then(response => {
+        this.user_logged = this.getUser(response.data.data, email)
+      })
+      UserService.changePassword(password, 5)
+        .then(() => {
+          this.$router.push({ path: '/login' })
+          this.$router.go()
+        })
+        .catch((error) => {
+          console.error(error)
+          alert('Algo ha fallado')
+        })
 
       // Simular éxito en la actualización:
       alert('Contraseña actualizada con éxito')

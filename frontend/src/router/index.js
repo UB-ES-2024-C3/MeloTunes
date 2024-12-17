@@ -12,7 +12,6 @@ import ArtistProfile from '@/components/ArtistProfile'
 import RecuperarContra from '@/components/RecuperarContra'
 import PerfilAlbum from '../components/PerfilAlbum.vue'
 
-
 Vue.use(Router)
 export default new Router({
   mode: 'history',
