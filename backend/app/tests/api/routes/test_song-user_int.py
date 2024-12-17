@@ -100,3 +100,50 @@ def test_remove_from_favorites(client, db):
     assert favorites_response_after_removal.status_code == 200
     favorites_after_removal = favorites_response_after_removal.json()
     assert not any(fav["id"] == song_iden for fav in favorites_after_removal), "Song still found in favorites"
+
+def test_delete_song_unauthorized(client, db):
+    """
+    Integration test: Try to delete a song as a non-superuser and unauthorized artist.
+    """
+    # Crear un usuario regular
+    user_data = {
+        "email": random_email(),
+        "password": random_lower_string(),
+        "first_name": "Artist",
+        "second_name": "Test",
+        "is_superuser": False
+    }
+    user = crud.user.create_user(session=db, user_create=UserTest(**user_data))
+
+    # Obtener token de acceso para el usuario creado
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data={
+        "username": user_data["email"],
+        "password": user_data["password"]
+    })
+    assert login_response.status_code == 200
+    access_token = login_response.json()["access_token"]
+
+    token_headers = {"Authorization": f"Bearer {access_token}"}
+
+    # Crear una canción para otro artista
+    song_data = {
+        "title": "Unauthorized Song",
+        "artist": "Another Artist",
+        "album": "Album Name",
+        "duration": 240,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    create_response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data, headers=token_headers)
+    assert create_response.status_code == 200
+    created_song = create_response.json()
+    song_id = created_song["id"]
+
+    # Intentar eliminar la canción como usuario no autorizado
+    remove_response = client.delete(
+        f"{settings.API_V1_STR}/songs/{song_id}/{user.id}",
+        headers=token_headers,
+    )
+
+    assert remove_response.status_code == 403
+    error_message = remove_response.json()
+    assert error_message["detail"] == "The user doesn't have enough privileges"
