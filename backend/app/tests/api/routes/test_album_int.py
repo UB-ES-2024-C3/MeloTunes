@@ -140,3 +140,41 @@ def test_create_album_with_missing_requirements() -> None:
     assert response.status_code == 422
     data = response.json()
     assert "detail" in data
+
+def test_create_and_delete_album_as_owner() -> None:
+    """
+    Integration test to create an album and then delete it as the owner (artist).
+    """
+    # Crear un artista
+    artist_credentials = {"email": "owner@example.com", "password": "Password123"}
+    client.post(f"{settings.API_V1_STR}/users/", json={
+        "email": artist_credentials["email"],
+        "password": artist_credentials["password"],
+        "first_name": "Owner",
+        "second_name": "Artist",
+        "is_artist": True
+    })
+
+    # Hacer login como el artista
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data={"username": artist_credentials["email"], "password": artist_credentials["password"]})
+    assert login_response.status_code == 200
+    artist_token = login_response.json()["access_token"]
+    artist_headers = {"Authorization": f"Bearer {artist_token}"}
+
+    # Crear un álbum como el artista
+    album_data = {
+        "title": "Album to Delete",
+        "artist": "Owner Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/album_cover.jpg",
+        "duration": 3600,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    album_response = client.post(f"{settings.API_V1_STR}/albums/", headers=artist_headers, json=album_data)
+    assert album_response.status_code == 200
+    album_id = album_response.json()["id"]
+
+    # Eliminar el álbum como el artista dueño
+    delete_response = client.delete(f"{settings.API_V1_STR}/albums/{album_id}", headers=artist_headers)
+    assert delete_response.status_code == 200
