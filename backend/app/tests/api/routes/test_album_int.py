@@ -95,3 +95,30 @@ def test_create_user_and_create_album() -> None:
     # 4. Delete album as the owner
     delete_response = client.delete(f"{settings.API_V1_STR}/albums/{album_id}", headers=headers)
     assert delete_response.status_code == 200
+
+def test_create_and_read_album_by_title() -> None:
+    """
+    Integration test to create an album and then retrieve it by title.
+    """
+    album_data = {
+        "title": "Test Create and Read",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg",
+        "duration": 3600,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+    # Crear el álbum
+    create_response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+    assert create_response.status_code == 200
+
+    album_title = album_data["title"]
+
+    # Leer el álbum por su título
+    get_response = client.get(f"{settings.API_V1_STR}/albums/albums/{album_title}")
+    assert get_response.status_code == 200
+    data = get_response.json()
+    assert len(data["data"]) > 0
+    assert data["data"][0]["title"] == album_title
