@@ -302,7 +302,7 @@ header .auth-buttons a:hover {
   font-size: 1.2rem;
   border-radius: 25px;
   border: none;
-  color: white; /* Cambia el color del texto a blanco */
+  color: #d05151; /* Cambia el color del texto a blanco */
   background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro para que el texto sea legible */
 }
 
