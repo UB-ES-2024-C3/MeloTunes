@@ -326,8 +326,10 @@ header .auth-buttons a:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
-  padding: 5vw 5vw;
+  padding: 5vw;
   margin-top: 10vh;
+  justify-items: center;
+  align-items: center;
 }
 
 /* Estilo individual para cada tarjeta de álbum */
