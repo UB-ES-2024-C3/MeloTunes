@@ -90,6 +90,18 @@ class UserService {
         return res
       })
   }
+  changePassword (strPass, userId) {
+    return axios.patch(`/api/v1/users/${userId}`, {
+      password: strPass
+    })
+      .then((res) => {
+        return res
+      })
+      .catch(error => {
+        console.error(error)
+        throw new Error('No disponible')
+      })
+  }
 }
 
 export default new UserService()

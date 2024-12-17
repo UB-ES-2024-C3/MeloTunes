@@ -16,15 +16,25 @@ def init() -> None:
         init_db(session)
 
         session.query(Song).delete()
+        session.query(Album).delete()
         session.query(User).delete()
         session.query(Album).delete()
         session.query(userSongLink).delete() 
+
         song1 = Song(
             title="Piratas del Bar Caribe", 
             artist="Melendi",
             album="Curiosa la cara de tu padre",
             duration=timedelta(minutes=4, seconds=5), 
             timestamp=datetime(2008, 9, 16)
+        )
+
+        album1 = Album(
+            title = "Curiosa la cara de tu padre",
+            artist = "Melendi",
+            duration = timedelta(minutes=4, seconds=5),
+            number_of_songs = 2,
+            timestamp = datetime(2008, 9, 16),
         )
         
         song2 = Song(
@@ -34,6 +44,14 @@ def init() -> None:
             duration=timedelta(minutes=3, seconds=57), 
             timestamp=datetime(2012, 11, 13)
         )
+
+        album2 = Album(
+            title = "Lágrimas desordenadas",
+            artist = "Melendi",
+            duration = timedelta(minutes=4, seconds=5),
+            number_of_songs = 2,
+            timestamp = datetime(2008, 9, 16),
+        )
         
         song3 = Song(
             title="16 Añitos", 
@@ -41,6 +59,14 @@ def init() -> None:
             album="Pequeño", 
             duration=timedelta(minutes=4, seconds=14), 
             timestamp=datetime(2010, 10, 26)
+        )
+
+        album3 = Album(
+            title = "Pequeño",
+            artist = "Dani Martín",
+            duration = timedelta(minutes=4, seconds=5),
+            number_of_songs = 2,
+            timestamp = datetime(2008, 9, 16),
         )
         
         song4 = Song(
@@ -50,6 +76,14 @@ def init() -> None:
             duration=timedelta(minutes=4, seconds=21), 
             timestamp=datetime(2017, 11, 10)
         )
+
+        album4 = Album(
+            title = "Grandes éxitos y pequeños desastres",
+            artist = "Dani Martín",
+            duration = timedelta(minutes=4, seconds=5),
+            number_of_songs = 2,
+            timestamp = datetime(2008, 9, 16),
+        )
         
         song5 = Song(
             title="Antes de que cuente diez", 
@@ -58,6 +92,14 @@ def init() -> None:
             duration=timedelta(minutes=4, seconds=46), 
             timestamp=datetime(2009, 9, 16)
         )
+
+        album5 = Album(
+            title = "Antes de que cuente diez",
+            artist = "Fito y Fitipaldis",
+            duration = timedelta(minutes=4, seconds=5),
+            number_of_songs = 2,
+            timestamp = datetime(2008, 9, 16),
+        )
         
         song6 = Song(
             title="Por la boca vive el pez", 
@@ -65,6 +107,14 @@ def init() -> None:
             album="Fitografía", 
             duration=timedelta(minutes=4, seconds=30), 
             timestamp=datetime(2017, 11, 10)
+        )
+
+        album6 = Album(
+            title = "Fitografía",
+            artist = "Fito y Fitipaldis",
+            duration = timedelta(minutes=4, seconds=5),
+            number_of_songs = 2,
+            timestamp = datetime(2008, 9, 16),
         )
         
         song7 = Song(
@@ -166,6 +216,12 @@ def init() -> None:
         session.add(song14)
         session.add(song15)
         session.add(song16)
+        session.add(album1)
+        session.add(album2)
+        session.add(album3)
+        session.add(album4)
+        session.add(album5)
+        session.add(album6)
         session.commit()
 
 

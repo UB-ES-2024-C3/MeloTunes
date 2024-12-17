@@ -19,23 +19,16 @@
     <div>
       <div class="perfil">
         <div class="album">
-          <img :src="getAlbumImage(song.album)" alt="Album Cover" class="album-img" />
-
-          <div class="details">
-            <p class="song-title">{{ song.title }}</p>
-            <p class="song-author">{{ song.artist }}</p>
-            <button class="play-button" @click="playAudio">
-              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')" style="width: 10vw; height: 10vh; object-fit: contain;" />
-            </button>
-          </div>
+          <img :src="getAlbumImage(album.title)" alt="Album Cover" class="album-img" />
         </div>
 
         <div class="information">
-          <p class="album-info">{{ song.album }}</p>
-          <p class="album-info">{{ getYear(song.timestamp) }}</p>
+          <p class="album-info">{{ album.title }}</p>
+          <p class="album-info">{{ album.artist }}</p>
+          <p class="album-info">{{ getYear(album.timestamp) }}</p>
         </div>
 
-        <div v-if="user_logged.is_superuser || user_logged.artist_name == song.artist" class="admin-controls">
+        <div v-if="user_logged.is_superuser || this.album.artist == user_logged.artist_name" class="admin-controls">
           <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
         </div>
 
@@ -43,10 +36,10 @@
           <v-card>
             <v-card-title class="headline">Confirmar eliminación</v-card-title>
             <v-card-text>
-              ¿Estás seguro de que quieres eliminar esta canción?
+              ¿Estás seguro de que quieres eliminar este álbum?
             </v-card-text>
             <v-card-actions>
-              <v-btn color="green" text @click="deleteSong">Sí</v-btn>
+              <v-btn color="green" text @click="deleteAlbum">Sí</v-btn>
               <v-btn color="red" text @click="cancelDelete">No</v-btn>
             </v-card-actions>
           </v-card>
@@ -57,32 +50,13 @@
             <img src="../assets/avance-rapido.png" alt="Botón Imagen" height="40" width="40" />
           </v-btn>
         </v-app>
-
-        <div class="favorite-btn-container" v-if="this.user_logged">
-          <i :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'" @click="addFavorites" style="cursor: pointer; font-size: 24px; color: #ff0000;"></i>
-        </div>
-      </div>
-
-      <div v-if="comments.length > 0" class="comments-section">
-        <h3>Comentarios:</h3>
-        <div v-for="comment in comments" :key="comment.id" class="comment-item">
-          <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
-          <button v-if="comment.user === user_logged.first_name || user_logged.is_superuser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
-            Eliminar
-          </button>
-        </div>
-      </div>
-
-      <div v-if="user_logged" class="comment-input-container">
-        <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
-        <button @click="postComment">Comentar</button>
       </div>
     </div>
 
     <v-app class="main-container">
       <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
         <v-list>
-          <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
+          <v-list-item v-for="song in album_songs" :key="song.id" @click="handleClick(song)">
             <v-list-item-content>
               <v-list-item-title class="item">
                 <img :src="getAlbumImage(song.album)" alt="Portada del álbum" />
@@ -99,25 +73,19 @@
 </template>
 
 <script>
-import CommentService from '../services/CommentService'
 import SongService from '../services/SongService'
 import UserService from '../services/UserService'
+import AlbumService from '../services/AlbumService'
 export default {
   data () {
     return {
-      all_songs: [],
-      artist_songs: [],
-      song: {},
       user_logged: {},
-      song_id: 0,
+      all_songs: [],
+      album_songs: [],
+      album: {},
+      album_id: 0,
       drawer: false, // Estado del drawer
-      isFavorited: false,
       searchQuery: '',
-      audio: null,
-      isPlaying: false,
-      comments: [], // Lista de comentarios
-      newComment: '', // Texto del nuevo comentario
-      currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
       isOwner: false,
       deleteDialog: false
     }
@@ -125,21 +93,13 @@ export default {
   mounted () {
     UserService.getAll().then(response => {
       this.user_logged = this.getUser(response.data.data, this.$route.query.email)
-      this.song_id = this.$route.query.song
-      SongService.get(this.song_id).then(response => {
-        this.song = response.data
+      this.album_id = this.$route.query.album
+      AlbumService.get(this.album_id).then(response => {
+        this.album = response.data
         SongService.getAll().then(response => {
           this.all_songs = response.data.data
-          this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
-          this.loadComments()
+          this.album_songs = this.all_songs.filter(song => song.album === this.album.title)
         })
-        if (this.user_logged) {
-          this.checkIfFavorite()
-        }
-      })
-      this.audio = new Audio(require(`@/assets/canciones/${this.artist.toLowerCase()}_${this.song.title.toLowerCase()}.mp3`))
-      this.audio.addEventListener('ended', () => {
-        this.isPlaying = false
       })
     })
   },
@@ -186,103 +146,6 @@ export default {
       })
       this.$router.go()
     },
-    addFavorites () {
-      if (!this.isFavorited) {
-        UserService.addToFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
-          console.log(response)
-          this.isFavorited = true
-          alert(response.message)
-        })
-      } else {
-        UserService.deleteOfFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
-          console.log(response)
-          this.isFavorited = false
-          alert(response.message)
-        })
-      }
-    },
-    checkIfFavorite () {
-      UserService.getMyFavouriteSongs(this.user_logged.id).then(response => {
-        const favorites = response // Asumiendo que la API devuelve un arreglo de canciones favoritas
-        console.log(favorites)
-        this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
-        console.log(this.isFavorite)
-      })
-    },
-    loadComments () {
-      // Simulamos la carga de comentarios
-      // DIANA: Llamada a la API para obtener los comentarios de la canción
-      CommentService.getAllSong(this.song.title).then(response => {
-        this.comments = response.data.data
-      })
-    },
-    postComment () {
-      if (this.newComment.trim() !== '') {
-        console.log(this.newComment)
-        // Agregar comentario al backend
-        CommentService.createComment(this.newComment, this.user_logged.first_name, this.song.title).then(response => {
-          this.comments.push({ id: Date.now(), user: this.user_logged.first_name, text: this.newComment })
-          this.newComment = '' // Limpiar el campo de comentario después de enviar
-        })
-      }
-      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: this.$route.query.song } })
-      this.$router.go()
-    },
-    deleteComment (commentId) {
-      // Encuentra el índice del comentario
-      const index = this.comments.findIndex((comment) => comment.id === commentId)
-      if (index !== -1) {
-        CommentService.deleteComment(commentId).then(response => {
-          this.comments.splice(index, 1)
-        })
-        console.log(`Comentario con ID ${commentId} eliminado.`)
-      }
-      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: this.$route.query.song } })
-      this.$router.go()
-    },
-    playAudio () {
-      if (this.audio) {
-        if (this.isPlaying) {
-          // Si ya está reproduciendo, pausa el audio
-          this.audio.pause()
-          this.isPlaying = false
-        } else {
-          // Si está pausado o no ha comenzado, reproduce el audio
-          this.audio.play()
-          this.isPlaying = true
-
-          // Detecta cuándo termina la canción para actualizar el estado
-          this.audio.addEventListener('ended', () => {
-            this.isPlaying = false
-          })
-        }
-      } else {
-        // Carga y reproduce el audio si no existe
-        const sanitizedArtist = this.removeAccents(
-          this.song.artist.toLowerCase().replace(/ /g, '')
-        )
-        const sanitizedTitle = this.removeAccents(
-          this.song.title.toLowerCase().replace(/ /g, '')
-        )
-
-        try {
-          this.audio = new Audio(
-            require(`@/assets/canciones/${sanitizedArtist}_${sanitizedTitle}.mp3`)
-          )
-          this.audio.play()
-          this.isPlaying = true
-
-          // Detecta cuándo termina la canción
-          this.audio.addEventListener('ended', () => {
-            this.isPlaying = false
-          })
-        } catch (e) {
-          console.error('Archivo de audio no encontrado:', e)
-          alert('No se encontró el archivo de audio para esta canción.')
-          this.isPlaying = false
-        }
-      }
-    },
     getUser (usersList, email) {
       for (const user of usersList) {
         if (email === user.email) {
@@ -297,9 +160,11 @@ export default {
     cancelDelete () {
       this.deleteDialog = false
     },
-    deleteSong () {
-      // Backend: Eliminar la canción del backend
-      SongService.deleteSong(this.song.id, this.user_logged.id).then(response => {
+    deleteAlbum () {
+      for (const aS of this.album_songs) {
+        SongService.deleteSong(aS.id, this.user_logged.id)
+      }
+      AlbumService.deleteAlbum(this.album.id, this.user_logged.id).then(response => {
         console.log('Canción eliminada:', response)
         this.deleteDialog = false
         // Redirigimos a home después de eliminar la canción
@@ -484,12 +349,12 @@ header {
 
 /* Botón flotante */
 .floating-btn {
-  position: relative;
+  position: fixed;
   top: 50%;
-  right: 2%;
+  right: 0;
   transform: translateY(-50%);
-  width: 8vw;
-  height: 8vw;
+  width: 50px;
+  height: 50px;
   background-color: transparent;
   border: none;
   display: flex;

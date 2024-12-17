@@ -48,6 +48,20 @@
     </div>
 
     <div v-if="!searchQuery" class="artist-section">
+      <h2>Álbumes Populares</h2>
+      <div class="album-grid">
+        <div v-for="(album) in albums_list" :key="album.id" class="album" @click="handleClickAlbum(album)">
+          <img :src="getAlbumImage(album.title)" alt="Portada del álbum">
+          <div class="album-info">
+            <p>{{ album.title }}</p>
+            <p>{{ album.artist }}</p>
+            <p>{{ getYear(album.timestamp) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="!searchQuery" class="artist-section">
       <h2>Artistas Populares</h2>
       <div class="artist-grid">
         <div v-for="artist in artists" :key="artist" class="artist" @click="goArtist(artist)">
@@ -83,6 +97,7 @@
 
 <script>
 import SongService from '../services/SongService'
+import AlbumService from '../services/AlbumService'
 import popuplegal from './popupLegal'
 import popuppolitica from './popupPolitica'
 import popupcookies from './popupCookies'
@@ -112,12 +127,16 @@ export default {
         this.searchQuery = savedSearchQuery
         this.searchSong()
       }
+      AlbumService.getAll().then(response => {
+        this.albums_list = response.data.data.slice(0, 5)
+      })
     })
   },
   data () {
     return {
       searchQuery: '',
       songs_list: [],
+      albums_list: [],
       all_songs: [],
       artists: [],
       user_name: null
@@ -150,6 +169,10 @@ export default {
     },
     handleClick (song) {
       this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
+    },
+    handleClickAlbum (album) {
+      this.$router.push({ path: '/perfil_album', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, album: album.id } })
       this.$router.go()
     },
     removeAccents (str) {
@@ -302,7 +325,7 @@ header .auth-buttons a:hover {
   font-size: 1.2rem;
   border-radius: 25px;
   border: none;
-  color: white; /* Cambia el color del texto a blanco */
+  color: #d05151; /* Cambia el color del texto a blanco */
   background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro para que el texto sea legible */
 }
 

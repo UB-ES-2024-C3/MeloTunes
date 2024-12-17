@@ -91,7 +91,7 @@
             <label for="secondName">Apellido:</label>
             <input type="text" id="secondName" v-model="editProfile.secondName" />
           </div>
-          <div class="form-group">
+          <div v-if="this.user_logged.is_artist" class="form-group">
             <label for="bio">Biografía:</label>
             <textarea id="bio" v-model="editProfile.bio"></textarea>
           </div>
@@ -668,15 +668,15 @@ li {
 }
 
 .favorite-cover {
-  width: 40px;
-  height: 40px;
+  width: 5vw;
+  height: 5vh;
   object-fit: cover;
 }
 
 .favorite-details {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 @media (max-width: 768px) {

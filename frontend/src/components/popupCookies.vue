@@ -94,8 +94,6 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('../assets/fondo.jpg') no-repeat center center fixed; /* Fondo de la imagen */
-  background-size: cover; /* Hace que la imagen cubra todo el área del popup */
   display: flex;
   justify-content: center;
   align-items: center;
