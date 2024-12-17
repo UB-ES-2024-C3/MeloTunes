@@ -58,7 +58,7 @@ def test_create_and_read_album_by_id() -> None:
 
 def test_create_user_and_create_album() -> None:
     """
-    Integration test to create a user and then create an album with that user.
+    Integration test to create a user and then create an album with that user and then delete it.
     """
     user_data = {
         "email": "artist9@example.com",
@@ -226,3 +226,61 @@ def test_get_album_authorized() -> None:
     )
     assert get_response.status_code == 200
     assert get_response.json()["id"] == album_id
+
+def test_update_album() -> None:
+    """
+    Integration test to update an album by an authorized artist.
+    """
+    # Crear el álbum previamente
+    album_data = {
+        "title": "Album to Update",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg",
+        "duration": 3600,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+    create_response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+    assert create_response.status_code == 200
+    album_id = create_response.json()["id"]
+
+    # Crear un usuario autorizado (artista)
+    username = "artist4@music.com"
+    password = "Artist1234"
+    user_data = {
+        "email": username,
+        "password": password,
+        "first_name": "Test Artist",
+        "second_name": "Test Artist",
+        "is_superuser": False,
+        "is_artist": True
+    }
+
+    # Crear al usuario
+    create_user_response = client.post(f"{settings.API_V1_STR}/users/", json=user_data)
+    assert create_user_response.status_code == 200
+
+    # Hacer login con el usuario autorizado
+    login_data = {"username": username, "password": password}
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+    assert login_response.status_code == 200
+
+    # Actualizar el álbum
+    updated_album_data = {
+        "title": "Updated Album Title",
+        "artist": "Updated Artist",
+        "release_date": "2025-01-01",
+        "genre": "Rock",
+        "cover_image_url": "https://example.com/newcover.jpg",
+        "duration": 3800,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+    update_response = client.patch(
+        f"{settings.API_V1_STR}/albums/{album_id}",
+        json=updated_album_data,
+        headers={"Authorization": f"Bearer {login_response.json()['access_token']}"}
+    )
+    assert update_response.status_code == 200
