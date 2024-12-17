@@ -178,3 +178,51 @@ def test_create_and_delete_album_as_owner() -> None:
     # Eliminar el álbum como el artista dueño
     delete_response = client.delete(f"{settings.API_V1_STR}/albums/{album_id}", headers=artist_headers)
     assert delete_response.status_code == 200
+
+def test_get_album_authorized() -> None:
+    """
+    Integration test to get an album by an authorized artist.
+    """
+    # Crear un álbum previamente
+    album_data = {
+        "title": "Album to Fetch",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg",
+        "duration": 3600,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+    create_response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+    assert create_response.status_code == 200
+    album_id = create_response.json()["id"]
+
+    # Crear un usuario autorizado (artista)
+    username = "artist2@music.com"
+    password = "Artist1234"
+    user_data = {
+        "email": username,
+        "password": password,
+        "first_name": "Test Artist",
+        "second_name": "Test Artist",
+        "is_superuser": False,
+        "is_artist": True
+    }
+
+    # Crear al usuario
+    create_user_response = client.post(f"{settings.API_V1_STR}/users/", json=user_data)
+    assert create_user_response.status_code == 200
+
+    # Hacer login con el usuario autorizado
+    login_data = {"username": username, "password": password}
+    login_response = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+    assert login_response.status_code == 200
+
+    # Obtener el álbum
+    get_response = client.get(
+        f"{settings.API_V1_STR}/albums/{album_id}",
+        headers={"Authorization": f"Bearer {login_response.json()['access_token']}"}
+    )
+    assert get_response.status_code == 200
+    assert get_response.json()["id"] == album_id
