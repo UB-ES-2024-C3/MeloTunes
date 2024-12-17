@@ -90,16 +90,10 @@ class UserService {
         return res
       })
   }
-  changePassword (strPass) {
-    const token = localStorage.getItem('accessToken') // Recuperar token
-    if (!token) {
-      return Promise.reject(new Error('No token found')) // Rechazar si no hay token
-    }
-    return axios.patch('/api/v1/users/me', {
+  changePassword (strPass, userId) {
+    return axios.patch(`/api/v1/users/${userId}`, {
       password: strPass
-    }, {headers: {
-      Authorization: `Bearer ${token}` // Incluir token en la cabecera
-    }})
+    })
       .then((res) => {
         return res
       })
