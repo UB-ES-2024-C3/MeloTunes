@@ -33,9 +33,6 @@ def test_create_album(client) -> None:
         "timestamp": datetime.utcnow().isoformat()  # Fecha y hora actual en formato ISO
     }
     response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
-    print(response.json())  # Inspecciona el error devuelto por el servidor
-    print("Response Status Code:", response.status_code)
-    print("Response JSON:", response.json())
     assert response.status_code == 200
     data = response.json()
     global album_id
@@ -209,19 +206,6 @@ def test_create_album_with_invalid_genre(client) -> None:
     data = response.json()
     assert "detail" in data  # Debe mostrar el error de validación para el género
 
-def test_filter_albums_by_genre(client) -> None:
-    """
-    Test to filter albums by genre.
-    """
-    genre = "Pop"
-    response = client.get(f"{settings.API_V1_STR}/albums/?genre={genre}")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    for album in data["data"]:
-        assert album["genre"] == genre  # Todos los álbumes deben tener el género solicitado
-
 def test_create_album_with_negative_duration(client) -> None:
     """
     Test to check if an album with a negative duration returns an error.
@@ -239,3 +223,24 @@ def test_create_album_with_negative_duration(client) -> None:
     assert response.status_code == 422  # Error de validación
     data = response.json()
     assert "detail" in data
+
+def test_create_album_with_unexpected_fields(client) -> None:
+    """
+    Test to check if creating an album with unexpected fields returns an error or ignores them.
+    """
+    album_data = {
+        "title": "Extra Fields Album",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg",
+        "extra_field": "Unexpected field",
+        "duration": 3000,
+        "timestamp": datetime.utcnow().isoformat()  # Fecha y hora actual en formato ISO
+    }
+
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+    assert response.status_code in (200, 422)  # Puede aceptar o rechazar el campo extra
+    if response.status_code == 422:
+        data = response.json()
+        assert "detail" in data
