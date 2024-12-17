@@ -361,6 +361,11 @@ header .auth-buttons a:hover {
   background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro para resaltar el texto */
   border-radius: 0 0 15px 15px;
   width: 100%;
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+  align-items: center; /* Centra horizontalmente */
+  justify-content: center; /* Centra verticalmente */
+  text-align: center; /* Centra el texto dentro de cada p */
 }
 
 .album-info p {
@@ -369,6 +374,7 @@ header .auth-buttons a:hover {
   font-size: 1.2rem;
   text-align: center; /* Centra el texto */
 }
+
 /* Efectos de hover en los textos */
 .album-info p:hover {
   color: #f32121; /* Color rojo al pasar el ratón */
