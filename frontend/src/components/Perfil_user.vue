@@ -16,7 +16,7 @@
         <h1 v-if="!this.user_logged.is_artist">{{ this.user_logged.first_name }} {{ this.user_logged.second_name }}</h1>
         <h4 v-if="!this.user_logged.is_artist">{{ this.user_logged.email }}</h4>
         <h1 v-if="this.user_logged.is_artist">{{ this.user_logged.artist_name }}</h1>
-        <p class="location" v-if="this.user_logged.isArtist">{{ location }}</p>
+        <p class="location" v-if="this.user_logged.is_artist">{{ location }}</p>
         <div v-if="this.user_logged.is_artist">
           <p v-if="expandedBio" class="bio">{{ this.user_logged.description }}</p>
           <p v-else class="bio-short">{{ truncatedDescription }}</p>
@@ -25,12 +25,12 @@
           </button>
         </div>
         <div class="btn-group">
-          <button class="btn-favoritos" @click="showFavorites = true">Ver mis favoritos</button>
-          <button class="btn-favoritos" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
-          <button v-if="this.user_logged.is_artist" class="btn-upload-song" @click="uploadSong">
+          <button class="btn" @click="showFavorites = true">Ver mis favoritos</button>
+          <button class="btn" v-if="this.user_logged.is_artist" @click="showSongs = true">Ver mis canciones</button>
+          <button v-if="this.user_logged.is_artist" class="btn" @click="uploadSong">
             Subir canción
           </button>
-          <button class="btn-modificar-perfil" @click="showEditProfile = true">Modificar perfil</button>
+          <button class="btn" @click="showEditProfile = true">Modificar perfil</button>
         </div>
       </div>
     </header>
@@ -41,9 +41,9 @@
         <button class="close-button" @click="showSongs = false">×</button>
         <h2>Mis Canciones</h2>
         <ul v-if="this.my_songs && this.my_songs.length" class="favorites-list">
-          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item">
+          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item" @click="handleClick(uploaded_song)">
             <a :href="uploaded_song.cover" target="_blank" rel="noopener noreferrer">
-              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" />
+              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" style="width: 10vw; height: 10vh"/>
             </a>
             <div class="favorite-details">
               <h3>{{ uploaded_song.title }}</h3>
@@ -52,7 +52,7 @@
             </div>
           </li>
         </ul>
-        <p v-else>No tienes favoritos aún.</p>
+        <p v-else>No tienes canciones aún.</p>
       </div>
     </div>
 
@@ -62,9 +62,9 @@
         <button class="close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
         <ul v-if="fav_songs && fav_songs.length" class="favorites-list">
-          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item">
+          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item" @click="handleClick(favorite)">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
-              <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" />
+              <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" style="width: 10vw; height: 10vh" />
             </a>
             <div class="favorite-details">
               <h3>{{ favorite.title }}</h3>
@@ -91,7 +91,7 @@
             <label for="secondName">Apellido:</label>
             <input type="text" id="secondName" v-model="editProfile.secondName" />
           </div>
-          <div class="form-group">
+          <div v-if="this.user_logged.is_artist" class="form-group">
             <label for="bio">Biografía:</label>
             <textarea id="bio" v-model="editProfile.bio"></textarea>
           </div>
@@ -155,9 +155,9 @@ import SongService from '../services/SongService'
 export default {
   name: 'Perfil_user',
   mounted () {
-    UserService.get().then(response => {
-      this.user_logged = response.data
-      UserService.getMyFavouriteSongs().then(response => {
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      UserService.getMyFavouriteSongs(this.user_logged.id).then(response => {
         this.fav_songs = response
         if (this.user_logged.artist_name) {
           SongService.getAllArtist(this.user_logged.artist_name).then(response => {
@@ -236,11 +236,27 @@ export default {
     },
     enviarModificacion () {
       this.showEditProfile = false
-      UserService.updateUser(this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+      UserService.updateUser(this.user_logged.id, this.editProfile.firstName, this.editProfile.secondName, this.editProfile.bio)
+        .then(() => {
+          this.$router.push({ path: '/perfil_user', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token } })
+          this.$router.go()
+        })
         .catch((error) => {
           console.error(error)
           alert('Algo ha fallado')
         })
+    },
+    getUser (usersList, email) {
+      for (const user of usersList) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
+    },
+    handleClick (song) {
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     }
   }
 }
@@ -252,7 +268,10 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: #121212;
+  background-image: url('../assets/fondo.jpg'); /* Ruta a tu imagen de fondo */
+  background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
   color: white;
   padding: calc(2vh + 6vw) 3vw 3vh;
   min-height: 100vh;
@@ -274,22 +293,26 @@ export default {
   position: relative;
 }
 
- .btn {
-   background-color: #bf0000;
-   padding: 1.5vh 2vw;
-   border-radius: 2vw;
-   color: white;
-   font-size: 1.2rem;
-   text-decoration: none;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   border: none;
-   cursor: pointer;
- }
+.btn {
+  background-color: #f32121; /* Un rojo vibrante */
+  color: white; /* Texto blanco para contraste */
+  padding: 10px 1px; /* Reducir el padding horizontal */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 17px; /* Tamaño de fuente legible */
+  font-weight: bold; /* Texto destacado */
+  cursor: pointer; /* Cambia el cursor al pasar el mouse */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  transition: all 0.3s ease-in-out; /* Transición suave para los efectos */
+}
 
 .btn:hover {
-  background-color: #a30000;
+  background-color: #d62828; /* Rojo más oscuro al pasar el mouse */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Más sombra */
+}
+
+.btn:active {
+  transform: scale(0.95); /* Efecto de pulsación */
 }
 
 .logo-link {
@@ -361,7 +384,7 @@ section {
 
 .divider {
   width: 1px;
-  background-color: #555;
+  background-color: #ce6c6c;
   height: 100%;
   align-self: stretch; /* Hace que la barra divisora ocupe todo el alto */
 }
@@ -381,7 +404,7 @@ section {
 }
 
 .recommendation-column h3 {
-  font-size: 1.8rem;
+  font-size: 1rem;
   color: #ff3d00;
   margin-bottom: 1.5vh;
 }
@@ -398,12 +421,6 @@ section {
 .recommendation-column li {
   font-size: 1.2rem;
   color: #ddd;
-}
-
-.divider {
-  width: 2px;
-  background-color: #555;
-  margin: 0 1vw;
 }
 
 .modal-overlay {
@@ -424,13 +441,12 @@ section {
   color: #ffffff; /* Texto blanco */
   padding: 3vh 3vw;
   border-radius: 1vw;
-  width: 90%;
-  max-width: 500px;
+  width: 25vw;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2vh; /* Espaciado entre elementos */
+  gap: 0.5vh; /* Espaciado entre elementos */
 }
 
 .modal-content h2 {
@@ -441,7 +457,7 @@ section {
 
 .modal-content .form-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1vh;
 }
 
@@ -524,7 +540,6 @@ section {
   box-sizing: border-box;
 }
 
-/* Estilo base del body */
 body {
   margin: 0;
   padding: 0;
@@ -645,32 +660,120 @@ li {
 }
 
 .favorites-list {
-  max-height: 40vh;
-  overflow-y: auto;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .favorite-item {
   display: flex;
   justify-content: space-between;
-  margin: 1vh 0;
+  gap: 1vw; /* Añade un pequeño espacio entre la imagen y el texto */
+  padding: 0.5vh 0;
+}
+.favorite-item a {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
 }
 
 .favorite-cover {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
+  width: 70vw;
+  margin-right: 0;
 }
 
 .favorite-details {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  text-align: left;
+  margin-left: 0;
+}
+.favorite-details h3 {
+  font-size: 1.2rem;
+  text-align: left;
+  margin: 0;
+}
+.favorite-details h3, .favorite-details p, .favorite-details .song-duration {
+  margin: 0; /* Elimina márgenes predeterminados */
 }
 
-.divider {
-  width: 1px;
-  background-color: #ff3d00;
-  margin: 0 3vw;
+@media (max-width: 768px) {
+  .perfil {
+    padding: 5vw 3vw;
+  }
+
+  .perfil-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 5vw 3vw;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 30vw;
+    height: 30vw;
+  }
+
+  .user-details {
+    margin-top: 2vh;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .top-columns {
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  .top-songs, .top-albums {
+    width: 100%;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .recommendations-grid {
+    flex-direction: column;
+    gap: 3vh;
+  }
+
+  .modal-content {
+    padding: 4vw;
+    max-width: 90%;
+    gap: 3vh;
+  }
+
+  .modal-content button {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .modal-content .form-group input,
+  .modal-content .form-group textarea {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  .music-recommendations {
+    padding: 3vw;
+  }
+
+  .events ul {
+    padding-left: 0;
+  }
 }
 
 </style>

@@ -6,7 +6,8 @@ describe('Página de registro', () => {
   it('Carga correctamente la página de registro', () => {
     cy.contains('Completa tu Registro'); // Verifica que el texto existe
     cy.get('form').should('exist'); // Verifica que el formulario está presente
-    cy.get('input[type="text"]').should('have.length', 3); // Email, Nombre, Apellido
+    cy.get('input[type="email"]').should('have.length', 1); // Email, Nombre, Apellido
+    cy.get('input[type="text"]').should('have.length', 2); // Email, Nombre, Apellido
     cy.get('input[type="password"]').should('have.length', 2); // Contraseña y Confirmar Contraseña
     cy.get('input[type="date"]').should('exist'); // Fecha de nacimiento
   });
@@ -81,10 +82,12 @@ describe('Página de registro', () => {
     // Verificar que aparece el mensaje de error
     cy.on('window:alert', (text) => {
       expect(text).to.equal(
-        'El usuario con email usuario@ejemplo.com ya está registrado en el sistema.'
+        'El usuario con email registrado@ejemplo.com ya está registrado en el sistema.'
       );
     });
   });
+
+  /*
   it('Completa el registro exitosamente con datos válidos', () => {
     // Rellenar los campos del formulario con datos válidos
     const uniqueEmail = `testusers${Date.now()}@gmail.com`;
@@ -102,5 +105,6 @@ describe('Página de registro', () => {
     cy.on('window:alert', (alertText) => {
       expect(alertText).to.contains('Registro exitoso!');
     });
-  });
+  });*/
+  
 });

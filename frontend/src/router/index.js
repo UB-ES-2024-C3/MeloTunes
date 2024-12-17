@@ -9,6 +9,8 @@ import TeamSet from '@/components/TeamSet'
 import PerfilUser from '@/components/Perfil_user'
 import AddSong from '@/components/AddSong'
 import ArtistProfile from '@/components/ArtistProfile'
+import RecuperarContra from '@/components/RecuperarContra'
+import PerfilAlbum from '../components/PerfilAlbum.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -59,6 +61,16 @@ export default new Router({
       path: '/song',
       name: 'Song',
       component: PerfilCancion
+    },
+    {
+      path: '/recuperar',
+      name: 'Recuperar',
+      component: RecuperarContra
+    },
+    {
+      path: '/perfil_album',
+      name: 'Album',
+      component: PerfilAlbum
     }
   ]
 })

@@ -7,7 +7,7 @@ from app import crud
 from app.tests.utils.utils import random_lower_string, random_email
 
 client = TestClient(app)
-
+song_id = 0
 
 def test_read_songs() -> None:
     """
@@ -33,6 +33,8 @@ def test_create_song(client):
     print(response.json())  # Inspecciona el error devuelto por el servidor
     assert response.status_code == 200
     data = response.json()
+    global song_id
+    song_id = data["id"]
     assert data["title"] == song_data["title"]
     assert data["artist"] == song_data["artist"]
 
@@ -43,11 +45,10 @@ def test_read_song_by_id() -> None:
     """
     Test to retrieve a song by its ID.
     """
-    song_id_to_find = 1 
-    response = client.get(f"{settings.API_V1_STR}/songs/{song_id_to_find}")
+    response = client.get(f"{settings.API_V1_STR}/songs/{song_id}")
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == song_id_to_find
+    assert data["id"] == song_id
 
 def test_read_song_by_title() -> None:
     """
@@ -68,7 +69,7 @@ def test_update_song(client, superuser_token_headers: dict[str, str]) -> None:
     """
     #title = "Test Song 2"
     #song_to_update = db.query(Song).filter(Song.title == title).first() 
-    song_to_update = 1
+    song_to_update = song_id
     updated_data = {
         "title": "New Song",
         "artist": "New Artist",
@@ -128,7 +129,7 @@ def test_delete_song_super_user(
     
     # Intentar eliminar la canción con el superusuario
     r = client.delete(
-        f"{settings.API_V1_STR}/songs/{song.id}",
+        f"{settings.API_V1_STR}/songs/{song.id}/{user.id}",
         headers=user_token_headers,
     )
     
@@ -136,3 +137,33 @@ def test_delete_song_super_user(
     assert r.status_code == 200
     deleted_song = r.json()
     assert deleted_song["message"] == "Song deleted successfully"
+
+def test_create_song_already_exists(client) -> None:
+    """
+    Test to check if creating a song that already exists returns an error.
+    """
+    song_data = {
+        "title": "Test Song",
+        "artist": "Test Artist",
+        "album": "Test Album",
+        "duration": 360,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    # Primero crea la canción
+    client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+
+    # Ahora intenta crear la misma canción, debería fallar
+    response = client.post(f"{settings.API_V1_STR}/songs/", json=song_data)
+    assert response.status_code == 400
+    data = response.json()
+    assert data["detail"] == "The song already exists in the system."
+
+def test_read_song_by_title_not_found() -> None:
+    """
+    Test to check if song retrieval by title returns an empty list when no songs are found.
+    """
+    song_title_to_find = "Nonexistent Song"
+    response = client.get(f"{settings.API_V1_STR}/songs/songs/{song_title_to_find}")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["data"]) == 0  # Verifica que no se encuentra ninguna canción

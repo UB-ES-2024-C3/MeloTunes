@@ -1,79 +1,105 @@
 <template class="main">
   <div class="main-container">
-    <header>
-      <div class="logo">
-        <button @click="goHome" style="border: none; background: none;">
-          <img src="../assets/logo2.png" alt="Logo"></button>
-      </div>
+    <div class="background-image"></div>
+      <header>
+        <div class="logo">
+          <button @click="goHome" style="border: none; background: none;">
+            <img src="../assets/logo2.png" alt="Logo" />
+          </button>
+        </div>
+        <div class="search-bar">
+          <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
+          <button @click="goHome">
+            <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width: 2vw; vertical-align: middle;" />
+            Buscar
+          </button>
+        </div>
+      </header>
 
-      <div class="search-bar">
-        <input type="text" placeholder="Busca canciones, artistas" v-model="searchQuery" @keyup.enter="searchSong" />
-        <button @click="goHome"><img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Buscar" style="width:2vw; vertical-align: middle;">
-          Buscar
-        </button>
-      </div>
-    </header>
     <div>
       <div class="perfil">
         <div class="album">
-          <img :src="getAlbumImage(song.album)" alt="Album Cover" class="album-img">
+          <img :src="getAlbumImage(song.album)" alt="Album Cover" class="album-img" />
 
-          <!-- Contenedor para el título y el autor -->
           <div class="details">
             <p class="song-title">{{ song.title }}</p>
             <p class="song-author">{{ song.artist }}</p>
+            <button class="play-button" @click="playAudio">
+              <img :src="isPlaying ? require('../assets/pausa.png') : require('../assets/play.png')" style="width: 10vw; height: 10vh; object-fit: contain;" />
+            </button>
           </div>
         </div>
 
-        <!-- Información del álbum -->
         <div class="information">
           <p class="album-info">{{ song.album }}</p>
-          <p class="album-info">{{ getYear(song.timestamp) }}</p></div>
+          <p class="album-info">{{ getYear(song.timestamp) }}</p>
+        </div>
+
+        <div v-if="user_logged.is_superuser || user_logged.artist_name == song.artist" class="admin-controls">
+          <button @click="openDeleteDialog" class="delete-button">Eliminar canción</button>
+        </div>
+
+        <v-dialog v-model="deleteDialog" max-width="500px">
+          <v-card>
+            <v-card-title class="headline">Confirmar eliminación</v-card-title>
+            <v-card-text>
+              ¿Estás seguro de que quieres eliminar esta canción?
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="green" text @click="deleteSong">Sí</v-btn>
+              <v-btn color="red" text @click="cancelDelete">No</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <v-app class="main-container">
-          <v-btn color="black"  @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
-            <img
-              src="../assets/avance-rapido.png"
-              alt="Botón Imagen"
-              height=40
-              width="40"
-            />
+          <v-btn color="black" @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer, left: drawer }">
+            <img src="../assets/avance-rapido.png" alt="Botón Imagen" height="40" width="40" />
           </v-btn>
         </v-app>
-        <div class="favorite-btn-container">
-          <i
-            :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'"
-            @click="addFavorites"
-            style="cursor: pointer; font-size: 24px; color: #ff0000;"
-          ></i>
+
+        <div class="favorite-btn-container" v-if="this.user_logged">
+          <i :class="isFavorited ? 'fas fa-heart' : 'far fa-heart'" @click="addFavorites" style="cursor: pointer; font-size: 24px; color: #ff0000;"></i>
         </div>
       </div>
 
+      <div v-if="comments.length > 0" class="comments-section">
+        <h3>Comentarios:</h3>
+        <div v-for="comment in comments" :key="comment.id" class="comment-item">
+          <p><strong>{{ comment.user }}</strong>: {{ comment.text }}</p>
+          <button v-if="comment.user === user_logged.first_name || user_logged.is_superuser" @click="deleteComment(comment.id)" style="background: red; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px;">
+            Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div v-if="user_logged" class="comment-input-container">
+        <textarea v-model="newComment" placeholder="Escribe un comentario..." rows="4"></textarea>
+        <button @click="postComment">Comentar</button>
+      </div>
     </div>
-    <div>
-      <v-app class="main-container">
-        <!-- Drawer en la parte derecha con 'persistent' para que no se cierre cuando haga clic fuera -->
-        <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
-          <v-list>
-            <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
-              <v-list-item-content>
-                <v-list-item-title class="item">
-                  <!-- Muestra la portada del álbum o una imagen por defecto -->
-                  <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
-                  <div class="item-info">
-                    <!-- Muestra el título de la canción y el nombre del artista -->
-                    <p>{{ song.title }}</p>
-                  </div>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
-      </v-app>
-    </div>
+
+    <v-app class="main-container">
+      <v-navigation-drawer v-model="drawer" app right persistent style="background-color: #212121; margin-top: 12vh" height="100vh" width="22vw">
+        <v-list>
+          <v-list-item v-for="song in artist_songs" :key="song.id" @click="handleClick(song)">
+            <v-list-item-content>
+              <v-list-item-title class="item">
+                <img :src="getAlbumImage(song.album)" alt="Portada del álbum" />
+                <div class="item-info">
+                  <p>{{ song.title }}</p>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </v-app>
   </div>
 </template>
 
 <script>
+import CommentService from '../services/CommentService'
 import SongService from '../services/SongService'
 import UserService from '../services/UserService'
 export default {
@@ -82,21 +108,39 @@ export default {
       all_songs: [],
       artist_songs: [],
       song: {},
+      user_logged: {},
       song_id: 0,
       drawer: false, // Estado del drawer
       isFavorited: false,
-      searchQuery: ''
+      searchQuery: '',
+      audio: null,
+      isPlaying: false,
+      comments: [], // Lista de comentarios
+      newComment: '', // Texto del nuevo comentario
+      currentUser: 'Usuario', // DIANA: Cambiar por el usuario, este es para probar
+      isOwner: false,
+      deleteDialog: false
     }
   },
   mounted () {
-    this.song_id = this.$route.query.song
-    SongService.get(this.song_id).then(response => {
-      this.song = response.data
-      SongService.getAll().then(response => {
-        this.all_songs = response.data.data
-        this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+    UserService.getAll().then(response => {
+      this.user_logged = this.getUser(response.data.data, this.$route.query.email)
+      this.song_id = this.$route.query.song
+      SongService.get(this.song_id).then(response => {
+        this.song = response.data
+        SongService.getAll().then(response => {
+          this.all_songs = response.data.data
+          this.artist_songs = this.all_songs.filter(song => song.artist === this.song.artist)
+          this.loadComments()
+        })
+        if (this.user_logged) {
+          this.checkIfFavorite()
+        }
       })
-      this.checkIfFavorite()
+      this.audio = new Audio(require(`@/assets/canciones/${this.artist.toLowerCase()}_${this.song.title.toLowerCase()}.mp3`))
+      this.audio.addEventListener('ended', () => {
+        this.isPlaying = false
+      })
     })
   },
   methods: {
@@ -144,23 +188,129 @@ export default {
     },
     addFavorites () {
       if (!this.isFavorited) {
-        UserService.addToFavoriteSongs(this.song_id).then(response => {
+        UserService.addToFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
           console.log(response)
           this.isFavorited = true
+          alert(response.message)
         })
       } else {
-        UserService.deleteOfFavoriteSongs(this.song_id).then(response => {
+        UserService.deleteOfFavoriteSongs(this.song_id, this.user_logged.id).then(response => {
           console.log(response)
           this.isFavorited = false
+          alert(response.message)
         })
       }
     },
     checkIfFavorite () {
-      UserService.getMyFavouriteSongs().then(response => {
+      UserService.getMyFavouriteSongs(this.user_logged.id).then(response => {
         const favorites = response // Asumiendo que la API devuelve un arreglo de canciones favoritas
         console.log(favorites)
         this.isFavorited = favorites.some(fav => Number(fav.id) === Number(this.song_id))
         console.log(this.isFavorite)
+      })
+    },
+    loadComments () {
+      // Simulamos la carga de comentarios
+      // DIANA: Llamada a la API para obtener los comentarios de la canción
+      CommentService.getAllSong(this.song.title).then(response => {
+        this.comments = response.data.data
+      })
+    },
+    postComment () {
+      if (this.newComment.trim() !== '') {
+        console.log(this.newComment)
+        // Agregar comentario al backend
+        CommentService.createComment(this.newComment, this.user_logged.first_name, this.song.title).then(response => {
+          this.comments.push({ id: Date.now(), user: this.user_logged.first_name, text: this.newComment })
+          this.newComment = '' // Limpiar el campo de comentario después de enviar
+        })
+      }
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: this.$route.query.song } })
+      this.$router.go()
+    },
+    deleteComment (commentId) {
+      // Encuentra el índice del comentario
+      const index = this.comments.findIndex((comment) => comment.id === commentId)
+      if (index !== -1) {
+        CommentService.deleteComment(commentId).then(response => {
+          this.comments.splice(index, 1)
+        })
+        console.log(`Comentario con ID ${commentId} eliminado.`)
+      }
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: this.$route.query.song } })
+      this.$router.go()
+    },
+    playAudio () {
+      if (this.audio) {
+        if (this.isPlaying) {
+          // Si ya está reproduciendo, pausa el audio
+          this.audio.pause()
+          this.isPlaying = false
+        } else {
+          // Si está pausado o no ha comenzado, reproduce el audio
+          this.audio.play()
+          this.isPlaying = true
+
+          // Detecta cuándo termina la canción para actualizar el estado
+          this.audio.addEventListener('ended', () => {
+            this.isPlaying = false
+          })
+        }
+      } else {
+        // Carga y reproduce el audio si no existe
+        const sanitizedArtist = this.removeAccents(
+          this.song.artist.toLowerCase().replace(/ /g, '')
+        )
+        const sanitizedTitle = this.removeAccents(
+          this.song.title.toLowerCase().replace(/ /g, '')
+        )
+
+        try {
+          this.audio = new Audio(
+            require(`@/assets/canciones/${sanitizedArtist}_${sanitizedTitle}.mp3`)
+          )
+          this.audio.play()
+          this.isPlaying = true
+
+          // Detecta cuándo termina la canción
+          this.audio.addEventListener('ended', () => {
+            this.isPlaying = false
+          })
+        } catch (e) {
+          console.error('Archivo de audio no encontrado:', e)
+          alert('No se encontró el archivo de audio para esta canción.')
+          this.isPlaying = false
+        }
+      }
+    },
+    getUser (usersList, email) {
+      for (const user of usersList) {
+        if (email === user.email) {
+          return user
+        }
+      }
+      return NaN
+    },
+    openDeleteDialog () {
+      this.deleteDialog = true
+    },
+    cancelDelete () {
+      this.deleteDialog = false
+    },
+    deleteSong () {
+      // Backend: Eliminar la canción del backend
+      SongService.deleteSong(this.song.id, this.user_logged.id).then(response => {
+        console.log('Canción eliminada:', response)
+        this.deleteDialog = false
+        // Redirigimos a home después de eliminar la canción
+        this.$router.push({
+          path: '/home',
+          query: {email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token}
+        })
+        this.$router.go()
+      }).catch(error => {
+        console.error('Error al eliminar la canción:', error)
+        this.deleteDialog = false
       })
     }
   }
@@ -168,81 +318,68 @@ export default {
 </script>
 
 <style>
-
+/* Ocultar scrollbars en navegadores que soporten esta regla */
 ::-webkit-scrollbar {
   display: none;
 }
 
-.main-container, main {
-  background-color: black !important;
-
-}
-
-.v-navigation-drawer .v-list-item {
-  color: #000000 !important;
-}
-
-/* Estilo para el botón flotante */
-.floating-btn {
-  border: none;
-  box-shadow: none;
-  cursor: pointer;
-  width: 5vw;
-  height: 10vh !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  transform: scaleX(1);
-  transition: transform 0.3s ease;
-  margin-top: 5vh;
-}
-.floating-btn img {
-  transform: scaleX(1); /* Estado inicial de la imagen */
-  transition: transform 0.3s ease; /* Asegura la transición al volver */
-}
-
-/* Estilo para mover el botón hacia la izquierda cuando el drawer está abierto */
-.floating-btn:hover, .floating-btn:focus {
-  box-shadow: none;
-  outline: none;
-  background: transparent;
-}
-
-.floating-btn:active {
-  outline: none;
-  box-shadow: none;
-  background-color: transparent;
-}
-
+/* Estilos generales */
 body {
   background-color: #000000;
   height: 100vh;
-  overflow: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
+/* Contenedor principal */
+.main-container, main {
+  background-color: transparent !important;
+  min-height: 100vh; /* Altura mínima de toda la vista */
+  display: flex;
+  flex-direction: column;
+  padding-top: 15vh;
+  padding-bottom: 5vh;
+  position: relative;
+}
+
+/* Fondo de imagen fija */
+.background-image {
+  background: url('../assets/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: brightness(0.7);
+}
+
+/* Cabecera */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 3vh 2vw;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to bottom, #e53935, #000);
+  background: rgba(0, 0, 0, 0.7);
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
-  transition: top 0.3s;
   z-index: 1000;
-
 }
 
-/* Estilos de la barra de búsqueda */
+.logo img {
+  width: 3.5vw;
+  margin-left: -1vw;
+}
+
+/* Barra de búsqueda */
 .search-bar {
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  height: auto;
-
 }
 
 .search-bar input[type="text"] {
@@ -276,28 +413,23 @@ header {
   height: 3.5vh;
 }
 
-/* Estilos de logo */
-.logo img {
-  width: 5vw;
-  margin-top: 1vh;
-  margin-left: 1.0vw;
-}
-
+/* Perfil */
 .perfil {
   height: 80vh;
   display: flex;
   padding: 2vw;
-  margin-top: 15vh;
+  margin-top: 5vh;
   flex-direction: column;
   align-items: flex-start;
 }
 
+/* Detalles de la canción */
 .album {
   display: flex;
-  flex-direction: row; /* Imagen a la izquierda, texto a la derecha */
-  align-items: flex-start; /* Alinea verticalmente al inicio */
-  gap: 2vw; /* Espaciado entre la imagen y el texto */
-  margin-bottom: 2vh; /* Espacio debajo de la sección de detalles */
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2vw;
+  margin-bottom: 2vh;
 }
 
 .album img {
@@ -306,25 +438,11 @@ header {
   object-fit: cover;
   border-radius: 10px;
 }
-.album-info {
-  margin: 0;
-}
 
 .details {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centrar verticalmente */
-
-}
-
-.song-info p {
-  margin: 1vw 0;
-  color: white;
-}
-
-.song-info img {
   justify-content: center;
-  width: 20vw;
 }
 
 .song-title {
@@ -340,38 +458,135 @@ header {
   margin: 0;
 }
 
-/* Estilos de la información del álbum */
 .information {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 0 0.5vw;
-  color: #ffffff;
   flex-direction: column;
   gap: 0.5vh;
   font-size: 1.5rem;
-}
-.information v-btn {
-  background-color: black;
-  color: black;
+  color: white;
 }
 
-.favorite-btn-container {
+/* Botón de reproducción */
+.play-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.play-button img {
+  width: 10vw;
+  height: 10vh;
+  object-fit: contain;
+}
+
+/* Botón flotante */
+.floating-btn {
   position: fixed;
-  bottom: 5vh; /* Distancia desde la parte inferior de la pantalla */
-  right: 5vw;/* Distancia desde el lado derecho de la pantalla */
-  z-index: 1200; /* Asegúrate de que el botón esté encima de otros elementos */
+  top: 60vh;
+  right: 5vh;
+  z-index: 1100;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.floating-btn.left {
+  right: 50vh;
+}
+
+.floating-btn img {
+  width: 8%;
+  height: auto;
+  transform: scaleX(1);
+  transition: transform 0.3s ease;
+}
+
+.floating-btn:hover img {
+  transform: scaleX(-1);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mirrored {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+/* Botón de favoritos */
+.favorite-btn-container {
+  position: absolute;
+  top: 80vh;
+  right: 5vw;
+  z-index: 1;
 }
 
 .favorite-btn-container i {
-  font-size: 3rem; /* Puedes ajustar el tamaño del icono */
-  color: #ff0000; /* Color del icono */
+  font-size: 3rem;
+  color: #ff0000;
   cursor: pointer;
 }
 
-.item:hover {
-  transform: scale(1.1);
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
+/* Comentarios */
+.comments-section {
+  margin-top: 20px;
+  color: white;
+}
+
+.comment-item {
+  background-color: #333;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.comment-input-container {
+  margin-top: 20px;
+}
+
+.comment-input-container textarea {
+  width: 100%;
+  padding: 10px;
+  background-color: #2c2c2c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.comment-input-container button {
+  padding: 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.comment-input-container button:hover {
+  background-color: #f44336;
+}
+
+/* Lista de canciones */
+.v-navigation-drawer .v-list-item {
+  color: #000000 !important;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 24vw;
+  background-color: #1f1f1f;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .item img {
@@ -380,35 +595,259 @@ header {
   border-radius: 10px;
   margin-right: 0.2vw;
   object-fit: cover;
-  margin-left: 0.1vw;
-
-}
-
-.item img:hover {
-  transform: scale(1.1);
-
 }
 
 .item-info p {
   margin: 0.5vw;
   color: white;
   font-size: 1rem;
-  text-align: left;
 }
 
-.item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 24vw;
-  text-align: center;
-  background-color: #1f1f1f;
-  border-radius: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.item:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5);
 }
-.mirrored {
-  transform: rotate(180deg); /* Rota la imagen 180 grados */
-  transition: transform 0.3s ease;
+
+/* Botón de eliminar canción */
+.delete-button {
+  padding: 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #f44336;
+}
+
+/* Estilo base para dispositivos móviles pequeños (pantallas hasta 480px de ancho) */
+@media screen and (max-width: 480px) {
+
+  /* Cabecera */
+  header {
+    padding: 2vh 2vw;
+  }
+
+  .logo img {
+    width: 40vw; /* Ajuste de tamaño de logo en móvil */
+  }
+
+  /* Barra de búsqueda */
+  .search-bar input[type="text"] {
+    width: 60vw; /* Ajuste de tamaño para campo de búsqueda */
+  }
+
+  .search-bar button {
+    width: 30vw; /* Botón de búsqueda más pequeño */
+  }
+
+  .search-bar button img {
+    width: 12vw; /* Ajuste para el icono del botón */
+  }
+
+  /* Perfil */
+  .perfil {
+    padding: 4vw;
+  }
+
+  .album img {
+    width: 45vw; /* Ajustar el tamaño de la imagen del álbum */
+    height: 40vh;
+  }
+
+  .details {
+    gap: 2vw;
+  }
+
+  .song-title {
+    font-size: 2rem; /* Ajustar tamaño de texto en móvil */
+  }
+
+  .song-author {
+    font-size: 1.3rem; /* Ajuste en el tamaño del autor */
+  }
+
+  .information {
+    font-size: 1.1rem;
+  }
+
+  /* Botón de reproducción */
+  .play-button img {
+    width: 50vw; /* Ajuste del tamaño del botón de reproducción */
+    height: 50vh;
+  }
+
+  /* Botón flotante */
+  .floating-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .floating-btn img {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Favoritos */
+  .favorite-btn-container {
+    top: 70vh;
+    right: 5vw;
+  }
+
+  /* Comentarios */
+  .comment-item {
+    padding: 6px;
+  }
+
+  .comment-input-container textarea {
+    padding: 6px;
+  }
+
+  .comment-input-container button {
+    padding: 6px;
+  }
+
+  /* Lista de canciones */
+  .item {
+    flex-direction: column;
+    width: 90vw;
+    margin: 2vh 0;
+  }
+
+  .item img {
+    width: 60vw;
+    height: 60vw;
+    margin-bottom: 8px;
+  }
+
+  .item-info p {
+    font-size: 0.9rem;
+  }
+
+  .item:hover {
+    transform: scale(1);
+  }
+
+  .delete-button {
+    padding: 6px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Dispositivos con pantallas medianas (entre 481px y 768px de ancho, tablets y teléfonos grandes) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+
+  /* Cabecera */
+  header {
+    padding: 3vh 3vw;
+  }
+
+  .logo img {
+    width: 25vw;
+  }
+
+  /* Barra de búsqueda */
+  .search-bar input[type="text"] {
+    width: 65vw;
+  }
+
+  .search-bar button {
+    width: 30vw;
+  }
+
+  .search-bar button img {
+    width: 10vw;
+  }
+
+  /* Perfil */
+  .perfil {
+    padding: 3vw;
+  }
+
+  .album img {
+    width: 35vw;
+    height: 45vh;
+  }
+
+  .details {
+    gap: 1.5vw;
+  }
+
+  .song-title {
+    font-size: 2.5rem;
+  }
+
+  .song-author {
+    font-size: 1.5rem;
+  }
+
+  .information {
+    font-size: 1.2rem;
+  }
+
+  /* Botón de reproducción */
+  .play-button img {
+    width: 40vw;
+    height: 40vh;
+  }
+
+  /* Botón flotante */
+  .floating-btn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .floating-btn img {
+    width: 25px;
+    height: 25px;
+  }
+
+  /* Favoritos */
+  .favorite-btn-container {
+    top: 60vh;
+    right: 4vw;
+  }
+
+  /* Comentarios */
+  .comment-item {
+    padding: 8px;
+  }
+
+  .comment-input-container textarea {
+    padding: 8px;
+  }
+
+  .comment-input-container button {
+    padding: 8px;
+  }
+
+  /* Lista de canciones */
+  .item {
+    flex-direction: row;
+    width: 85vw;
+    margin: 2vh 0;
+  }
+
+  .item img {
+    width: 40vw;
+    height: 40vw;
+  }
+
+  .item-info p {
+    font-size: 1rem;
+  }
+
+  .item:hover {
+    transform: scale(1.05);
+  }
+
+  .delete-button {
+    padding: 8px;
+  }
 }
 
 </style>

@@ -19,7 +19,8 @@ from app.models import (
     AlbumCreateOpen,
     AlbumOut,
     AlbumsOut,
-    AlbumUpdate
+    AlbumUpdate,
+    User
 )
 
 router = APIRouter()
@@ -156,14 +157,37 @@ def update_album(*, session: SessionDep, album_id: int, album_in: AlbumUpdate) -
 
 
 @router.delete("/{album_id}")
-def delete_album(session: SessionDep, current_user: CurrentUser, album_id: int) -> Message:
+def delete_album(session: SessionDep, album_id: int) -> Message:
     """
     Delete an album.
     """
     album = session.get(Album, album_id)
     if not album:
         raise HTTPException(status_code=404, detail="Album not found")
-    elif album.artist != current_user.artist_name and not current_user.is_superuser:
+    #elif album.artist != current_user.artist_name and not current_user.is_superuser:
+     #   raise HTTPException(
+      #      status_code=403, detail="The user doesn't have enough privileges"
+       # )
+
+    session.delete(album)
+    session.commit()
+    return Message(message="Album deleted successfully")
+
+
+@router.delete("/albums/{album_id}/{user_id}")
+def delete_album_user(session: SessionDep, album_id: int, user_id: int) -> Message:
+    """
+    Delete an album.
+    """
+    user = session.get(User, user_id)
+    album = session.get(Album, album_id)
+    if not album:
+        raise HTTPException(status_code=404, detail="Album not found")
+    #elif album.artist != current_user.artist_name and not current_user.is_superuser:
+     #   raise HTTPException(
+      #      status_code=403, detail="The user doesn't have enough privileges"
+       # )
+    elif album.artist != user.artist_name and not user.is_superuser:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
