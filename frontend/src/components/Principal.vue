@@ -8,7 +8,9 @@
     <div class="background-image"></div> <!-- Fondo elegante -->
     <header>
       <div class="logo">
-        <img src="../assets/logo2.png" alt="Logo">
+        <button @click="goHome" style="border: none; background: none;">
+          <img src="../assets/logo2.png" alt="Logo" />
+        </button>
       </div>
       <div></div> <!-- Espacio para alinear botones a la derecha -->
       <div class="auth-buttons" v-if="!isLogedIn">
@@ -126,6 +128,10 @@ export default {
   methods: {
     register () {
       this.$router.push('/register')
+      this.$router.go()
+    },
+    goHome () {
+      this.$router.push('/home')
       this.$router.go()
     },
     login () {
