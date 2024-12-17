@@ -360,6 +360,7 @@ header .auth-buttons a:hover {
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro para resaltar el texto */
   border-radius: 0 0 15px 15px;
+  width: 100%;
 }
 
 .album-info p {

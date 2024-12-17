@@ -368,7 +368,6 @@ header {
 
 .logo img {
   width: 3.5vw;
-  margin-top: -2vh;
   margin-left: -1vw;
 }
 
