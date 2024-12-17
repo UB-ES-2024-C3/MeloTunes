@@ -372,7 +372,6 @@ header {
 
 .logo img {
   width: 3.5vw;
-  margin-top: -2vh;
   margin-left: -1vw;
 }
 
@@ -484,29 +483,32 @@ header {
 
 /* Botón flotante */
 .floating-btn {
-  position: relative;
-  top: 50%;
-  right: 2%;
-  transform: translateY(-50%);
-  width: 8vw;
-  height: 8vw;
-  background-color: transparent;
-  border: none;
+  position: fixed;
+  bottom: 15%;
+  right: 5%;
+  z-index: 1100;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  z-index: 1000;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .floating-btn img {
+  width: 70%;
+  height: auto;
   transform: scaleX(1);
   transition: transform 0.3s ease;
 }
 
 .floating-btn:hover img {
   transform: scaleX(-1);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .mirrored {

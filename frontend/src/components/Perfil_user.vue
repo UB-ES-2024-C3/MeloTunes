@@ -41,9 +41,9 @@
         <button class="close-button" @click="showSongs = false">×</button>
         <h2>Mis Canciones</h2>
         <ul v-if="this.my_songs && this.my_songs.length" class="favorites-list">
-          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item">
+          <li v-for="uploaded_song in this.my_songs" :key="uploaded_song.id" class="favorite-item" @click="handleClick(uploaded_song)">
             <a :href="uploaded_song.cover" target="_blank" rel="noopener noreferrer">
-              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" />
+              <img :src="getAlbumImage(uploaded_song.album)" alt="Cover Image" class="favorite-cover" style="width: 10vw; height: 10vh"/>
             </a>
             <div class="favorite-details">
               <h3>{{ uploaded_song.title }}</h3>
@@ -62,9 +62,9 @@
         <button class="close-button" @click="showFavorites = false">×</button>
         <h2>Mis Favoritos</h2>
         <ul v-if="fav_songs && fav_songs.length" class="favorites-list">
-          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item">
+          <li v-for="favorite in fav_songs" :key="favorite.id" class="favorite-item" @click="handleClick(favorite)">
             <a :href="favorite.cover" target="_blank" rel="noopener noreferrer">
-              <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" />
+              <img :src="getAlbumImage(favorite.album)" alt="Cover Image" class="favorite-cover" style="width: 10vw; height: 10vh" />
             </a>
             <div class="favorite-details">
               <h3>{{ favorite.title }}</h3>
@@ -253,6 +253,10 @@ export default {
         }
       }
       return NaN
+    },
+    handleClick (song) {
+      this.$router.push({ path: '/song', query: { email: this.$route.query.email, logged: this.$route.query.logged, token: this.$route.query.token, song: song.id } })
+      this.$router.go()
     }
   }
 }
@@ -400,7 +404,7 @@ section {
 }
 
 .recommendation-column h3 {
-  font-size: 1.8rem;
+  font-size: 1rem;
   color: #ff3d00;
   margin-bottom: 1.5vh;
 }
@@ -437,13 +441,12 @@ section {
   color: #ffffff; /* Texto blanco */
   padding: 3vh 3vw;
   border-radius: 1vw;
-  width: 90%;
-  max-width: 500px;
+  width: 25vw;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2vh; /* Espaciado entre elementos */
+  gap: 0.5vh; /* Espaciado entre elementos */
 }
 
 .modal-content h2 {
@@ -454,7 +457,7 @@ section {
 
 .modal-content .form-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1vh;
 }
 
@@ -657,26 +660,43 @@ li {
 }
 
 .favorites-list {
-  max-height: 40vh;
-  overflow-y: auto;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .favorite-item {
   display: flex;
   justify-content: space-between;
-  margin: 1vh 0;
+  gap: 1vw; /* Añade un pequeño espacio entre la imagen y el texto */
+  padding: 0.5vh 0;
+}
+.favorite-item a {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
 }
 
 .favorite-cover {
-  width: 5vw;
-  height: 5vh;
-  object-fit: cover;
+  width: 70vw;
+  margin-right: 0;
 }
 
 .favorite-details {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  text-align: left;
+  margin-left: 0;
+}
+.favorite-details h3 {
+  font-size: 1.2rem;
+  text-align: left;
+  margin: 0;
+}
+.favorite-details h3, .favorite-details p, .favorite-details .song-duration {
+  margin: 0; /* Elimina márgenes predeterminados */
 }
 
 @media (max-width: 768px) {
