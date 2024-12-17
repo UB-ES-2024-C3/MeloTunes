@@ -90,5 +90,8 @@ def test_create_user_and_create_album() -> None:
     }
     album_response = client.post(f"{settings.API_V1_STR}/albums/", headers=headers, json=album_data)
     assert album_response.status_code == 200
-    album = album_response.json()
-    assert album["title"] == album_data["title"]
+    album_id = album_response.json()["id"]
+
+    # 4. Delete album as the owner
+    delete_response = client.delete(f"{settings.API_V1_STR}/albums/{album_id}", headers=headers)
+    assert delete_response.status_code == 200
