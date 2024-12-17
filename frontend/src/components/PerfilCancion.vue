@@ -53,7 +53,7 @@
         </v-dialog>
 
         <v-app class="main-container">
-          <v-btn color="black" @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer }">
+          <v-btn color="black" @click="toggleDrawer" class="floating-btn" :class="{ mirrored: drawer, left: drawer }">
             <img src="../assets/avance-rapido.png" alt="Botón Imagen" height="40" width="40" />
           </v-btn>
         </v-app>
@@ -484,8 +484,8 @@ header {
 /* Botón flotante */
 .floating-btn {
   position: fixed;
-  bottom: 15%;
-  right: 5%;
+  top: 60vh;
+  right: 5vh;
   z-index: 1100;
   width: 60px;
   height: 60px;
@@ -499,8 +499,12 @@ header {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.floating-btn.left {
+  right: 50vh;
+}
+
 .floating-btn img {
-  width: 70%;
+  width: 8%;
   height: auto;
   transform: scaleX(1);
   transition: transform 0.3s ease;

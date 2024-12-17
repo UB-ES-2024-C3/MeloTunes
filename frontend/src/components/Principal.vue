@@ -37,7 +37,7 @@
       </button>
     </div>
 
-    <div class="album-grid">
+    <div :class="{'single-album': songs_list.length === 1}" class="album-grid">
       <div v-for="(song) in songs_list" :key="song.id" class="album" @click="handleClick(song)">
         <img :src="getAlbumImage(song.album)" alt="Portada del álbum">
         <div class="album-info">
@@ -350,15 +350,26 @@ header .auth-buttons a:hover {
   background-color: #f32121;
 }
 
+.single-album {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5vw;
+}
+
+.single-album .album {
+  max-width: 300px; /* Ajusta el tamaño del álbum */
+}
+
 /* Estilo para la sección de los álbumes */
 .album-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 5vw;
-  margin-top: 10vh;
-  justify-items: center;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 5vw 5vw;
+  margin-top: 10vh;
 }
 
 /* Estilo individual para cada tarjeta de álbum */
