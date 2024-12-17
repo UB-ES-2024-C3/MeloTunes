@@ -122,3 +122,21 @@ def test_create_and_read_album_by_title() -> None:
     data = get_response.json()
     assert len(data["data"]) > 0
     assert data["data"][0]["title"] == album_title
+
+def test_create_album_with_missing_requirements() -> None:
+    """
+    Integration test to check if creating an album with missing requirements returns an error.
+    """
+    album_data = {
+        "title": "Invalid Genre Integration Test",
+        "artist": "Test Artist",
+        "release_date": "2024-12-16",
+        "genre": "Pop",
+        "cover_image_url": "https://example.com/cover.jpg"
+    }
+
+    response = client.post(f"{settings.API_V1_STR}/albums/", json=album_data)
+
+    assert response.status_code == 422
+    data = response.json()
+    assert "detail" in data
